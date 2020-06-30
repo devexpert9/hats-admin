@@ -1,0 +1,19 @@
+.modal .modal-dialog .modal-content .modal-footer {
+    padding: 15px 15px;
+}
+
+@media(max-width:767px) {
+.table th, .jsgrid .jsgrid-table th, .table td, .jsgrid .jsgrid-table td {
+    padding: 8px 15px;
+}
+div.dataTables_wrapper div.dataTables_length, div.dataTables_wrapper div.dataTables_filter, div.dataTables_wrapper div.dataTables_info, div.dataTables_wrapper div.dataTables_paginate {
+    text-align: left !important;
+}
+#order-listing_length {
+    text-align: left;
+}
+}
+.ww-table-big-text.btn, .ww-table-big-text.btn:hover{
+	color: #fff;
+}
+

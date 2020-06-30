@@ -1,0 +1,25 @@
+.active, .sidebar .nav.sub-menu .nav-item .nav-link.active{
+color: #FFF !important;
+ background: #5b6190;
+}
+
+
+/*20-11-18*/
+.sidebar .nav .nav-item.nav-profile img {
+    max-width: 82px;
+    height: 82px;
+    object-fit: cover;
+}
+
+.sidebar .nav .nav-item:hover .nav-link.active
+{
+	background: #5b6190;
+}
+
+.sidebar .nav .nav-item:hover .nav-link.active i, .sidebar .nav .nav-item .nav-link.active i
+{
+	color: #fff;
+}
+
+
+/*20-11-18*/

@@ -1,0 +1,731 @@
+<div class="container-scroller">
+   <app-header></app-header>
+   <!-- partial -->
+   <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_sidebar.html -->
+      <app-sidebar></app-sidebar>
+      <div class="main-panel">
+         <div *ngIf="edit == true" class="upload"><span>Uploading  <div class="loading">
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+      </div><br>
+            {{counter}}/{{totalCount}}</span></div>
+         <div class="content-wrapper">
+            <div class="row mb-4">
+               <div class="col-12 d-flex align-items-center justify-content-between">
+                  <button title="Add" type="button" class="btn btn-icons btn-rounded btn-sucess" data-toggle="modal" (click)="addCaterory(addcat)"><i class="icon-plus" data-toggle="tooltip" data-placement="bottom"  data-original-title="Edit"></i></button>
+               </div>
+               <div class="col-12 d-flex align-items-center justify-content-between">
+                  <h4 class="page-title">Categories</h4>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12 grid-margin stretch-card">
+                  <div class="card">
+                     <div class="card-body">
+                        <div class="tab-content tab-content-basic">
+                           <div class="tab-pane fade show active"  role="tabpanel" aria-labelledby="home-tab">
+                              <div class="row">
+                                 <div class="col-12 table-responsive">
+                                    <div class="table-input" style='margin:15px; float: right;' >
+                                       <span>Search By Name:</span><br>
+                                       <input id='searchValue1' type='text' placeholder='Type...' (keyup)='updateFilter($event)'/>
+                                    </div>
+                                    <table class="table table-striped" [mfData]="rows" #mf="mfDataTable" [mfRowsOnPage]="5">
+                                    <thead>
+                                       <tr>
+                                          <th>Sr No.#</th>
+                                          <th>
+                                             <mfDefaultSorter by="name">Name</mfDefaultSorter>
+                                          </th>
+                                          <th>
+                                             <mfDefaultSorter >Image</mfDefaultSorter>
+                                          </th>
+                                          <th>
+                                             <mfDefaultSorter by="status">Status</mfDefaultSorter>
+                                          </th>
+                                          <th>Actions</th>
+                                       </tr>
+                                    </thead>
+                                    <tbody>
+                                       <tr *ngFor="let row of mf.data;let i = index;">
+                                          <td>{{i+1}}</td>
+                                          <td>
+                                             <span>{{row.name}}</span>
+                                          </td>
+                                          <td>
+                                             <img src="{{imageURL}}{{row.image}}">
+                                          </td>
+                                          <td>
+                                             <span *ngIf="row.status == 1" data-toggle="modal" data-target="#active-inactive-pop" (click)="changeStatus(row, 0)"> Active</span>
+                                             <span *ngIf="row.status == 0"  data-toggle="modal" data-target="#active-inactive-pop" (click)="changeStatus(row, 1)"> Deactivate</span>
+                                          </td>
+                                         
+                                          <td>
+                                             <button title="Edit" type="button" class="btn btn-icons btn-rounded btn-warning" data-toggle="modal" (click)="EditCategory(row,i,editcat)"><i class="icon-pencil" data-toggle="tooltip" data-placement="bottom"  data-original-title="Edit"></i></button>
+
+                                             <button title="Delete" type="button" class="btn btn-icons btn-rounded btn-danger" data-toggle="modal" data-target="#delete-pop" (click)="deletePopUpCategory(row, i)"><i class="icon-trash" data-toggle="tooltip" data-placement="bottom"  data-original-title="Delete"></i></button>
+                                          </td>
+                                       </tr>
+                                       <tr *ngIf="mf.data?.length == 0">
+                                          No record found.
+                                       </tr>
+                                    </tbody>
+                                    <tfoot>
+                                       <tr>
+                                          <td colspan="4">
+                                             <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+                                          </td>
+                                       </tr>
+                                    </tfoot>
+                                    </table>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- partial:partials/_footer.html -->
+         <footer class="footer">
+            <div class="container-fluid clearfix">
+               <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2019. All rights reserved.</span>
+               <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.
+               </span>
+            </div>
+         </footer>
+      </div>
+   </div>
+</div>
+
+<div class="modal fade" id="delete-pop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+         <div class="modal-body">
+            <h5> Are you sure, you want to delete it ? </h5>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="deleteCategory()">Yes</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+<ng-template #addcat let-c="close" let-d="dismiss">
+
+   <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Category</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <form [formGroup]="authForm" (ngSubmit)="uploadImage()">
+         <!-- card -->
+         <div class="card">
+            <div class="row">
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Name</label>
+                     <input  type="name" class="form-control" formControlName="name">
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Image</label>
+                     <div class="img-box padding-top-5">
+                        <img *ngIf="Image == ''" class=" img-sm" src="assets/images/user2.jpg" alt="profile image">
+                     
+                        <img *ngIf="Image != ''" class=" img-sm" src="{{Image}}" alt="profile image">
+                        <input style="display: none" type="file" (change)="onImageChanged($event)" #fileInput1 name="file" ngf-pattern="'image/*" accept="image/*,application/pdf" ngf-max-size="200MB" id="input-file-now" class="dropify" style="display:none;" filepreview="filepreview1" fileinput="file" ngf-select>
+                        <label class="edit-profile-btn" for="avatar">
+                        <i class="fa fa-pencil" aria-hidden="true" (click)="fileInput1.click()"></i>
+                        </label>
+                     </div>
+                  </div>
+               </div>
+            </div>   
+         </div>
+      </form>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-danger" data-dismiss="modal" type="submit" [disabled]="formValid()" (click)="uploadImage()">Submit</button>
+         <a type="button" class="btn btn-danger" data-dismiss="modal" (click)="closeModal()">Cancel</a>
+      </div>
+   </div>
+</ng-template>
+
+<ng-template #editcat let-c="close" let-d="dismiss">
+
+   <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Category</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <form [formGroup]="authForm1" >
+         <!-- card -->
+         <div class="card">
+            <div class="row">
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Name</label>
+                     <input  type="name" class="form-control" formControlName="name">
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Image</label>
+                     <div class="img-box padding-top-5">
+                        <img *ngIf="Image == '' " class=" img-sm" src="{{imageURL}}{{selectedCat?.image}}" alt="profile image">
+                      
+                        <img *ngIf="Image != ''" class=" img-sm" src="{{Image}}" alt="profile image">
+                        <input style="display: none" type="file" (change)="onImageChanged($event)" #fileInput1 name="file" ngf-pattern="'image/*" accept="image/*,application/pdf" ngf-max-size="200MB" id="input-file-now" class="dropify" style="display:none;" filepreview="filepreview1" fileinput="file" ngf-select>
+                        <label class="edit-profile-btn" for="avatar">
+                        <i class="fa fa-pencil" aria-hidden="true" (click)="fileInput1.click()"></i>
+                        </label>
+                     </div>
+                  </div>
+               </div>
+            </div>   
+         </div>
+      </form>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-danger" data-dismiss="modal" type="submit" [disabled]="formValid1()" (click)="updateImage()">Submit</button>
+         <a type="button" class="btn btn-danger" data-dismiss="modal" (click)="closeModal()">Cancel</a>
+      </div>
+   </div>
+</ng-template>
+
+<div class="modal fade" id="active-inactive-pop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+         <div class="modal-body">
+            <h5> Are you sure, you wants to update category status? </h5>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="changeActiveInctiveStatus(guard, status)">Yes</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+   <style type="text/css">
+      /*css start for pdf and print about application form*/
+.clear {clear: both;}
+
+.instaFade p {
+    
+}
+
+.sectionContent .m-b-10 {
+    margin-bottom: 6px !important;
+    margin-top: 6px !important;
+    font-size: 1em;
+}
+.instaFade span {
+    width: 180px;
+    display: -webkit-inline-box;
+}
+.w-40{
+    width: 40%;
+    float: left;
+}
+
+.w-49{
+    width: 49%;
+    float: left;
+}
+
+
+.instaFade span.yes {
+    width: 45px;
+    margin-left: 12px;
+}
+
+.instaFade span.no {
+    width: 45px;
+    margin-left: 12px;
+}
+
+.bold{
+    font-weight: 600;
+    margin-left: 9px;
+    width: 100px;
+}
+
+.instaFade label {
+    border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;
+}
+
+.right {
+
+    float: right;
+    margin-right: 164px;
+}
+
+.img-section{
+    margin-bottom: 35px !important;
+}
+
+.signature-text {
+    float: left;
+    padding: 0px 0px;
+    text-align: center;
+    /* left: 0; */
+    width: 113px;
+}
+
+
+#cv {
+    width: 90%;
+    max-width: 800px;
+    background: #fff;
+    margin: 30px auto;
+}
+.hidden-div {
+    
+}
+
+
+
+#name h1 {
+    font-size: 2.5em;
+    font-weight: 700;
+    font-family: 'Rokkitt', Helvetica, Arial, sans-serif;
+    margin-bottom: -6px;
+}
+
+#name h2 {
+    font-size: 2em;
+    margin-left: 2px;
+    font-family: 'Rokkitt', Helvetica, Arial, sans-serif;
+}
+
+
+
+#headshot {
+    width: 12.5%;
+    float: left;
+    margin-right: 30px;
+}
+
+#headshot img {
+    width: 100%;
+    height: auto;
+    -webkit-border-radius: 50px;
+    border-radius: 50px;
+}
+
+#name {
+    float: left;
+}
+
+#contactDetails {
+    float: right;
+}
+
+#contactDetails ul {
+    list-style-type: none;
+    font-size: 0.9em;
+    margin-top: 2px;
+}
+
+#contactDetails ul li {
+    margin-bottom: 3px;
+    color: #444;
+}
+
+#contactDetails ul li a, a[href^=tel] {
+    color: #444; 
+    text-decoration: none;
+    -webkit-transition: all .3s ease-in;
+    -moz-transition: all .3s ease-in;
+    -o-transition: all .3s ease-in;
+    -ms-transition: all .3s ease-in;
+    transition: all .3s ease-in;
+}
+
+#contactDetails ul li a:hover { 
+    color: #cf8a05;
+}
+
+
+.instaFade section {
+    border-top: 1px solid #dedede;
+    padding: 20px 0 0;
+}
+
+
+
+/*.sectionTitle {
+    float: left;
+    width: 25%;
+}*/
+
+
+.sectionTitle h1 {
+    font-family: 'Rokkitt', Helvetica, Arial, sans-serif;
+    font-style: italic;
+    font-size: 1.5em;
+    color: #cf8a05;
+}
+
+.sectionContent h2 {
+    font-family: 'Rokkitt', Helvetica, Arial, sans-serif;
+    font-size: 1.5em;
+    margin-bottom: -2px;
+}
+
+.subDetails {
+    font-size: 0.8em;
+    font-style: italic;
+    margin-bottom: 3px;
+}
+
+.keySkills {
+    list-style-type: none;
+    -moz-column-count:3;
+    -webkit-column-count:3;
+    column-count:3;
+    margin-bottom: 20px;
+    font-size: 1em;
+    color: #444;
+}
+
+.keySkills ul li {
+    margin-bottom: 3px;
+}
+
+@media all and (min-width: 602px) and (max-width: 800px) {
+    #headshot {
+        display: none;
+    }
+    
+    .keySkills {
+    -moz-column-count:2;
+    -webkit-column-count:2;
+    column-count:2;
+    }
+}
+
+@media all and (max-width: 601px) {
+    #cv {
+        width: 95%;
+        margin: 10px auto;
+        min-width: 280px;
+    }
+    
+    #headshot {
+        display: none;
+    }
+    
+    #name, #contactDetails {
+        float: none;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .sectionTitle, .sectionContent {
+        float: none;
+        width: 100%;
+    }
+    
+    .sectionTitle {
+        margin-left: -2px;
+        font-size: 1.25em;
+    }
+    
+    .keySkills {
+        -moz-column-count:2;
+        -webkit-column-count:2;
+        column-count:2;
+    }
+}
+
+@media all and (max-width: 480px) {
+    .mainDetails {
+        padding: 15px 15px;
+    }
+    
+    section {
+        padding: 15px 0 0;
+    }
+    
+    #mainArea {
+        padding: 0 25px;
+    }
+
+    
+    .keySkills {
+    -moz-column-count:1;
+    -webkit-column-count:1;
+    column-count:1;
+    }
+    
+    #name h1 {
+        line-height: .8em;
+        margin-bottom: 4px;
+    }
+}
+
+@media print {
+    #cv {
+        width: 100%;
+    }
+}
+
+
+
+
+
+/*css end here about application form print and pdf*/
+   </style>
+
+<div id="print" style="display: none;"> 
+
+   <div id="cv" class="instaFade">
+      <div style="width: 100%;display: -webkit-inline-box; height: 38px;">
+         
+      </div>
+      <div class="mainDetails" style="background-image: url('./assets/images/dotted.jpg');background-position: center;background-size: contain; width: 90% !important;margin-left: 5%;">
+         <div>
+            <span class="head-section" style=" border-left: 1px solid;
+    width: 44.1% !important;
+    float: left;
+    padding: 7px 18px;
+    border-bottom: 1px solid;
+    border-top: 1px solid;">
+                &nbsp;&nbsp;
+            </span>
+            <span class="head-section" style=" border-left: 1px solid;
+    width: 44.1% !important;
+    float: left;
+    padding: 7px 18px;
+    border-bottom: 1px solid;
+    border-top: 1px solid;">
+               FORM NR: {{printData?.rapidId}}
+            </span>
+          </div>
+         
+         <div style="border-left: 1px solid;
+    border-right: 1px solid;
+    text-align: center;
+    border-bottom: 1px solid;
+    line-height: 34px;"> EMPLOYMENT APPLICATION</div>
+      </div>
+      
+      <div id="mainArea" class="quickFade delayFive" style="padding: 0 40px;">
+         <section>
+            <article>
+               
+               <div class="sectionContent" style="float: left;width: 97.5%;margin-bottom: 22px;">
+                  <h3 class="m-b-10" style="margin-bottom: -10px !important;margin-top: 6px !important;font-size: 1em;font-weight: 100;">PERSONAL DETAILS </h3>
+                  <!-- <p class="subDetails">April 2011 - Present</p> -->
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     <span style="width: 180px;
+    display: -webkit-inline-box;">Name:-</span> 
+                     <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.firstname}}</label>
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     <span style="width: 180px;
+    display: -webkit-inline-box;">Full Address:-</span> 
+                     <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.address}},{{printData?.city}}, {{printData?.state}}, {{printData?.country}}, {{printData?.postcode}}</label>
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     <span style="width: 180px;
+    display: -webkit-inline-box;">Tel (Mobile/Home):</span> 
+                     <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.bsb}} </label>
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     <span style="width: 180px;
+    display: -webkit-inline-box;">Email:</span> 
+                     <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.email}} </label>
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     <span style="width: 180px;
+    display: -webkit-inline-box;">Date of birth:</span>
+                     <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.dob}}</label>
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     <span style="width: 180px;
+    display: -webkit-inline-box;">Gender:</span> {{printData?.gender}}
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     <span style="width: 180px;
+    display: -webkit-inline-box;">Tax file number:</span> 
+                     <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.tax_file}} </label>
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     Have you ever been charged or convicted with any criminal offence?
+                     <span class="yes bold" style="width: 45px;
+    margin-left: 12px; font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> No </span>
+                  </p> 
+                  <h3 style="margin-bottom: -10px !important;margin-top: 6px !important;font-size: 1em;font-weight: 100;">Bank account details:- </h3>
+                  <div>
+                     <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;width:231px; float: left;">
+
+                     <span style="width: 107px;display: -webkit-inline-box;">BSB number:</span>
+                      <label style="width: 110px;border-bottom: 1px solid !important;
+    display: inline-block;">{{printData?.bsb}} </label></p>
+
+                     <p  style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;width: 49%;float: left;">
+                        <span style="width: 100px;display: -webkit-inline-box;">Account no:</span>
+                         <label style="width: 133px;border-bottom: 1px solid !important;
+    display: inline-block;">{{printData?.acnumber}} </label>
+                     </p>
+                  </div>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;width: 100%;">
+                     Have you ever made a Work cover claim? YES/NO (If YES, please provide details:)
+                     <label *ngIf="printData?.work_claim == false" style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;"> NO </label>
+                     <label *ngIf="printData?.work_claim == true" style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;"> {{printData?.work_claim_details}} </label>
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;width: 100%;">
+                     If you have made a Work cover claim, would the injuries you received, stop you from completing duties required for the position you have applied for? 
+                     <span class="bold" *ngIf="printData?.injury == true" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> Yes </span>  
+                     <span class="bold" *ngIf="printData?.injury == false" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> No </span>  
+                  </p>
+
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;"><span style="width: 180px;
+    display: -webkit-inline-box;">Position applying for:-</span> <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">Security Guard</label></p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;"><span style="width: 180px;
+    display: -webkit-inline-box;">Security license number:-</span> <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.licenseNo}}</label></p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;"><span style="width: 180px;
+    display: -webkit-inline-box;">Security license expiry dated:</span> <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.licence_exp_date}}</label></p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;"><span style="width: 180px;
+    display: -webkit-inline-box;">Driver's license number:</span> <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.drivingLicenseNo}} </label></p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;"><span style="width: 180px;
+    display: -webkit-inline-box;">SUPER DETAILS:</span><label *ngIf="printData?.open_super_acc == false" style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;"> To be applied</label>
+                  <label *ngIf="printData?.open_super_acc == true" style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;"> Not applied</label>
+                  </p>
+                  
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;">
+                     Are you an Australian Resident for work purposes?
+                     <span class="bold" *ngIf="printData?.resident == true" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> Yes </span> 
+                     <span class="bold" *ngIf="printData?.resident == false" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> No </span>
+                  </p> 
+
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;">
+                     Do you hold a current First Aid certificate?
+                     <span class="bold" *ngIf="printData?.first_aid == true" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> Yes </span> 
+                     <span class="bold" *ngIf="printData?.first_aid == false" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> No </span> 
+                  </p> 
+
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;">
+                     Do you have any Visa Conditions which Stops you working in Security?
+                     <span class="bold" *ngIf="printData?.visa_condi == true" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> Yes </span> 
+                     <span class="bold" *ngIf="printData?.visa_condi == false" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> No </span> 
+                  </p> 
+
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;">
+                     Do you full understand all details in regards to Occupational?<br>
+                     Health and Safety
+                     <span class="bold right" *ngIf="printData?.occupation == true" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;float: right;"> Yes </span> 
+                     <span class="bold right" *ngIf="printData?.occupation == false" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;float: right;"> No </span> 
+                  </p> 
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;">
+                     In signing thid form, I understand that if I have failed to disclose any relevant information, any future claims against the company, or the Victorian Work cover Authority may be void.
+                  </p>
+
+                  <div class="quickFade delayFour">
+                     <ul style="float: left;">
+                        <div class="signatureArea" style=" border-bottom: 1px solid #000;
+    padding: 5px 10px;
+    min-width: 100px;
+    max-width: 100px;
+    height: 50px;
+    line-height: 69px;">
+                           {{printData?.firstname}}
+                        </div>
+                        <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444; float: left;padding: 0px 0px;text-align: center;width: 113px;">PRINT NAME</p>
+                        
+                     </ul>
+                     
+                     <ul style="float: right;text-decoration:none">
+                        <div class="signatureArea1" style="border-bottom: 1px solid #000;
+    padding: 5px 10px;
+    min-width: 100px;
+    max-width: 100px;
+    height: 50px;">
+                           <img *ngIf="printData?.signature != ''" src="{{printData?.signature}}" style="width: 100%;
+    height: auto;">
+                        </div>
+                        <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444; float: left;padding: 0px 0px;text-align: center;width: 113px;">SIGNED</p>
+                        
+                     </ul>
+                  </div>
+
+               </div>
+            </article>
+            <button style="display: none;" id="save" (click)="save()">Save</button><br>
+            <button style="display: none;" id="cancel">Cancel</button>
+            <div class="clear"></div>
+         </section>
+      </div>
+
+   </div>
+</div>

@@ -1,0 +1,67 @@
+<div class="login-bg ">
+  <div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+      <div class="content-wrapper d-flex align-items-center auth auth-bg-1 theme-one">
+        <div class="row w-100 mx-auto">
+          <div class="col-lg-4 mx-auto">
+            <div class="auto-form-wrapper">
+              <form [formGroup]="authForm" (ngSubmit)="login()">
+                <div class="form-group">
+                  <label class="label">Username</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="" formControlName="username">
+                    <div class="input-group-append">
+                      <span class="input-group-text">
+                        <i class="icon-user"></i>
+                      </span>
+                    </div>
+                  </div>
+                  <span *ngIf="authForm.controls.username.hasError('required') && authForm.controls.username.touched">
+                    <p style="color:#f70101 !important;">Sorry, field User Name is required!</p>
+                  </span>
+                </div>
+                <div class="form-group">
+                  <label class="label">Password</label>
+                  <div class="input-group">
+                    <input type="password" class="form-control" placeholder="" formControlName="password">
+                    <div class="input-group-append">
+                      <span class="input-group-text">
+                        <i class="icon-key"></i>
+                      </span>
+                    </div>
+                  </div>
+                  <span *ngIf="authForm.controls.password.hasError('required') && authForm.controls.password.touched">
+                    <p style="color:#f70101 !important;">Sorry, field passowrd is required!</p>
+                  </span>
+                  <span *ngIf="authForm.controls.password.hasError('minlength') && authForm.controls.password.touched">
+                    <p style="color:#f70101 !important;">Password must contains atleast 5 characters!</p>
+                  </span>
+                 
+                </div>
+                <div class="form-group">
+                  <button [disabled]="!authForm.valid" type="submit" class="btn btn-primary submit-btn btn-block">Login</button>
+
+                </div>
+                <div class="form-group d-flex justify-content-between">
+              <!--     <div class="form-group new-rem">
+                    <div class="check-new-d">
+                      <label class="check-des"> Remember Me ?
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                      </label>
+                    </div>
+                  </div> -->
+                  <a  routerLink="/forgot-password" class="text-small forgot-password text-black">Forgot Password ?</a>
+                </div>
+              </form>
+              <!-- <button class="" (click)="signup()">signup</button> -->
+            </div>
+            <p class="footer-text text-center m-t-10">copyright © 2018. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+      <!-- content-wrapper ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+</div>

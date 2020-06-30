@@ -1,0 +1,49 @@
+ .allnotifications{
+ 	width:100%;
+ 	float: left;
+ 	max-height:500px;
+ 	overflow-y: auto;
+ }
+ .allnotifications ul{
+list-style: none;
+    padding: 0;
+    float: left;
+    width: 70%;
+    margin: 0;
+
+ }
+
+ .check{
+ 	width: 26px !important;
+    height: auto !important;
+ }
+.allnotifications ul li{
+padding: 10px;
+    float: left;
+ }
+ .allnotifications ul li p{
+ 	margin: 0;
+ 	    line-height: 100%;
+ }
+ .allnotifications ul li span{
+ 	font-size: 12px;
+    color: #888;
+ }
+ .allnotifications ul li:nth-child(1){
+ 	width:9%;
+ }
+ .allnotifications ul li:nth-child(2){
+ 	width:80%;
+ }
+ .allnotifications ul li:nth-child(3){
+ 	width:11%;
+ }
+ .allnotifications ul:nth-child(even){
+ 	background: #f1f1f1;
+ }
+ .allnotifications ul li img{
+ 	width:40px;
+ 	height:40px;
+ 	border-radius:50%;
+ 	display: inline-block;
+ }

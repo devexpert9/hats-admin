@@ -1,0 +1,85 @@
+.modal .modal-dialog .modal-content .modal-footer {
+    padding: 15px 15px;
+}
+
+.table th, .jsgrid .jsgrid-table th, .table td, .jsgrid .jsgrid-table td {
+    padding: 15px 15px 15px 0;
+}
+
+table.shift-current-tab {
+	display: block;
+	width: 100%;
+}
+
+table.shift-current-tab td {
+	white-space: pre-wrap;
+	line-height: 1.4;
+	padding: 10px 0;
+}
+
+@media(max-width:767px) {
+table.shift-current-tab td {
+	padding: 10px 10px;
+}
+.table th, .jsgrid .jsgrid-table th, .table td, .jsgrid .jsgrid-table td {
+    padding-left: 10px;
+}
+}
+
+
+.license-image{
+	width: 100%;
+    border-radius: 0 !important;
+}
+
+.padding-top-5{
+	/*padding-top: 5%;*/
+}
+
+
+.collapse{
+	padding:20px;
+}
+.accordion.basic-accordion .card .card-header a[aria-expanded="true"]:before{
+    content: "\f107";
+    font-family: 'fontAwesome';
+    font-size: 11px;
+    margin-top: 3px;
+    color: #999;
+}
+.accordion.basic-accordion .card .card-header a[aria-expanded="false"]:before, .accordion.basic-accordion .card .card-header a:before {
+    content: "\f107";
+    font-family: 'fontAwesome';
+    font-size: 11px;
+    margin-top: 3px;
+    color: #999;
+}
+.accordion .card .card-header a .card-icon{
+	margin-right: 0;
+}
+.img-sm {
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.upload{
+        display: none;
+    z-index: 9999;
+    display: block;
+    background: #8080806b;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.upload span{
+    left: 47%;
+    top: 49%;
+    color: #000;
+    position: absolute;
+    /* width: 100%; */
+    text-align: center;
+    background: #fff;
+    padding: 5px 9px;
+}

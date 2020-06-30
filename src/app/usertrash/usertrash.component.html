@@ -1,0 +1,221 @@
+<div class="container-scroller">
+  <app-header></app-header>
+  <!-- partial -->
+  <div class="container-fluid page-body-wrapper">
+    <!-- partial:partials/_sidebar.html -->
+    <app-sidebar></app-sidebar>
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="row mb-4">
+          <div class="col-12 d-flex align-items-center justify-content-between">
+            <h4 class="page-title">Trash</h4> 
+          
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+              	   <ul class="nav nav-tabs tab-basic" role="tablist">
+                           <li class="nav-item">
+                              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#whoweare" role="tab" aria-controls="whoweare" aria-selected="true" (click)="getTrash('user')">Users</a>
+                           </li>
+                           <li class="nav-item">
+                              <a class="nav-link" id="profile-tab" data-toggle="tab" href="#ourgoal" role="tab" aria-controls="ourgoal" aria-selected="false" (click)="getTrash('shift')">Shifts</a>
+                           </li>
+                         
+                        </ul>
+
+
+
+                         <div class="tab-content tab-content-basic">
+                             <div class="tab-pane fade show active" id="whoweare" role="tabpanel" aria-labelledby="home-tab">
+                                <div class="row">
+                                   <div class="col-12 table-responsive">
+                                    <!--   <div class="table-input" style='margin:15px; float: right;' >
+                                         <span>Search By Rapid ID:</span><br>
+                                         <input id='searchValue1' type='text' placeholder='Type...' (keyup)='updateFilter($event)'/>
+                                      </div>
+ -->
+                                    <table class="table table-striped" [mfData]="rows" #mf="mfDataTable" [mfRowsOnPage]="5" *ngIf="value == 'user'">
+                                      <thead>
+                                          <tr>
+                                             <th>Sr No. #</th>
+                                             <th>Rapid ID</th>
+                                             <th>Name</th>
+                                             <th>Mobile</th>
+                                             <th>Email</th>
+                                             <th>Address</th>
+                                             <th>Status</th>
+                                             <th>Actions</th>
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr *ngFor="let row of mf.data;let i = index;">
+                                           <td>{{i+1}}</td>
+                                           <td> 
+                                             <span *ngIf="row.rapidId == ''">Not assigned</span>
+                                             <span *ngIf="row.rapidId != ''">{{row.rapidId}}</span>
+                                           </td>
+                                           <td>{{row.firstname}}({{row.username}})</td>
+                                           <td>{{row.contact}}</td>
+                                           <td>{{row.email}}</td>
+                                           <td>{{row.address}}, {{row.city}}, {{row.country}}</td>
+                                           <td>
+                                            <a *ngIf="row.is_available == 'true'" class="ww-table-big-text badge badge-success">Available</a> 
+                                             <a *ngIf="row.is_available == 'false'" class="ww-table-big-text badge badge-danger">Not Available</a>
+                                           </td>
+                                          <td>
+                                            <button  type="button" class="btn btn-icons btn-rounded btn-info" data-toggle="modal" data-target="#restore-pop" data-placement="bottom" title="Restore" data-original-title="View Details" (click)="changeStatus(row,0, 'user')"><i class=" icon-action-undo"></i></button>
+
+                                            <button type="button" class="btn btn-icons btn-rounded btn-danger" data-toggle="modal" data-target="#delete-pop" data-placement="bottom" title="Delete" data-original-title="View Details" (click)="changeStatus(row,2, 'user')"><i class="icon-trash"></i></button>
+                                          </td>
+                                        </tr>
+                                        <tr *ngIf="mf.data?.length == 0">
+                                          <td colspan="11">
+                                                No record found.
+                                             </td>
+                                        </tr>
+                                      </tbody>
+                                   </table>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="tab-pane fade" id="ourgoal" role="tabpanel" aria-labelledby="profile-tab">
+                              <div class="row">
+                                 <div class="col-12 table-responsive">
+                                  <!--   <div class="table-input" style='margin:15px; float: right;' >
+                                       <span>Search By Rapid ID:</span><br>
+                                       <input id='searchValue2' type='text' placeholder='Type...' (keyup)='updateFilter($event)'/>
+                                    </div> -->
+                                    <table class="table table-striped" [mfData]="rows1" #mf="mfDataTable" [mfRowsOnPage]="5" *ngIf="value != 'user'">
+                                           <thead>
+                                               <tr>
+                                                 <th>Sr No.#</th>
+                                                 <th>
+                                                    <mfDefaultSorter by="title">Title</mfDefaultSorter>
+                                                 </th>
+                                                 <th>
+                                                    <mfDefaultSorter by="type"> Type </mfDefaultSorter>
+                                                 </th>
+                                                  <th> Time </th>
+                                                  <th>Date</th>
+                                                  <th>
+                                                   <mfDefaultSorter by="status">Address</mfDefaultSorter>
+                                                   </th>
+                                                  <th>Actions</th>
+                                               </tr>
+                                           </thead>
+                                           <tbody>
+                                             <tr *ngFor="let row of mf.data;let i = index;">
+                                                 <td>{{i+1}}</td>
+                                                 <td>
+                                                    {{row.title}}
+                                                 </td>
+                                                 <td>
+                                                    <a class="ww-table-big-text" *ngIf="row.type == '0'">Adhoc</a>
+                                                    <a class="ww-table-big-text" *ngIf="row.type == '1'">Ongoing</a>
+                                                 </td>
+                                                <td>
+                                                    <a *ngIf="row.type == '0'" class="ww-table-big-text">{{getTimeAMPM(row.start_time)}} - {{getTimeAMPM(row.end_time)}}</a>
+                                                                        
+                                                    <a *ngIf="row.type == '1'" class="ww-table-big-text">{{getAmPmTime(row.days)}}</a>
+                                                </td>
+                                                <td>
+                                                    <a *ngIf="row.type == '1'" class="ww-table-big-text">{{getExactDate(row.start_date)}} / {{getExactDate(row.end_date)}}</a>
+                                                                        
+                                                    <a *ngIf="row.type == '0'" class="ww-table-big-text">{{getExactDate(row.shift_date)}}</a>
+                                                </td>
+                                                <td>
+                                                  {{row.location.address.location}}
+                                                </td>
+                                               
+                                                 <td>
+                                                    <button  type="button" class="btn btn-icons btn-rounded btn-info" data-toggle="modal" data-target="#restore-pop" data-placement="bottom" title="Restore" data-original-title="View Details" (click)="changeStatus(row,0, 'shift')"><i class=" icon-action-undo"></i></button>
+
+                                                    <button type="button" class="btn btn-icons btn-rounded btn-danger" data-toggle="modal" data-target="#delete-pop" data-placement="bottom" title="Delete" data-original-title="View Details" (click)="changeStatus(row,2, 'shift')"><i class="icon-trash"></i></button>
+                                               </td>
+                                              </tr>
+                                              <tr *ngIf="mf.data?.length == 0">
+                                                 <td colspan="11">
+                                                No record found.
+                                             </td>
+                                              </tr>
+                                           </tbody>
+                                           <tfoot>
+                                              <tr>
+                                                 <td colspan="4">
+                                                    <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+                                                 </td>
+                                              </tr>
+                                           </tfoot>
+                                        </table>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+         </div>
+       </div>
+     </div>
+   </div>
+   <!-- partial:partials/_footer.html -->
+   <footer class="footer">
+    <div class="container-fluid clearfix">
+      <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. All rights reserved.</span>
+      <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.
+
+      </span>
+    </div>
+  </footer>
+</div>
+</div>
+</div>
+
+  <div class="modal fade" id="delete-pop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h5> Are you sure, you want to delete it permanently ? </h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="ChangeStatus(item,trashValue,stringValue)">Yes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+   <div class="modal fade" id="restore-pop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h5> Are you sure, you want to restore it ? </h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="ChangeStatus(item,trashValue,stringValue)">Yes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    <div class="modal fade" id="assign-id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Assign Rapid ID</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input  type="number" class="form-control" placeholder="Enter Rapid ID" [(ngModel)]="rapidId">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="assignId(rapidId, guard)">Yes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>

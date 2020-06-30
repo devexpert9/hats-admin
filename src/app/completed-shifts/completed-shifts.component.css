@@ -1,0 +1,9 @@
+@media(max-width:767px) {
+.modal .modal-dialog .modal-content .modal-footer {
+    padding: 15px 0;
+}
+}
+
+.form-control{
+	min-height: 40px;
+}

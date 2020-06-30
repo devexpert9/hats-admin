@@ -1,0 +1,72 @@
+<div class="container-scroller">
+    <app-header></app-header>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+
+        <!-- partial:partials/_sidebar.html -->
+        <app-sidebar></app-sidebar>
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="row mb-4">
+                    <div class="col-12 d-flex align-items-center justify-content-between">
+                        <h4 class="page-title">Roaster</h4>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Roaster</h4>
+                                <div class="row">
+                                    <div class="col-12 table-responsive">
+                                  
+                                        <br>  
+                                        
+                                    <div class="row">
+
+                                        <div class="col-4">
+                                            <label for="exampleInputEmail1">Select User</label>
+                                            <select class="form-control" style="height:43px;" [(ngModel)]="type" (change)="showRoasterUser(type)">
+                                                <option *ngFor="let user of securityGuardsList" value="{{user._id}}"  >{{user?.firstname}}</option>
+                                               
+                                            </select>
+                                        </div>
+
+                                        <div class="col-4">
+                                           <label for="exampleInputEmail1">Select Shift</label>
+                                           <select id="select" class="form-control" style="height:43px;" [(ngModel)]="type1" (change)="showRoasterShift(type1)">
+                                               <option *ngFor="let shift of ShiftsList" value="{{shift._id}}"  >{{shift?.title}}</option>
+                                               <option *ngIf="ShiftsList.length == 0" value="">No Record Found</option>
+                                              
+                                           </select>
+                                       </div>
+
+                                        
+                                    </div>
+
+                                <br> 
+
+
+                                     <div id="showData" ></div>
+                                     
+                                     <button class="btn btn-primary mt-3" (click)="downloadUserRoaster(selectedReport)" *ngIf="isShiftSelected == true">Download</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                </div>
+
+                <!-- partial:partials/_footer.html -->
+                <footer class="footer">
+                    <div class="container-fluid clearfix">
+                        <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. All rights reserved.</span>
+                        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.</span>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+

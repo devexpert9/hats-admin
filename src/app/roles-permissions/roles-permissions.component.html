@@ -1,0 +1,174 @@
+<div class="container-scroller">
+   <app-header></app-header>
+   <!-- partial -->
+   <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_sidebar.html -->
+      <app-sidebar></app-sidebar>
+      <div class="main-panel">
+         <div class="content-wrapper">
+            <div class="row mb-4">
+               <div class="col-12 d-flex align-items-center justify-content-between">
+                  <h4 class="page-title">Roles & Permissions</h4>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12 grid-margin stretch-card">
+                  <div class="card">
+                     <div class="card-body">
+                        <ul class="nav nav-tabs tab-basic" role="tablist">
+                           <li class="nav-item">
+                              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#whoweare" role="tab" aria-controls="whoweare" aria-selected="true" (click)="getPermissions('shift')">Shift Manager</a>
+                           </li>
+                           <li class="nav-item">
+                              <a class="nav-link" id="profile-tab" data-toggle="tab" href="#ourgoal" role="tab" aria-controls="ourgoal" aria-selected="false" (click)="getPermissions('payroll')">Payroll Manager</a>
+                           </li>
+                         
+                        </ul>
+
+
+                        <div class="tab-content tab-content-basic">
+                        	<div class="tab-pane fade show active"  role="tabpanel" aria-labelledby="home-tab">
+                        		<form [formGroup]="authForm"  class="forms-sample">
+		                           <div class="row">
+		                              <div class="col-md-3" >
+		                                 <div class="form-group">
+		                                    <div   class="check-new-d">
+		                                       <label class="check-des"> Availability
+		                                       <input type="checkbox" name="reminder" formControlName="availability">
+		                                       <span class="checkmark"></span>
+		                                       </label>
+		                                    </div>
+		                                 </div>
+		                             </div>
+		                             <div class="col-md-3" >
+		                                   <div class="form-group">
+		                                    <div   class="check-new-d">
+		                                       <label class="check-des"> Security Guards
+		                                       <input type="checkbox" name="reminder" formControlName="securityguard">
+		                                       <span class="checkmark"></span>
+		                                       </label>
+		                                    </div>
+		                                 </div>
+		                             </div>
+		                             <div class="col-md-3" >
+		                                   <div class="form-group">
+		                                    <div   class="check-new-d">
+		                                       <label class="check-des"> Clients
+		                                       <input type="checkbox" name="reminder" formControlName="client">
+		                                       <span class="checkmark"></span>
+		                                       </label>
+		                                    </div>
+		                                 </div>
+		                             </div>
+		                             <div class="col-md-3" >
+		                                   <div class="form-group">
+		                                    <div   class="check-new-d">
+		                                       <label class="check-des"> Locations
+		                                       <input type="checkbox" name="reminder" formControlName="location">
+		                                       <span class="checkmark"></span>
+		                                       </label>
+		                                    </div>
+		                                 </div>
+		                             </div>
+		                         </div>
+		                          <div class="row">
+		                             <div class="col-md-3" >
+		                                   <div class="form-group">
+		                                    <div   class="check-new-d">
+		                                       <label class="check-des"> Shifts
+		                                       <input type="checkbox" name="reminder" formControlName="shift">
+		                                       <span class="checkmark"></span>
+		                                       </label>
+		                                    </div>
+		                                 </div>
+		                             </div>
+		                             <div class="col-md-3" >
+		                                 <div class="form-group">
+		                                    <div   class="check-new-d">
+		                                       <label class="check-des"> Remarks
+		                                       <input type="checkbox" name="reminder" formControlName="remark">
+		                                       <span class="checkmark"></span>
+		                                       </label>
+		                                    </div>
+		                                 </div>
+		                             </div>
+		                             <div class="col-md-3" >
+		                                 <div class="form-group">
+		                                    <div   class="check-new-d">
+		                                       <label class="check-des"> Reports
+		                                       <input type="checkbox" name="reminder" formControlName="report">
+		                                       <span class="checkmark"></span>
+		                                       </label>
+		                                    </div>
+		                                 </div>
+		                             </div>
+		                             <div class="col-md-3" >
+		                                 <div class="form-group">
+		                                    <div   class="check-new-d">
+		                                       <label class="check-des"> Business Reports
+		                                       <input type="checkbox" name="reminder" formControlName="businessreport">
+		                                       <span class="checkmark"></span>
+		                                       </label>
+		                                    </div>
+		                                 </div>
+		                             </div>
+		                         </div>
+		                          <div class="row">
+		                             <div class="col-md-3" >
+		                                 <div class="form-group">
+		                                    <div   class="check-new-d">
+		                                       <label class="check-des"> Payroll
+		                                       <input type="checkbox" name="reminder" formControlName="payroll">
+		                                       <span class="checkmark"></span>
+		                                       </label>
+		                                    </div>
+		                                 </div>
+		                             </div>
+		                             <div class="col-md-3" >
+		                                     <div class="form-group">
+		                                    <div   class="check-new-d">
+		                                       <label class="check-des"> Public Holidays
+		                                       <input type="checkbox" name="reminder" formControlName="publicholiday">
+		                                       <span class="checkmark"></span>
+		                                       </label>
+		                                    </div>
+		                                 </div>
+
+		                              </div>
+		                              <div class="col-md-3" >
+		                                     <div class="form-group">
+		                                    <div   class="check-new-d">
+		                                       <label class="check-des"> Roaster
+		                                       <input type="checkbox" name="reminder" formControlName="roaster">
+		                                       <span class="checkmark"></span>
+		                                       </label>
+		                                    </div>
+		                                 </div>
+
+		                              </div>
+		                          </div>
+		                           
+
+		                            <button  (click)="editPermissions(selectValue)" type="button" class="btn btn-primary right">Save</button>
+                        		</form>
+                        	</div>
+
+                        </div>
+
+                     </div>
+                  </div>
+               </div>
+            </div>
+           
+         </div>
+         <!-- partial:partials/_footer.html -->
+         <footer class="footer">
+            <div class="container-fluid clearfix">
+               <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. All rights reserved.</span>
+               <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.
+               </span>
+            </div>
+         </footer>
+      </div>
+   </div>
+</div>

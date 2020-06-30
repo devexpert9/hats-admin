@@ -1,0 +1,323 @@
+<div class="container-scroller">
+  <app-header></app-header>
+  <!-- partial -->
+  <div class="container-fluid page-body-wrapper">
+    <!-- partial:partials/_sidebar.html -->
+    <app-sidebar></app-sidebar>
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="row mb-4">
+          <div class="col-12 d-flex align-items-center justify-content-between">
+            <h4 class="page-title">Public Holiday</h4> 
+            <button class="btn btn-primary" (click)="addNewHoliday(addHoliday)"> Add holiday</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Public Holiday</h4>
+                <div class="row">
+                  <div class="col-12 table-responsive"> 
+                    <div class="table-input" style='margin:15px; float: right;' >
+                      <span>Search By Name:</span><br>
+                       <input type='text' placeholder='Type...' (keyup)='updateFilter($event)'/>
+                    </div>
+
+                    <table class="table table-striped" [mfData]="rows" #mf="mfDataTable" [mfRowsOnPage]="5">
+                       <thead>
+                           <tr>
+                             <th>Sr No.#</th>
+                             <th>
+                                <mfDefaultSorter by="name">Name</mfDefaultSorter>
+                             </th>
+                             <th>
+                                <mfDefaultSorter by="select_date"> Date </mfDefaultSorter>
+                             </th>
+                               <th>Status</th>
+                              <th>Actions</th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                         <tr *ngFor="let row of mf.data;let i = index;">
+                             <td>{{i+1}}</td>
+                             <td>
+                                {{row.name}}
+                             </td>
+                             <td>
+                               {{getExactDate(row.select_date)}}
+                             </td>
+                            <td>
+                              <a class="ww-table-big-text badge badge-success" *ngIf="row.status == true" (click)="changeStatus(row, false)"  data-toggle="modal" data-target="#change-status" data-placement="bottom" title="Active" data-original-title="View Details">Active</a>
+                              <a class="ww-table-big-text badge badge-danger" *ngIf="row.status == false" (click)="changeStatus(row, true)" data-toggle="modal" data-target="#change-status" data-placement="bottom" title="Inactive" data-original-title="View Details">Inactive</a>
+                            </td>
+                            <td>
+                              <button title="Edit" type="button" class="btn btn-icons btn-rounded btn-warning" data-toggle="modal" (click)="EditHoliday(row,editholiday)"><i class="icon-pencil" data-toggle="tooltip" data-placement="bottom"  data-original-title="Edit"></i></button>
+                              <button title="Delete" type="button" class="btn btn-icons btn-rounded btn-danger" data-toggle="modal" data-target="#delete-pop" (click)="DeleteHoliday(row)"><i class="icon-trash" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete"></i></button>
+                           </td>
+                          </tr>
+                          <tr *ngIf="mf.data?.length == 0"><td colspan="11">
+                             No record found.</td>
+                          </tr>
+                       </tbody>
+                       <tfoot>
+                          <tr>
+                             <td colspan="4">
+                                <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+                             </td>
+                          </tr>
+                       </tfoot>
+                    </table>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+   <!-- partial:partials/_footer.html -->
+   <footer class="footer">
+    <div class="container-fluid clearfix">
+      <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. All rights reserved.</span>
+      <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.
+
+      </span>
+    </div>
+  </footer>
+</div>
+</div>
+</div>
+
+<!-- <div class="modal fade" id="editshift" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
+ 
+   <!-- </div> -->
+   <div class="modal fade" id="assign" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Assign Shift</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Select Type</label>
+                  <select class="form-control">
+                    <option> Select One </option>
+                    <option>Broadcast</option>
+                    <option>Select Security Guard</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Select Security Guard</label>
+                  <select class="form-control">
+                    <option> Select One </option>
+                    <option>John Smith </option>
+                    <option>Hanry James</option>
+                    <option>Denny Thomas </option>
+                    <option>Chrish Morries</option>
+                    <option>Hanry James </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Assign Shift</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="delete-pop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h5> Are you sure, you want to delete it ? </h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="deleteholiday(holiday)">Yes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+   <div class="modal fade" id="change-status" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h5> Are you sure, you want to update status? </h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="Changestatus()">Yes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="modal fade" id="shifts" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content"> -->
+       
+<div class="modal fade" id="remarks" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm modl-shad" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h4> Remarks </h4>
+        <p> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </p>
+      </div>
+      <div class="modal-footer pull-left">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="active-inactive-pop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h5> Are you sure wants to change user status ? </h5>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="changeActiveInctiveStatus(guard, status)">Yes</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #addHoliday let-c="close" let-d="dismiss">
+    <!-- <div class="modal-dialog" ro
+
+    le="document">
+    <div class="modal-content"> -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add New Holiday</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="authForm" (ngSubmit)="addHolidayValue()">
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label style=" margin-top: 10px;margin-right: 10px;" for="exampleInputEmail1">Status</label>
+                <label class="switch">
+                <input type="checkbox" checked class="form-control" placeholder="Enter name" formControlName="status" [ngClass]="(authForm.controls.status.hasError('required') && authForm.controls.status.touched )? 'has-error' : ''">
+                <span class="slider round"></span>
+                </label>
+              
+                <span *ngIf="authForm.controls.status.hasError('required') &&    authForm.controls.status.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Status is required!</p>
+                </span>
+              </div>
+            </div>  
+          </div>
+
+
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Select Date</label>
+            <input type="date" class="form-control" placeholder="Enter date" formControlName="select_date" [ngClass]="(authForm.controls.select_date.hasError('required') && authForm.controls.select_date.touched )? 'has-error' : ''">
+            <span *ngIf="authForm.controls.select_date.hasError('required') &&    authForm.controls.select_date.touched">
+              <p style="color:#f70101 !important;">Sorry, field Date is required!</p>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Name</label>
+            <input type="name" class="form-control" placeholder="Enter name of holiday" formControlName="name" [ngClass]="(authForm.controls.name.hasError('required') && authForm.controls.name.touched )? 'has-error' : ''">
+            <span *ngIf="authForm.controls.name.hasError('required') &&    authForm.controls.name.touched">
+              <p style="color:#f70101 !important;">Sorry, field Name is required!</p>
+            </span>
+            <span *ngIf="authForm.controls.name.hasError('pattern') && authForm.controls.name.touched">
+              <p style="color:#f70101 !important;">Sorry, field Name contains atleast one charaters !</p>
+            </span>
+          </div>
+        </div>
+      </div>
+
+     
+     <button  class="btn btn-danger" type="button" style="float: right;" (click)="closeModal()">Cancel</button>
+	<button  [disabled]="!authForm.valid" class="btn btn-primary mr-10" type="submit" style="float: right;">Save</button>
+  
+   </form>
+ </div>
+
+   </ng-template>
+
+   <ng-template #editholiday let-c="close" let-d="dismiss">
+    <!-- <div class="modal-dialog" ro
+
+    le="document">
+    <div class="modal-content"> -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Holiday</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="authForm" (ngSubmit)="updateHolidayValue()">
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label style=" margin-top: 10px;margin-right: 10px;" for="exampleInputEmail1">Status</label>
+                <label class="switch">
+                <input type="checkbox" checked class="form-control" placeholder="Enter name" formControlName="status" [ngClass]="(authForm.controls.status.hasError('required') && authForm.controls.status.touched )? 'has-error' : ''">
+                <span class="slider round"></span>
+                </label>
+              
+                <span *ngIf="authForm.controls.status.hasError('required') &&    authForm.controls.status.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Status is required!</p>
+                </span>
+              </div>
+            </div>  
+          </div>
+
+
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Select Date</label>
+            <input type="date" class="form-control" placeholder="Enter date" formControlName="select_date" [ngClass]="(authForm.controls.select_date.hasError('required') && authForm.controls.select_date.touched )? 'has-error' : ''">
+            <span *ngIf="authForm.controls.select_date.hasError('required') &&    authForm.controls.select_date.touched">
+              <p style="color:#f70101 !important;">Sorry, field Date is required!</p>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Name</label>
+            <input type="name" class="form-control" placeholder="Enter name of holiday" formControlName="name" [ngClass]="(authForm.controls.name.hasError('required') && authForm.controls.name.touched )? 'has-error' : ''">
+            <span *ngIf="authForm.controls.name.hasError('required') &&    authForm.controls.name.touched">
+              <p style="color:#f70101 !important;">Sorry, field Name is required!</p>
+            </span>
+          </div>
+        </div>
+      </div>
+
+     
+     <button  class="btn btn-danger" type="button" style="float: right;" (click)="closeModal()">Cancel</button>
+	<button  [disabled]="!authForm.valid" class="btn btn-primary mr-10" type="submit" style="float: right;">Save</button>
+  
+   </form>
+ </div>
+
+   </ng-template>
+

@@ -1,0 +1,848 @@
+<div class="container-scroller">
+<app-header></app-header>
+<!-- partial -->
+<div class="container-fluid page-body-wrapper">
+   <!-- partial:partials/_sidebar.html -->
+   <app-sidebar></app-sidebar>
+   <div class="main-panel">
+      <div class="content-wrapper">
+         <div class="row mb-4">
+            <div class="col-12 d-flex align-items-center justify-content-between">
+               <h4 class="page-title">Current Shifts</h4>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+               <div class="card">
+                  <div class="card-body">
+                     <h4 class="card-title">Current Shifts</h4>
+                     <div class="row">
+                        <div class="col-12 table-responsive">
+                           <div class="table-input" style='margin:15px; float: right;' >
+                              <span>Search By Rapid ID:</span><br>
+                              <input type='text' placeholder='Type...' (keyup)='updateFilter($event)'/>
+                           </div>
+                           <table class="table table-striped" [mfData]="rows" #mf="mfDataTable" [mfRowsOnPage]="5">
+                           <thead>
+                              <tr>
+                                 <th>Sr No.#</th>
+                                 <th>
+                                    <mfDefaultSorter by="title">Title</mfDefaultSorter>
+                                 </th>
+                                 <th>
+                                    <mfDefaultSorter by="type"> Type </mfDefaultSorter>
+                                 </th>
+                                  <th> Rapid ID</th>
+                                  <th>Worker</th>
+                                 <th> Time </th>
+                                 <th>Date</th>
+                                 <th>
+                                  <mfDefaultSorter by="status">Address</mfDefaultSorter>
+                                 </th>
+                                 
+                                
+                                 <th>Actions</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <tr *ngFor="let row of mf.data;let i = index;">
+                                 <td>{{i+1}}</td>
+                                 <td>{{row.title}}</td>
+                                 
+                                 <td>
+                                    <a class="ww-table-big-text btn btn-sm btn-primary" *ngIf="row.type == '0'"><span class="">Adhoc</span></a>
+                                    <a class="ww-table-big-text  btn btn-sm btn-danger" *ngIf="row.type == '1'"><span class="">Roaster</span></a>
+                                 </td>
+                                 <td>
+                                    <a class="titleRow" *ngIf="row.userInfo">
+                                    <span *ngIf="row.userInfo.rapidId == ''">Not Assigned</span>
+                                    <span *ngIf="row.userInfo.rapidId != ''"  class="rapidTag">{{row.userInfo.rapidId}}</span></a><BR>
+                                    <a class="titleRow" *ngIf="!row.userInfo">-</a>
+                                 </td>
+                                 <td>
+                                    {{row.userInfo.firstname}}
+                                 </td>
+                                 <td>
+                                    <a *ngIf="row.type == '0'" class="ww-table-big-text">{{getTimeAMPM(row.start_time)}} - {{getTimeAMPM(row.end_time)}}</a>
+                                    <a *ngIf="row.type == '1'" class="ww-table-big-text">{{getAmPmTime(row.days)}}</a>
+                                 </td>
+                                 <td>
+                                    <a *ngIf="row.type == '1'" class="ww-table-big-text">{{getExactDate(row.start_date)}} / {{getExactDate(row.end_date)}}</a>
+                                    <a *ngIf="row.type == '0'" class="ww-table-big-text">{{getExactDate(row.shift_date)}}</a>
+                                 </td>
+                                 <td>
+                                    {{row.location.address.location}}
+                                 </td>
+                                 <td>
+                                    <button type="button" class="btn btn-icons btn-rounded btn-primary" data-toggle="modal" data-placement="bottom" title="View" data-original-title="View Details" (click)="ViewShiftdetail(row, viewshift)" *ngIf="row?.type ==0"><i class="icon-eye"></i></button>
+                                    <button type="button" class="btn btn-icons btn-rounded btn-primary" data-toggle="modal" data-placement="bottom" title="View" data-original-title="View Details" (click)="ViewShiftdetail(row, viewshiftdetailongoing)" *ngIf="row?.type == 1"><i class="icon-eye"></i></button>
+                                 </td>
+                              </tr>
+                              <tr *ngIf="mf.data?.length == 0">
+                                 <td colspan="11">
+                                    No record found.
+                                 </td>
+                              </tr>
+                           </tbody>
+                           <tfoot>
+                              <tr>
+                                 <td colspan="4">
+                                    <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+                                 </td>
+                              </tr>
+                           </tfoot>
+                           </table>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- partial:partials/_footer.html -->
+         <footer class="footer">
+            <div class="container-fluid clearfix">
+               <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. All rights reserved.</span>
+               <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.
+               </span>
+            </div>
+         </footer>
+      </div>
+   </div>
+</div>
+<ng-template #editshiftongoing let-c="close" let-d="dismiss">
+   <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Edit Shift</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <form [formGroup]="authForm" (ngSubmit)="updateShift()">
+      <div class="row">
+         <div class="col-md-6">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Title</label>
+               <input type="name" class="form-control" placeholder="Airport Shift" formControlName="title">
+               <span *ngIf="authForm.controls.title.hasError('required') && authForm.controls.title.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Title is required!</p>
+               </span>
+            </div>
+         </div>
+         <div class="col-md-6">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Select Type</label>
+               <!--  <select class="form-control" formControlName="type">
+                  <option value=""> Select One </option>
+                  <option value="0">Ad-hoc </option>x
+                  <option value="1">Ongoing</option>
+                  </select> -->
+               <input disabled type="name" class="form-control" placeholder="Airport Shift" formControlName="type">
+               <span *ngIf="authForm.controls.type.hasError('required') && authForm.controls.type.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Title is required!</p>
+               </span>
+            </div>
+            <div class="form-group">
+               <label for="exampleInputEmail1">Priority </label>
+               <select class="form-control" formControlName="priority">
+                  <option> Select One </option>
+                  <option value="0">Low</option>
+                  <option value="1">Medium</option>
+                  <option value="2">High</option>
+               </select>
+               <span *ngIf="authForm.controls.priority.hasError('required') && authForm.controls.priority.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Priority is required!</p>
+               </span>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-6">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Location</label>
+               <input class="form-control" ngx-google-places-autocomplete [options]='options' #places="ngx-places" (onAddressChange)="handleAddressChange($event)" formControlName="location" />
+               <span *ngIf="authForm.controls.location.hasError('required') &&             authForm.controls.location.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Location is required!</p>
+               </span>
+               <agm-map style="width:100%;height:200px;" [latitude]="latitude" [longitude]="longitude" [zoom]="10" [disableDefaultUI]="false" [zoomControl]="true " [usePanning]="true">
+               <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="true" (dragEnd)="markerDragEnd($event)"></agm-marker>
+               </agm-map>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-6">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Start Date</label>
+               <input type="date" class="form-control" placeholder="" formControlName="start_date">
+               <span *ngIf="authForm.controls.start_date.hasError('required') &&             authForm.controls.start_date.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Start Date is required!</p>
+               </span>
+            </div>
+         </div>
+         <div class="col-md-6">
+            <div class="form-group">
+               <label for="exampleInputEmail1">End Date</label>
+               <input type="date" class="form-control" placeholder="" formControlName="end_date">
+               <span *ngIf="authForm.controls.end_date.hasError('required') &&             authForm.controls.end_date.touched">
+                  <p style="color:#f70101 !important;">Sorry, field End Date is required!</p>
+               </span>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-4">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Days</label>
+               <label class="form-control">Monday</label>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Start Time</label>
+               <!--  <select class="form-control" formControlName="monStartTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <input  type="time" class="form-control" formControlName="monStartTime" placeholder="Enter start time">
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <label for="exampleInputEmail1">End Time</label>
+               <!--  <select class="form-control" formControlName="monEndTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <input  type="time" class="form-control" formControlName="monEndTime" placeholder="Enter start time">
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-4">
+            <div class="form-group">
+               <label class="form-control">Tuesday</label>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!--     <select class="form-control" formControlName="tueStartTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <input  type="time" class="form-control" formControlName="tueStartTime" placeholder="Enter start time">
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!-- <select class="form-control" formControlName="tueEndTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <input  type="time" class="form-control" formControlName="tueEndTime" placeholder="Enter start time">
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-4">
+            <div class="form-group">
+               <label class="form-control">Wednesday</label>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!--  <select class="form-control" formControlName="wedStartTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <input  type="time" class="form-control" formControlName="wedStartTime" placeholder="Enter start time">
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!--   <select class="form-control" formControlName="wedEndTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <input  type="time" class="form-control" formControlName="wedEndTime" placeholder="Enter start time">
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-4">
+            <div class="form-group">
+               <label class="form-control">Thursday</label>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!--  <select class="form-control" formControlName="thrusStartTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <input  type="time" class="form-control" formControlName="thrusStartTime" placeholder="Enter start time">
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!--   <select class="form-control" formControlName="thrusEndTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <input  type="time" class="form-control" formControlName="thrusEndTime" placeholder="Enter start time">
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-4">
+            <div class="form-group">
+               <label class="form-control">Friday</label>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!--   <select class="form-control" formControlName="friStartTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <input  type="time" class="form-control" formControlName="friStartTime" placeholder="Enter start time">
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!--   <select class="form-control" formControlName="friEndTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <input  type="time" class="form-control" formControlName="friEndTime" placeholder="Enter start time">
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-4">
+            <div class="form-group">
+               <label class="form-control">Saturday</label>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!--  <select class="form-control" formControlName="satStartTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <input  type="time" class="form-control" formControlName="satStartTime" placeholder="Enter start time">
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!--      <select class="form-control" formControlName="satEndTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <input  type="time" class="form-control" formControlName="satEndTime" placeholder="Enter start time">
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-4">
+            <div class="form-group">
+               <label class="form-control">Sunday</label>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!--   <select class="form-control" formControlName="sunStartTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <input  type="time" class="form-control" formControlName="sunStartTime" placeholder="Enter start time">
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!-- <select class="form-control" formControlName="sunEndTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <input  type="time" class="form-control" formControlName="sunEndTime" placeholder="Enter start time">
+            </div>
+         </div>
+      </div>
+      <div class="modal-footer">
+         <button type="submit" class="btn btn-primary">Save</button>
+         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+      </div>
+      </form>
+   </div>
+   <!-- <div class="modal-footer">
+      <button type="button" class="btn btn-primary">Save</button>
+      <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+      </div> -->
+</ng-template>
+<ng-template #editshiftadhoc let-c="close" let-d="dismiss">
+   <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Edit Shift</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <form [formGroup]="authForm" (ngSubmit)="updateShift()">
+      <div class="row">
+         <div class="col-md-6">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Title</label>
+               <input type="name" class="form-control" placeholder="Airport Shift" formControlName="title">
+               <span *ngIf="authForm.controls.title.hasError('required') &&            authForm.controls.title.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Title is required!</p>
+               </span>
+            </div>
+         </div>
+         <div class="col-md-6">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Select Type</label>
+               <select class="form-control" formControlName="type">
+                  <option value=""> Select One </option>
+                  <option value="0">Ad-hoc </option>
+                  x
+                  <option value="1">Roaster</option>
+               </select>
+               <span *ngIf="authForm.controls.type.hasError('required') &&     authForm.controls.type.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Title is required!</p>
+               </span>
+            </div>
+            <div class="form-group">
+               <label for="exampleInputEmail1">Priority </label>
+               <select class="form-control" formControlName="priority">
+                  <option> Select One </option>
+                  <option value="0">Low</option>
+                  <option value="1">Medium</option>
+                  <option value="2">High</option>
+               </select>
+               <span *ngIf="authForm.controls.priority.hasError('required') && authForm.controls.priority.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Priority is required!</p>
+               </span>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-6">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Location</label>
+               <input formControlName="location" class="form-control" ngx-google-places-autocomplete [options]='options' #places="ngx-places" (onAddressChange)="handleAddressChange($event)" />
+               <span *ngIf="authForm.controls.location.hasError('required') &&             authForm.controls.location.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Title is required!</p>
+               </span>
+               <agm-map style="width:100%;height:200px;" [latitude]="latitude" [longitude]="longitude" [zoom]="10" [disableDefaultUI]="false" [zoomControl]="true " [usePanning]="true">
+               <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="true" (dragEnd)="markerDragEnd($event)"></agm-marker>
+               </agm-map>
+            </div>
+         </div>
+         <div class="col-md-6">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Date</label>
+               <input type="date" class="form-control" placeholder="" formControlName="shift_date">
+               <span *ngIf="authForm.controls.shift_date.hasError('required') &&             authForm.controls.shift_date.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Title is required!</p>
+               </span>
+            </div>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-6">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Start Time</label>
+               <input type="time" class="form-control" placeholder="" formControlName="start_time">
+               <span *ngIf="authForm.controls.start_time.hasError('required') &&             authForm.controls.start_time.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Title is required!</p>
+               </span>
+            </div>
+         </div>
+         <div class="col-md-6">
+            <div class="form-group">
+               <label for="exampleInputEmail1">End Time</label>
+               <input type="time" class="form-control" placeholder="" formControlName="end_time">
+               <span *ngIf="authForm.controls.end_time.hasError('required') &&             authForm.controls.end_time.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Title is required!</p>
+               </span>
+            </div>
+         </div>
+      </div>
+      <div class="modal-footer">
+         <button type="submit" class="btn btn-primary">Save</button>
+         <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="closeModal()"> Cancel</button>
+      </div>
+      </form>
+   </div>
+   <!-- <div class="modal-footer">
+      <button type="button" class="btn btn-primary">Save</button>
+      <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+      </div> -->
+</ng-template>
+<div class="modal fade" id="assign" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Assign Shift</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <form>
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Select Security Guard</label>
+                  <select class="form-control">
+                     <option> Select One </option>
+                     <option>John Smith </option>
+                     <option>Hanry James</option>
+                     <option>Denny Thomas </option>
+                     <option>Chrish Morries</option>
+                     <option>Hanry James </option>
+                  </select>
+               </div>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Assign Shift</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="delete-pop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+         <div class="modal-body">
+            <h5> Are you sure wants to delete it ? </h5>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Yes</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+         </div>
+      </div>
+   </div>
+</div>
+<ng-template #viewshift let-c="close" let-d="dismiss">
+   <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Shift Detail</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <form>
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Title</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.title}}">
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Type</label>
+                  <input disabled type="name" class="form-control" placeholder="Adhoc" *ngIf="viewShiftData?.type == 0">
+                  <input disabled type="name" class="form-control" placeholder="Roaster" *ngIf="viewShiftData?.type == 1">
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Start Time</label>
+                  <input disabled type="name" class="form-control" placeholder="{{getTimeAMPM(viewShiftData?.start_time)}}">
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">End Time</label>
+                  <input disabled type="name" class="form-control" placeholder="{{getTimeAMPM(viewShiftData?.end_time)}}">
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Date</label>
+                  <input disabled type="name" class="form-control" placeholder="{{getExactDate(viewShiftData?.shift_date)}}">
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Priority</label>
+                  <input disabled type="name" class="form-control" placeholder="{{getPriorityValue(viewShiftData?.priority)}}">
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-12">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Location</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.location.address.location}}">
+                  <agm-map style="width:100%;height:200px;" [latitude]="latitude" [longitude]="longitude" [zoom]="10" [disableDefaultUI]="false" [zoomControl]="true " [usePanning]="true">
+                  <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="false" (dragEnd)="markerDragEnd($event)"></agm-marker>
+                  </agm-map>
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Worker</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.userInfo?.firstname}} {{viewShiftData?.userInfo?.lastname}}({{viewShiftData?.userInfo?.username}})">
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Mobile</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.userInfo?.contact}}">
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" (click)="closeModal()"> Cancel</button>
+         </div>
+      </form>
+   </div>
+</ng-template>
+<ng-template #viewshiftdetailongoing let-c="close" let-d="dismiss">
+   <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Shift Detail</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <form>
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Title</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.title}}">
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Type</label>
+                  <input disabled type="name" class="form-control" placeholder="Roaster">
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Start Date</label>
+                  <input disabled type="name" class="form-control" placeholder="{{getExactDate(viewShiftData?.start_date)}}">
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">End Date</label>
+                  <input disabled type="name" class="form-control" placeholder="{{getExactDate(viewShiftData?.end_date)}}">
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Location</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.location.address.location}}">
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Priority</label>
+                  <input disabled type="name" class="form-control" placeholder="{{getPriorityValue(viewShiftData?.priority)}}">
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col">
+               <div class="form-group">              
+                  <agm-map style="width:100%;height:200px;" [latitude]="latitude" [longitude]="longitude" [zoom]="10" [disableDefaultUI]="false" [zoomControl]="true " [usePanning]="true">
+                  <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="false"></agm-marker>
+                  </agm-map>
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Worker</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.userInfo.firstname}} {{viewShiftData?.userInfo.lastname}}({{viewShiftData?.userInfo.username}})">
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Mobile</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.userInfo.contact}}">
+               </div>
+            </div>
+         </div>
+         <div class="row" *ngIf="viewShiftData?.days[0].start_time != 0">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Days</label>
+                  <label class="form-control">Monday</label>
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Start Time</label>
+                  <input disabled type="text" class="form-control" placeholder="{{viewShiftData?.days[0].start_time}}">
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">End Time</label>
+                  <input disabled type="text" class="form-control" placeholder="{{viewShiftData?.days[0].end_time}}">
+               </div>
+            </div>
+         </div>
+         <div class="row" *ngIf="viewShiftData?.days[1].start_time != 0">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Days</label> -->
+                  <label class="form-control">Tuesday</label>
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Start Time</label> -->
+                  <input disabled type="text" class="form-control" placeholder="{{viewShiftData?.days[1].start_time}}">
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">End Time</label> -->
+                  <input disabled type="text" class="form-control" placeholder="{{viewShiftData?.days[1].end_time}}">
+               </div>
+            </div>
+         </div>
+         <div class="row" *ngIf="viewShiftData?.days[2].start_time != 0">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Days</label> -->
+                  <label class="form-control">Wednesday</label>
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Start Time</label> -->
+                  <input disabled type="text" class="form-control" placeholder="{{viewShiftData?.days[2].start_time}}">
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">End Time</label> -->
+                  <input disabled type="text" class="form-control" placeholder="{{viewShiftData?.days[2].end_time}}">
+               </div>
+            </div>
+         </div>
+         <div class="row" *ngIf="viewShiftData?.days[3].start_time != 0">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Days</label> -->
+                  <label class="form-control">Thursday</label>
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Start Time</label> -->
+                  <input disabled type="text" class="form-control" placeholder="{{viewShiftData?.days[3].start_time}}">
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">End Time</label> -->
+                  <input disabled type="text" class="form-control" placeholder="{{viewShiftData?.days[3].end_time}}">
+               </div>
+            </div>
+         </div>
+         <div class="row" *ngIf="viewShiftData?.days[4].start_time != 0">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Days</label> -->
+                  <label class="form-control">Friday</label>
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Start Time</label> -->
+                  <input disabled type="text" class="form-control" placeholder="{{viewShiftData?.days[4].start_time}}">
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">End Time</label> -->
+                  <input disabled type="text" class="form-control" placeholder="{{viewShiftData?.days[4].end_time}}">
+               </div>
+            </div>
+         </div>
+         <div class="row" *ngIf="viewShiftData?.days[5].start_time != 0">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Days</label> -->
+                  <label class="form-control">Saturday</label>
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Start Time</label> -->
+                  <input disabled type="text" class="form-control" placeholder="{{viewShiftData?.days[5].start_time}}">
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">End Time</label> -->
+                  <input disabled type="text" class="form-control" placeholder="{{viewShiftData?.days[5].end_time}}">
+               </div>
+            </div>
+         </div>
+         <div class="row" *ngIf="viewShiftData?.days[6].start_time != 0">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Days</label> -->
+                  <label class="form-control">Sunday</label>
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Start Time</label> -->
+                  <input disabled type="text" class="form-control" placeholder="{{viewShiftData?.days[6].start_time}}">
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">End Time</label> -->
+                  <input disabled type="text" class="form-control" placeholder="{{viewShiftData?.days[6].end_time}}">
+               </div>
+            </div>
+         </div>
+         <br><br>
+         <h4 *ngIf="viewShiftData?.shiftStatus.length != 0"> Status:</h4>
+         <div class="row" *ngFor="let item of viewShiftData?.shiftStatus">
+            <div class="col-md-3">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Date</label>
+                  <input *ngIf="item.end_status == 0" disabled type="name" class="form-control" placeholder="{{getExactDate(item.shift_start_date)}}">
+                  <input *ngIf="item.end_status != 0" disabled type="name" class="form-control" placeholder="{{getExactDate(item.shift_end_date)}}">
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Start Time</label>
+                  <input *ngIf="item.end_status == 0" disabled type="name" class="form-control" placeholder="{{item.shift_start_time}}">
+                  <input *ngIf="item.end_status != 0" disabled type="name" class="form-control" placeholder="{{item.shift_start_time}}">
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">End Time</label>
+                  <input  *ngIf="item.end_status == 0" disabled type="name" class="form-control" placeholder="-">
+                  <input  *ngIf="item.end_status != 0" disabled type="name" class="form-control" placeholder="{{item.shift_end_time}}">
+               </div>
+            </div>
+            <div class="col-md-3">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Status</label>
+                  <input *ngIf="item.end_status == 0"  disabled type="name" class="form-control" placeholder="Current">
+                  <input *ngIf="item.end_status == 1"  disabled type="name" class="form-control" placeholder="Completed">
+                  <input *ngIf="item.end_status == 2"  disabled type="name" class="form-control" placeholder="Discontinued">
+                  <input *ngIf="item.end_status == 4"  disabled type="name" class="form-control" placeholder="Not Coming">
+                  <input *ngIf="item.end_status == 5"  disabled type="name" class="form-control" placeholder="Shift not stated">
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" (click)="closeModal()"> Cancel</button>
+         </div>
+      </form>
+   </div>
+</ng-template>

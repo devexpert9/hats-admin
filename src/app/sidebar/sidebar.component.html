@@ -1,0 +1,270 @@
+<nav class="sidebar sidebar-offcanvas sidebar-dark" id="sidebar">
+	  <ul class="nav">
+          <!-- <li class="nav-item nav-profile">
+            <img *ngIf="profile?.image == ''" src="./assets/images/user.jpg" alt="profile image">
+            <img  id="nav_image" *ngIf="profile?.image != ''" src="{{imageURL}}{{profile?.image}}" alt="profile image">
+            <p id="nav_username" class="text-center font-weight-medium">{{profile?.firstname}} {{profile?.lastname}} </p>
+          </li> -->
+          <li class="nav-item "  >
+            <a class="nav-link"   routerLink="/dashboard" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon icon-home"></i>
+              <span class="menu-title">Dashboard</span>
+            </a>
+          </li>
+
+ 
+
+		    <li class="nav-item">
+            <a class="nav-link"  routerLink="/categories" routerLinkActive="active"  href="javascript:;">
+              <i class="menu-icon icon-people"></i>
+              <span class="menu-title">Categories</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link"  routerLink="/products" routerLinkActive="active"  href="javascript:;">
+              <i class="menu-icon icon-people"></i>
+              <span class="menu-title">Products</span>
+            </a>
+        </li>
+
+
+		    <li class="nav-item d-md-block" *ngIf= "profile?.availabilityArray.length == 0 || profile?.availabilityArray.securityguard == true || profile?.role == 'supervisior'">
+            <a class="nav-link" data-toggle="collapse" href="#page-layouts1" aria-expanded="true" aria-controls="page-layouts1" >
+              <i class="menu-icon icon-user"></i>
+              <span class="menu-title">Security Guards</span>
+            </a>
+                   <div class="collapse" id="page-layouts1">
+              <ul class="nav flex-column sub-menu">              
+
+                <li class="nav-item" >
+                  <a class="nav-link"  routerLink="/requested-guards" routerLinkActive="active" href="javascript:;">Requests</a>
+                </li>
+                 <li class="nav-item">
+                  <a class="nav-link"  aria-expanded="true" routerLink="/security-guard" routerLinkActive="active" href="javascript:;">Workers</a>
+                </li>
+
+              </ul>
+            </div>
+          </li>
+
+            <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0">
+            <a class="nav-link" routerLink="/managers" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon icon-people"></i>
+              <span class="menu-title">User Roles</span>
+            </a>
+          </li>
+           <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0 || profile?.availabilityArray.client == true">
+            <a class="nav-link" routerLink="/add-client" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon icon-people"></i>
+              <span class="menu-title">Clients</span>
+            </a>
+          </li>
+
+           <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0 || profile?.availabilityArray.location == true">
+            <a class="nav-link" routerLink="/add-location" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon icon-location-pin"></i>
+              <span class="menu-title">Locations</span>
+            </a>
+          </li>   
+          <li class="nav-item  d-md-block" *ngIf= "profile?.availabilityArray.length == 0 || profile?.availabilityArray.shift == true">
+            <a class="nav-link" data-toggle="collapse" href="#page-layouts" aria-expanded="true" aria-controls="page-layouts">
+              <i class="menu-icon icon-briefcase"></i>
+              <span class="menu-title">Shift</span>
+            </a>
+            <div class="collapse" id="page-layouts">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item">
+                  <a class="nav-link "  aria-expanded="true" routerLink="/add-shift" routerLinkActive="active" href="javascript:;">Add Shift</a>
+                </li>
+
+				        <li class="nav-item" >
+                  <a class="nav-link"  routerLink="/broadcast-shift" routerLinkActive="active" href="javascript:;">Broadcast Shifts</a>
+                </li>
+
+                 <li class="nav-item" >
+                   <a class="nav-link"  routerLink="/current-shifts" routerLinkActive="active" href="javascript:;">Current Shifts</a>
+                 </li>
+
+                  <li class="nav-item" >
+                  <a class="nav-link"  routerLink="/open-shift" routerLinkActive="active" href="javascript:;">Open Shifts</a>
+                </li>
+
+                <li class="nav-item" >
+                  <a class="nav-link"  routerLink="/assigned-shifts" routerLinkActive="active" href="javascript:;">Assigned Shifts</a>
+                </li>
+
+                <li class="nav-item" >
+                  <a class="nav-link"  routerLink="/upcoming-shifts" routerLinkActive="active" href="javascript:;">Upcoming Shifts</a>
+                </li>
+
+                <li class="nav-item" >
+                  <a class="nav-link"  routerLink="/completed-shifts" routerLinkActive="active" href="javascript:;">Completed Shifts</a>
+                </li>
+
+				        <li class="nav-item">
+                  <a class="nav-link" routerLink="/cancelled-shifts" routerLinkActive="active" href="javascript:;">Cancelled Shifts</a>
+                </li>
+              </ul>
+            </div>
+          </li>
+
+          <!-- if login supervisior -->
+          <li class="nav-item  d-md-block" *ngIf= "profile?.role == 'supervisior'">
+            <a class="nav-link" data-toggle="collapse" href="#page-layouts" aria-expanded="true" aria-controls="page-layouts">
+              <i class="menu-icon icon-briefcase"></i>
+              <span class="menu-title">Shift</span>
+            </a>
+            <div class="collapse" id="page-layouts">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item">
+                  <a class="nav-link "  aria-expanded="true" routerLink="/add-shift" routerLinkActive="active" href="javascript:;">Add Shift</a>
+                </li>
+
+                <li class="nav-item" >
+                  <a class="nav-link"  routerLink="/broadcast-shift" routerLinkActive="active" href="javascript:;">Broadcast Shifts</a>
+                </li>
+
+                 <li class="nav-item" >
+                   <a class="nav-link"  routerLink="/current-shifts" routerLinkActive="active" href="javascript:;">Current Shifts</a>
+                 </li>
+
+                <li class="nav-item" >
+                  <a class="nav-link"  routerLink="/open-shift" routerLinkActive="active" href="javascript:;">Open Shifts</a>
+                </li>
+
+                <li class="nav-item" >
+                  <a class="nav-link"  routerLink="/assigned-shifts" routerLinkActive="active" href="javascript:;">Assigned Shifts</a>
+                </li>
+
+                <li class="nav-item" >
+                  <a class="nav-link"  routerLink="/upcoming-shifts" routerLinkActive="active" href="javascript:;">Upcoming Shifts</a>
+                </li>
+              </ul>
+            </div>
+          </li>
+
+
+          <li class="nav-item" *ngIf= "(profile?.availabilityArray.length == 0 || profile?.availabilityArray.remark == true )  && profile?.role != 'supervisior'">
+            <a class="nav-link" routerLink="/remarks" routerLinkActive="active">
+              <i class="menu-icon icon-note" href="javascript:;"></i>
+              <span class="menu-title">Remarks</span>
+            </a>
+          </li>
+
+          <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0">
+            <a class="nav-link" routerLink="/track-user-activity" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon  icon-directions"></i>
+              <span class="menu-title"> Track User Activities</span>
+            </a>
+          </li>
+
+           <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0 || profile?.availabilityArray.report == true || profile?.role != 'supervisior'">
+            <a class="nav-link" routerLink="/reports" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon icon-graph"></i>
+              <span class="menu-title">Reports</span>
+            </a>
+          </li>
+
+
+          <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0 || profile?.availabilityArray.businessreport == true || profile?.role != 'supervisior'">
+            <a class="nav-link" routerLink="/business-report" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon icon-graph"></i>
+              <span class="menu-title">Business Report</span>
+            </a>
+          </li>
+
+         
+
+            <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0 || profile?.availabilityArray.roaster == true ">
+            <a class="nav-link" routerLink="/user-roaster" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon  icon-notebook"></i>
+              <span class="menu-title">Roaster</span>
+            </a>
+          </li>
+
+		      <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0 || profile?.availabilityArray.payroll == true ">
+            <a class="nav-link" routerLink="/payroll" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon  icon-wallet"></i>
+              <span class="menu-title">Payroll</span>
+            </a>
+          </li>
+
+		      
+
+        <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0 || profile?.availabilityArray.publicholiday == true || profile?.role == 'supervisior'">
+            <a class="nav-link" routerLink="/public-holiday" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon icon-calendar"></i>
+              <span class="menu-title">Public Holiday</span>
+            </a>
+        </li>
+		  
+		     <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0">
+            <a class="nav-link" routerLink="/notifications" routerLinkActive="active">
+              <i class="menu-icon icon-bell" href="javascript:;"></i>
+              <span class="menu-title">Notifications</span>
+            </a>
+          </li>
+
+        
+
+          <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0">
+            <a class="nav-link" routerLink="/roles&permissions" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon icon-lock"></i>
+              <span class="menu-title">Roles & Permissions</span>
+            </a>
+          </li>
+
+          <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0">
+            <a class="nav-link" routerLink="/settings" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon icon-settings"></i>
+              <span class="menu-title"> Reminder Settings</span>
+            </a>
+          </li>
+
+
+            <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0 ">
+            <a class="nav-link" routerLink="/payroll-setting" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon icon-settings"></i>
+              <span class="menu-title">Payroll Setting</span>
+            </a>
+          </li>
+
+          <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0">
+            <a class="nav-link" routerLink="/contact-us" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon icon-call-out"></i>
+              <span class="menu-title"> Contact Us</span>
+            </a>
+          </li>
+
+
+         
+		      <li class="nav-item" >
+            <a class="nav-link" routerLink="/profile" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon icon-user"></i>
+              <span class="menu-title">Profile</span>
+            </a>
+          </li>
+
+            <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0 ">
+            <a class="nav-link" routerLink="/trash" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon icon-trash"></i>
+              <span class="menu-title">Trash</span>
+            </a>
+          </li>
+              <li class="nav-item" *ngIf= "profile?.availabilityArray.length == 0 ">
+            <a class="nav-link" routerLink="/logs" routerLinkActive="active" href="javascript:;">
+              <i class="menu-icon icon-layers"></i>
+              <span class="menu-title">Logs</span>
+            </a>
+          </li>
+		  <li class="nav-item">
+            <a class="nav-link" routerLink="/" href="javascript:;" >
+              <i class="menu-icon icon-logout"></i>
+              <span class="menu-title">Logout</span>
+            </a>
+          </li>
+          
+        </ul>
+      </nav>
+      <router-outlet></router-outlet>

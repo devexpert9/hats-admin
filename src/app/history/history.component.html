@@ -1,0 +1,172 @@
+<div class="container-scroller">
+<app-header></app-header>
+  	<!-- partial -->
+	<div class="container-fluid page-body-wrapper">
+     
+      	<!-- partial:partials/_sidebar.html -->
+      	<app-sidebar></app-sidebar>
+      	<div class="main-panel">
+	        <div class="content-wrapper">
+	         	<div class="row mb-4">
+	            	<div class="col-12 d-flex align-items-center justify-content-between">
+	              	<h4 class="page-title">History About User Activities</h4>
+	              	<!-- <a class="btn btn-primary" routerLink="/available" routerLinkActive="active"  href="javascript:;"> History</a> -->
+	            	</div>
+	          	</div>
+	        
+	         	<div class="row">
+	         		<div class="col-md-12 grid-margin stretch-card">
+		               <div class="card">
+		                  <div class="card-body">
+		                     <h4 class="card-title">Shifts</h4>
+		                     <div class="row">
+		                        <div class="col-12 table-responsive">
+		                           <div class="table-input" style='margin:15px; float: right;' >
+		                              <span>Search By Rapid ID:</span><br>
+		                              <input type='text' placeholder='Type...' (keyup)='updateFilter($event)'/>
+		                           </div>
+		                           <table class="table table-striped" [mfData]="rows" #mf="mfDataTable" [mfRowsOnPage]="5">
+		                           <thead>
+		                              <tr>
+		                                 <th>Sr No.#</th>
+		                                 <th>
+		                                    <mfDefaultSorter by="title">Title</mfDefaultSorter>
+		                                 </th>
+		                                 <th>
+		                                    <mfDefaultSorter by="type"> Type </mfDefaultSorter>
+		                                 </th>
+		                                  <th> Rapid ID</th>
+		                                  <th>Worker</th>
+		                                 <th> Time </th>
+		                                 <th>Date</th>
+		                                 <th>
+		                                  <mfDefaultSorter by="status">Address</mfDefaultSorter>
+		                                 </th>
+		                                 
+		                                
+		                                 <th>Actions</th>
+		                              </tr>
+		                           </thead>
+		                           <tbody>
+		                              <tr *ngFor="let row of mf.data;let i = index;">
+		                                 <td>{{i+1}}</td>
+		                                 <td>{{row.title}}</td>
+		                                 
+		                                 <td>
+		                                    <a class="ww-table-big-text btn btn-sm btn-primary" *ngIf="row.type == '0'"><span class="">Adhoc</span></a>
+		                                    <a class="ww-table-big-text  btn btn-sm btn-danger" *ngIf="row.type == '1'"><span class="">Roaster</span></a>
+		                                 </td>
+		                                 <td>
+		                                    <a class="titleRow" *ngIf="row.userInfo">
+		                                    <span *ngIf="row.userInfo.rapidId == ''">Not Assigned</span>
+		                                    <span *ngIf="row.userInfo.rapidId != ''"  class="rapidTag">{{row.userInfo.rapidId}}</span></a><BR>
+		                                    <a class="titleRow" *ngIf="!row.userInfo">-</a>
+		                                 </td>
+		                                 <td>
+		                                    {{row.userInfo.firstname}}
+		                                 </td>
+		                                 <td>
+		                                    <a *ngIf="row.type == '0'" class="ww-table-big-text">{{getTimeAMPM(row.start_time)}} - {{getTimeAMPM(row.end_time)}}</a>
+		                                    <a *ngIf="row.type == '1'" class="ww-table-big-text">{{getAmPmTime(row.days)}}</a>
+		                                 </td>
+		                                 <td>
+		                                    <a *ngIf="row.type == '1'" class="ww-table-big-text">{{getExactDate(row.start_date)}} / {{getExactDate(row.end_date)}}</a>
+		                                    <a *ngIf="row.type == '0'" class="ww-table-big-text">{{getExactDate(row.shift_date)}}</a>
+		                                 </td>
+		                                 <td>
+		                                    {{row.location.address.location}}
+		                                 </td>
+		                                 <td>
+		                                    <button type="button" class="btn btn-icons btn-rounded btn-primary" data-toggle="modal" data-placement="bottom" title="View" data-original-title="View Details" (click)="ViewShiftdetail(row, viewshift)" *ngIf="row?.type ==0"><i class="icon-eye"></i></button>
+		                                    <button type="button" class="btn btn-icons btn-rounded btn-primary" data-toggle="modal" data-placement="bottom" title="View" data-original-title="View Details" (click)="ViewShiftdetail(row, viewshiftroaster)" *ngIf="row?.type == 1"><i class="icon-eye"></i></button>
+		                                 </td>
+		                              </tr>
+		                              <tr *ngIf="mf.data?.length == 0">
+		                                 <td colspan="11">
+		                                    No record found.
+		                                 </td>
+		                              </tr>
+		                           </tbody>
+		                           <tfoot>
+		                              <tr>
+		                                 <td colspan="4">
+		                                    <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+		                                 </td>
+		                              </tr>
+		                           </tfoot>
+		                           </table>
+		                        </div>
+		                     </div>
+		                  </div>
+		               </div>
+		            </div>
+	           	</div>
+		       	<!-- partial:partials/_footer.html -->
+		        <footer class="footer">
+			          <div class="container-fluid clearfix">
+			            <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. All rights reserved.</span>
+			            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.
+			            
+			            </span>
+			          </div>
+		        </footer>
+		</div>
+	</div>
+</div>
+<ng-template #viewshiftroaster let-c="close" let-d="dismiss">
+   <div class="modal-header">
+      	<h5 class="modal-title" id="exampleModalLabel">User Activity</h5>
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+      		<span aria-hidden="true">&times;</span>
+      	</button>
+   </div>
+   <div class="modal-body">
+      <form>
+        <div class="row">
+            <div class="col-md-12">
+               <div class="form-group">
+
+                  <div *ngFor="let item of daysarray" (click)="getLocations(item, viewshift)">
+                  	{{item}}
+                  </div>
+               </div>
+
+               
+            </div>
+         </div>
+       
+         <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" (click)="closeModal1()"> Cancel</button>
+         </div>
+      </form>
+   </div>
+</ng-template>
+
+<ng-template #viewshift let-c="close" let-d="dismiss">
+   <div class="modal-header">
+      	<h5 class="modal-title" id="exampleModalLabel">User Activity</h5>
+      	<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+      		<span aria-hidden="true">&times;</span>
+      	</button>
+   </div>
+   <div class="modal-body">
+      <form>
+        <div class="row">
+            <div class="col-md-12">
+               <div class="form-group" style="height: 400px">
+
+                  <div id="dvMap" style="height: 100%"></div>
+               </div>
+               <div>
+               	<span class="text" *ngFor="let time of disconnectArray">{{time |  date:'HH:mm:ss'}} <b>At app closed or internet disconnected</b></span><br>
+               </div>
+               
+            </div>
+         </div>
+       
+         <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" (click)="closeModal()"> Cancel</button>
+         </div>
+      </form>
+   </div>
+</ng-template>

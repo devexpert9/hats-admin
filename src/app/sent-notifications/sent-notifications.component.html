@@ -1,0 +1,91 @@
+<div class="container-scroller">
+  <app-header></app-header>
+  <!-- partial -->
+  <div class="container-fluid page-body-wrapper">
+
+    <!-- partial:partials/_sidebar.html -->
+    <app-sidebar></app-sidebar>
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="row mb-4">
+          <div class="col-12 d-flex align-items-center justify-content-between">
+            <h4 class="page-title">Notifications</h4>
+          </div>
+        </div> 
+        
+        <div class="row">
+          <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between">
+                </div>
+
+       			<div class="allnotifications">
+              <ng-container *ngFor="let row of rows;">
+         				<ul *ngIf="row.user != null">
+         					<li>
+         						<img src="{{imageURL}}{{row.userImage}}" alt="">
+         					</li>
+         					<li>
+         						<p>{{createDynamicMessage(row)}}</p>
+         						<div class="icons-check">
+         							<span class="pull-left">
+                        <!-- <i class="icon-check"></i> -->
+                        <img src="./assets/images/check.svg" *ngIf="row.notifyStatus == 0" class="check">
+                        <img src="./assets/images/check-sent.svg" *ngIf="row.notifyStatus == 1" class="check">
+                        <img src="./assets/images/check-read.svg" *ngIf="row.notifyStatus == 2" class="check">
+                      </span>
+
+         							<span class="timeago pull-right">{{row.created_on  | amDateFormat: 'HH:mm'}}, {{row.created_on  | amDateFormat: 'DD-MMM-YYYY'}}</span>
+         						</div>
+         					</li>
+         					<li>
+         						
+                    <!-- <button title="Delete" data-target="#delete-pop" type="button" class="btn btn-icons btn-rounded btn-danger" data-toggle="modal" (click)="DeleteNoti(row)"> --> 
+                      <a href="#" class="btn btn-icons btn-rounded btn-danger" title="Delete" data-target="#delete-pop" class="btn btn-icons btn-rounded btn-danger" data-toggle="modal" (click)="DeleteNoti(row)">
+                      <i  class="icon-trash "></i>
+                    </a>
+                  <!-- </button> -->
+         					</li>
+
+         				</ul>
+              </ng-container>
+       				<ul *ngIf="rows?.length == 0">
+                No record found.
+              </ul>
+       			</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- partial:partials/_footer.html -->
+        <footer class="footer">
+          <div class="container-fluid clearfix">
+            <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. All rights reserved.</span>
+            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.
+
+            </span>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+
+      <div class="modal fade" id="delete-pop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+
+          <div class="modal-body">
+            <h5> Are you sure, you want to delete it ? </h5>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="deleteNoti(noti)">Yes</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+          </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>

@@ -1,0 +1,1147 @@
+<div class="container-scroller">
+  <app-header></app-header>
+  <!-- partial -->
+  <div class="container-fluid page-body-wrapper">
+    <!-- partial:partials/_sidebar.html -->
+    <app-sidebar></app-sidebar>
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="row mb-4">
+          <div class="col-12 d-flex align-items-center justify-content-between">
+            <h4 class="page-title">Locations</h4> 
+            <button class="btn btn-primary" (click)="addNewLocation(addLocation)"> Add Location</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Locations</h4>
+                <div class="row">
+                  <div class="col-12 table-responsive"> 
+                    <div class="table-input" style='margin:15px; float: right;' >
+                      <span>Search By Address:</span><br>
+                       <input type='text' placeholder='Type...' (keyup)='updateFilter($event)'/>
+                    </div>
+
+                    <table class="table table-striped" [mfData]="rows" #mf="mfDataTable" [mfRowsOnPage]="5">
+                       <thead>
+                           <tr>
+                             <th>Sr No.#</th>
+                             <th>
+                                <mfDefaultSorter by="address.location">Address</mfDefaultSorter>
+                             </th>
+                              <th>
+                                <mfDefaultSorter by="geofence">Geofence (meter)</mfDefaultSorter>
+                              </th>
+                              <th>
+                                <mfDefaultSorter by="instruction">Instruction</mfDefaultSorter>
+                             </th>
+                              <th>Client</th>
+                              <th>
+                               <mfDefaultSorter by="status">Status</mfDefaultSorter>
+                               </th>
+                              <th>Actions</th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                         <tr *ngFor="let row of mf.data;let i = index;">
+                             <td>{{i+1}}</td>
+                             <td>
+                                {{row.address.location}}
+                             </td>
+                            <td>{{row.geofence}}</td>
+                            <td>{{row.instruction}}</td>
+                            <td>{{row.client.name}}</td>
+                            <td>
+                              <a class="ww-table-big-text badge badge-success" *ngIf="row.status == true" (click)="changeStatus(row, false)"  data-toggle="modal" data-target="#change-status" data-placement="bottom" title="Active" data-original-title="View Details">Active</a><BR>
+                              <a class="ww-table-big-text badge badge-danger" *ngIf="row.status == false" (click)="changeStatus(row, true)" data-toggle="modal" data-target="#change-status" data-placement="bottom" title="Inactive" data-original-title="View Details">Inactive</a>
+                            </td>
+                             <td>
+                              <button type="button" class="btn btn-icons btn-rounded btn-primary" data-toggle="modal" data-target="#view-shift" data-placement="bottom" title="View" data-original-title="View Details" (click)="viewLocation(row)"><i class="icon-eye"></i></button>
+
+                               <button title="Edit" type="button" class="btn btn-icons btn-rounded btn-warning" data-toggle="modal" (click)="EditLocation(row,editLocation)"><i class="icon-pencil" data-toggle="tooltip" data-placement="bottom"  data-original-title="Edit"></i></button>
+
+                               <button title="Delete" type="button" class="btn btn-icons btn-rounded btn-danger" data-toggle="modal" data-target="#delete-pop" (click)="DeleteLocation(row)"><i class="icon-trash" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete"></i></button>
+                           </td>
+                          </tr>
+                          <tr *ngIf="mf.data?.length == 0"><td colspan="11">
+                             No record found.</td>
+                          </tr>
+                       </tbody>
+                       <tfoot>
+                          <tr>
+                             <td colspan="4">
+                                <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+                             </td>
+                          </tr>
+                       </tfoot>
+                    </table>
+                  
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+   <!-- partial:partials/_footer.html -->
+   <footer class="footer">
+    <div class="container-fluid clearfix">
+      <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. All rights reserved.</span>
+      <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.
+
+      </span>
+    </div>
+  </footer>
+</div>
+</div>
+</div>
+<div class="modal fade" id="view-shift" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Location Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Location</label>
+               <!--  <input type="name" class="form-control" placeholder="{{viewLocationData?.location}} " disabled> -->
+
+                <input disabled type="name" class="form-control" placeholder="{{viewLocationData?.address.location}}" (keydown)="onKeydown($event)">
+                <agm-map style="width:100%;height:200px;" [latitude]="latitude" [longitude]="longitude" [zoom]="10" [disableDefaultUI]="false" [zoomControl]="true " [usePanning]="true">
+                    <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="false" (dragEnd)="markerDragEnd($event)"></agm-marker>
+                </agm-map>
+              </div>
+            </div>
+       
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Geofence in meters</label>
+                <input type="name" class="form-control" placeholder="{{viewLocationData?.geofence}}" disabled>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Client</label>
+                <input type="name" class="form-control" placeholder="{{viewLocationData?.client.name}}" disabled>
+              </div>
+            </div>
+           
+          </div>
+           <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Instructions</label>
+                <textarea rows="3"  class="form-control" placeholder="{{viewLocationData?.instruction}}" disabled></textarea>
+              </div>
+            </div>         
+          </div>
+
+         
+        </form>
+      </div>
+      <div class="modal-footer">     
+
+        <button type="button" class="btn btn-danger" data-dismiss="modal" >Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ <ng-template #editLocation let-c="close" let-d="dismiss">
+    <!-- <div class="modal-dialog" ro
+
+    le="document">
+    <div class="modal-content"> -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Location Details </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="authForm" (ngSubmit)="UpdateLocation()">
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Address</label>
+            
+
+                 <input formControlName="address"  placeholder="Enter address" class="form-control mb-20" ngx-google-places-autocomplete [options]='options' #places="ngx-places" (onAddressChange)="handleAddressChange($event)"  (keydown)="onKeydown($event)"/>
+
+                    <span *ngIf="authForm.controls.address.hasError('required') && authForm.controls.address.touched">
+                     <p style="color:#f70101 !important;">Sorry, field Address is required!</p>
+                   </span>
+                   <agm-map style="width:100%;height:200px;" [latitude]="latitude" [longitude]="longitude" [zoom]="10" [disableDefaultUI]="false" [zoomControl]="true " [usePanning]="true">
+                    <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="true" (dragEnd)="markerDragEnd($event)" [iconUrl]="image"></agm-marker>
+                  </agm-map>
+              </div>
+            </div>
+      
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Geofence in meters</label>
+                <input type="name" class="form-control" placeholder="Enter geofence in meters" formControlName="geofence" [ngClass]="(authForm.controls.geofence.hasError('required') && authForm.controls.geofence.touched )? 'has-error' : ''" >
+                <span *ngIf="authForm.controls.geofence.hasError('required') &&    authForm.controls.geofence.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Latitude is required!</p>
+                </span>
+              </div>
+            </div>
+        <div class="col">
+         <div class="form-group">
+          <label for="exampleInputEmail1">Client</label>
+            <select class="form-control" formControlName="client">
+              <option value=""> Select One </option>
+              <option value="{{clients?._id}}" *ngFor="let clients of clientsListAll" [disabled]="!clients?.status">{{clients?.name}}</option>                    
+          </select>          
+            <span *ngIf="authForm.controls.client.hasError('required') &&    authForm.controls.client.touched">
+                <p style="color:#f70101 !important;">Sorry, field Client is required!</p>
+            </span>
+         
+        </div>
+      </div>  
+
+                        
+          </div>
+
+
+
+          <div class="row">
+            <div class="col">
+             <div class="form-group">
+              <label for="exampleInputEmail1">Instructions</label>
+              <!-- <input type="name" class="form-control" placeholder="Enter instruction" formControlName="instruction" [ngClass]="(authForm.controls.instruction.hasError('required') && authForm.controls.instruction.touched )? 'has-error' : ''"> -->
+
+              <textarea rows="3" class="form-control"  placeholder="Enter instruction" formControlName="instruction" [ngClass]="(authForm.controls.instruction.hasError('required') && authForm.controls.instruction.touched )? 'has-error' : ''"></textarea>
+              <span *ngIf="authForm.controls.instruction.hasError('required') &&    authForm.controls.instruction.touched">
+                <p style="color:#f70101 !important;">Sorry, field Instructions is required!</p>
+              </span>
+             
+            </div>
+          </div>  
+      </div>
+
+     
+     <button  class="btn btn-danger" type="button" style="float: right;" (click)="closeModal()">Cancel</button>
+<button  [disabled]="!authForm.valid" class="btn btn-primary mr-10" type="submit" style="float: right;">Save</button>
+   
+   </form>
+ </div>
+ <div class="modal-footer">
+     
+     </div>
+   </ng-template>
+   <!-- </div> -->
+   <div class="modal fade" id="assign" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Assign Shift</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Select Type</label>
+                  <select class="form-control">
+                    <option> Select One </option>
+                    <option>Broadcast</option>
+                    <option>Select Security Guard</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Select Security Guard</label>
+                  <select class="form-control">
+                    <option> Select One </option>
+                    <option>John Smith </option>
+                    <option>Hanry James</option>
+                    <option>Denny Thomas </option>
+                    <option>Chrish Morries</option>
+                    <option>Hanry James </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Assign Shift</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="delete-pop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h5> Are you sure, you want to delete it ? </h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="deleteLocation(location)">Yes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div class="modal fade" id="change-status" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h5> Are you sure, you want to change status? </h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="Changestatus(location, status)">Yes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="modal fade" id="shifts" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content"> -->
+       <ng-template #shifts let-c="close" let-d="dismiss">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">All Shifts</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="">
+                  <!-- <button type="button" class="btn btn-success btn-fw pull-right">Assign</button> -->
+                  <ul class="nav nav-tabs tab-basic" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link active" id="home-tab1" data-toggle="tab" href="#whoweare1" role="tab" aria-controls="whoweare" aria-selected="true">Current</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="profile-tab1" data-toggle="tab" href="#ourgoal1" role="tab" aria-controls="ourgoal" aria-selected="false" (click)="getUpcomingShifts()">Upcoming</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="contact-tab1" data-toggle="tab" href="#history1" role="tab" aria-controls="history" aria-selected="false" (click)="getPastShifts()" >Past</a>
+                    </li>
+                  </ul>
+
+                  <div class="tab-content tab-content-basic">
+                    <div class="tab-content tab-content-basic">
+                      <div class="tab-pane fade show active" id="whoweare1" role="tabpanel" aria-labelledby="home-tab1">
+
+
+                       <div class="tab-pane fade show active" id="whoweare1" role="tabpanel" aria-labelledby="home-tab1">
+                         <div *ngIf="currentShift == null" class="row">
+                          No Current Shift Available.
+                        </div>
+                        <div *ngIf="currentShift != null" class="row">
+                          <div class="profile-page new-on-tb">
+                            <div class="col-12">
+                              <div class="card left-profl">
+                                <div class="card-body p-0">
+                                  <div class="row">
+                                    <div class="col-md-4">
+                                     <div class="profile-header text-white d-none d-md-block">
+                                      <div class="d-flex justify-content-around">
+                                        <div class="profile-info d-flex justify-content-center align-items-md-center ">
+                                          <img src="{{profile?.profile_image}}">
+
+                                        </div>
+
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div  class="col-md-8">
+                                    <div class="profile-body pt-0">
+                                      <div class="row ">
+                                        <div class="col-md-6">
+                                          <div class="tab-content tab-body " id="profile-log-switch ">
+                                            <div class="tab-pane fade show active " id="user-profile-info ">
+
+                                              <table class="table table-borderless shift-current-tab w-100">
+                                               <tr>
+                                                <td><strong>Title :</strong> {{currentShift?.title}}</td>
+                                              </tr>
+                                              <tr>
+                                                <td><strong>Type : </strong> <label class="badge badge-info" *ngIf="currentShift?.type == 1">Roaster</label>
+                                                  <label class="badge badge-info" *ngIf="currentShift?.type == 0">Adhoc</label>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td><strong>Location :</strong> {{currentShift?.location.address}}</td>
+                                              </tr>
+                                    <!--   <tr>
+                                        <td><strong>Zip Code :</strong> 12345</td>
+                                      </tr> -->
+                                    </table>
+
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="tab-content tab-body " id="profile-log-switch ">
+                                  <div class="tab-pane fade show active " id="user-profile-info ">
+
+                                    <table class="table table-borderless w-100">
+                               <!--       <tr *ngIf="currentShift?.type == '1'">
+                                      <td><strong>From Date :</strong> {{currentShift?.start_date}}</td>
+                                    </tr>
+                                    <tr *ngIf="currentShift?.type == '1'">
+                                      <td><strong>To Date :</strong> {{currentShift?.end_date}}</td>
+                                    </tr>
+                                    <tr *ngIf="currentShift?.type == '0'">
+                                     <td><strong>Shift Date: </strong>  {{currentShift?.shift_date}}</td>
+                                   </tr>
+                                   
+                                   <tr *ngIf="currentShift?.type == '0'">
+                                     <td><strong>Time :</strong> {{currentShift?.start_time}} - {{currentShift?.end_time}}</td>
+                                   </tr> -->
+                                   <tr *ngIf="currentShift?.type == '1'">
+                                    <td><strong>Date :</strong> {{getExactDate(currentShift?.start_date)}}/{{getExactDate(currentShift?.end_date)}} </td>
+                                  </tr>
+
+                                  <tr *ngIf="currentShift?.type == '0'">
+                                    <td><strong>Date :</strong> {{getExactDate(currentShift?.shift_date)}} </td>
+                                  </tr>
+
+                                  <tr *ngIf="currentShift?.type == '1'">
+                                    <td><strong>Time :</strong> {{getAmPmTime(currentShift?.days)}}</td>
+                                  </tr>
+
+                                  <tr *ngIf="currentShift?.type == '0'">
+                                    <td><strong>Time :</strong> {{getTime(currentShift?.start_time,currentShift?.end_time)}}</td>
+                                  </tr>
+                                </table>
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+    <div class="tab-pane fade" id="ourgoal1" role="tabpanel" aria-labelledby="profile-tab1">
+     <div class="row">
+      <div class="col-12 table-responsive">
+
+
+        <ngx-datatable id="blogs" class="table table-striped"
+        class="bootstrap"
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="'auto'"
+        [limit]="5"
+        [sortType]="'multi'"
+        [rows]="rows1">  
+
+
+        <!-- Security Guard Name -->
+        <ngx-datatable-column scope="col" name="Sr. No." [minWidth]="100">
+          <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+            <a class="titleRow">{{rowIndex + 1}}</a>
+            <BR>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Security Guard Name -->
+        <ngx-datatable-column scope="col" name="Title" [minWidth]="100">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <a class="titleRow">{{row.title}}</a><BR>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- POSTS INFO -->
+        <ngx-datatable-column scope="col" name="Type" [minWidth]="100">
+          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+            <a class="ww-table-big-text" *ngIf="row.type == 0">Adhoc</a>
+            <a class="ww-table-big-text" *ngIf="row.type == 1">Roaster</a><BR>
+          </ng-template>
+        </ngx-datatable-column>  
+
+        <ngx-datatable-column scope="col" name="Location" [minWidth]="100">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <a class="ww-table-big-text">{{row.location.address}}</a><BR>
+          </ng-template>
+        </ngx-datatable-column>  
+
+        <!-- COMMENTS -->
+        <ngx-datatable-column scope="col" name="Date" [minWidth]="100">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <a class="ww-table-big-text" *ngIf="row.type == '0'">{{row.shift_date}}</a>
+            <a class="ww-table-big-text" *ngIf="row.type == '1'">{{getAmPmDay(row, row.days)}}</a><BR>
+          </ng-template>
+        </ngx-datatable-column>  
+
+
+        <ngx-datatable-column scope="col" name="Time" [minWidth]="100">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <a class="ww-table-big-text" *ngIf="row.type == '0'">{{getTimeAMPM(row.start_time)}} - {{getTimeAMPM(row.end_time)}}</a>
+            <a class="ww-table-big-text" *ngIf="row.type == '1'">{{getAmPmTime(row.days)}}</a><BR>
+          </ng-template>
+        </ngx-datatable-column>  
+
+
+
+        <!-- APPROVED COMMENTS -->
+        <ngx-datatable-column scope="col" name="Action" [minWidth]="100">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <button *ngIf="row.type == '0'" type="button" class="btn btn-icons btn-rounded btn-primary" data-toggle="modal"  data-placement="bottom" title="View" data-original-title="View Details" (click)="viewShift(row, viewshiftdetailadhoc, 'adhoc')"><i class="icon-eye"></i></button>
+
+            <button *ngIf="row.type == '1'" type="button" class="btn btn-icons btn-rounded btn-primary" data-toggle="modal"  data-placement="bottom" title="View" data-original-title="View Details" (click)="viewShift(row, viewshiftdetailongoing, 'upcoimg')"><i class="icon-eye"></i></button>
+            <BR>
+          </ng-template>
+        </ngx-datatable-column> 
+
+      </ngx-datatable>
+    </div>
+  </div>
+</div>
+
+<div class="tab-pane fade" id="history1" role="tabpanel" aria-labelledby="contact-tab1">
+  <div class="row">
+    <div class="col-12 table-responsive">
+      <ngx-datatable id="blogs" class="table table-striped"
+      class="bootstrap"
+      [columnMode]="'force'"
+      [headerHeight]="50"
+      [footerHeight]="50"
+      [rowHeight]="'auto'"
+      [limit]="5"
+      [sortType]="'multi'"
+      [rows]="rows2"> 
+
+
+      <!-- Security Guard Name -->
+      <ngx-datatable-column scope="col" name="Sr. No." [minWidth]="100">
+        <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+          <a class="titleRow">{{rowIndex + 1}}</a>
+          <BR>
+        </ng-template>
+      </ngx-datatable-column> 
+
+      <!-- Security Guard Name -->
+      <ngx-datatable-column scope="col" name="Title" [minWidth]="100">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <a class="titleRow">{{row.title}}</a><BR>
+        </ng-template>
+      </ngx-datatable-column>
+
+      <!-- POSTS INFO -->
+      <ngx-datatable-column scope="col" name="Type" [minWidth]="100">
+        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+          <a class="ww-table-big-text" *ngIf="row.type == '0'">Adhoc</a>
+          <a class="ww-table-big-text" *ngIf="row.type == '1'">Roaster</a><BR>
+        </ng-template>
+      </ngx-datatable-column>  
+
+      <ngx-datatable-column scope="col" name="Location" [minWidth]="100">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <a class="ww-table-big-text">{{row.location.address}}</a><BR>
+        </ng-template>
+      </ngx-datatable-column>  
+
+      <!-- COMMENTS -->
+      <ngx-datatable-column scope="col" name="Date" [minWidth]="100">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <a class="ww-table-big-text" *ngIf="row.type == '0'">{{row.shift_date}}</a>
+          <a class="ww-table-big-text" *ngIf="row.type == '1'">{{getAmPmDay(row, row.days)}}</a><BR>
+        </ng-template>
+      </ngx-datatable-column>  
+
+
+      <ngx-datatable-column scope="col" name="Time" [minWidth]="100">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <a class="ww-table-big-text" *ngIf="row.type == '0'">{{getTimeAMPM(row.start_time)}} - {{getTimeAMPM(row.end_time)}}</a>
+          <a class="ww-table-big-text" *ngIf="row.type == '1'">{{getAmPmTime(row.days)}}</a><BR>
+        </ng-template>
+      </ngx-datatable-column> 
+
+
+      <!-- APPROVED COMMENTS -->
+      <ngx-datatable-column scope="col" name="Action" [minWidth]="100">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <button *ngIf="row.type == '0'" type="button" class="btn btn-icons btn-rounded btn-primary" data-toggle="modal"  data-placement="bottom" title="View" data-original-title="View Details" (click)="viewShift(row, viewshiftdetailadhoc, 'upcoming')"><i class="icon-eye"></i></button>
+
+          <button *ngIf="row.type == '1'" type="button" class="btn btn-icons btn-rounded btn-primary" data-toggle="modal"  data-placement="bottom" title="View" data-original-title="View Details" (click)="viewShift(row, viewshiftdetailongoing, 'upcoimg')"><i class="icon-eye"></i></button>
+          <BR>
+        </ng-template>
+      </ngx-datatable-column> 
+
+    </ngx-datatable>
+  </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- </div>
+</div>
+</div> -->
+</ng-template>
+
+<div class="modal fade" id="remarks" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm modl-shad" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h4> Remarks </h4>
+        <p> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </p>
+      </div>
+      <div class="modal-footer pull-left">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<ng-template #viewshiftdetailadhoc let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Shift Detail</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Title</label>
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.title}}">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Type</label>
+            <input disabled type="name" class="form-control" placeholder="Adhoc">
+          </div>
+        </div>
+      </div>
+      <div class="row">        
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Start Time</label>
+            <input disabled type="name" class="form-control" placeholder="{{getTimeAMPM(viewShiftData?.start_time)}}">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">End Time</label>
+            <input disabled type="name" class="form-control" placeholder="{{getTimeAMPM(viewShiftData?.end_time)}}">
+          </div>
+        </div> 
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Date</label>
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.shift_date}}">                         
+          </div>
+        </div>
+
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Priority</label>
+            <input disabled type="name" class="form-control" placeholder="{{getPriorityValue(viewShiftData?.priority)}}">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+       <div class="col">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Location</label>
+          <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.location.address}}">                         
+
+          <agm-map style="width:100%;height:200px;" [latitude]="latitude" [longitude]="longitude" [zoom]="10" [disableDefaultUI]="false" [zoomControl]="true " [usePanning]="true">
+            <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="false"></agm-marker>
+          </agm-map>
+        </div>
+      </div>
+
+
+    </div>
+
+    <div class="modal-footer">
+      <button  *ngIf="viewShiftData?.is_approved == 'false' && shiftType == 'upcoming'" class="btn btn-primary" (click)="changeStatusShift(viewShiftData,i, 'true')">Approve Shift</button>
+      <button  *ngIf="viewShiftData?.is_approved == 'true' && shiftType == 'upcoming'" class="btn btn-primary" (click)="changeStatusShift(viewShiftData,i, 'false')">Disapprove Shift</button>
+      <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" (click)="closeModal()"> Cancel</button>
+    </div>
+
+  </form>
+</div>
+
+</ng-template>
+
+
+
+
+<ng-template #viewshiftdetailongoing let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Shift Detail</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+
+  <div class="modal-body">
+    <form>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Title</label>
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.title}}">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Type</label>
+            <input disabled type="name" class="form-control" placeholder="Ongoing">
+          </div>
+        </div>
+      </div>
+      <div class="row">        
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Start Date</label>
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.start_date}}">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">End Date</label>
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.end_date}}">
+          </div>
+        </div>   
+      </div>
+      
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Location</label>
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.location.address}}">
+            
+            <agm-map style="width:100%;height:200px;" [latitude]="latitude" [longitude]="longitude" [zoom]="10" [disableDefaultUI]="false" [zoomControl]="true " [usePanning]="true">
+              <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="false" (dragEnd)="markerDragEnd($event)"></agm-marker>
+            </agm-map>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+      <div class="row" *ngIf="viewShiftData?.days[0].start_time != 0">
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Days</label>
+            <label class="form-control">Monday</label>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Start Time</label>
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[0].start_time}}">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="exampleInputEmail1">AM/PM</label>
+            <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[0].start_time_am_pm == 1">
+            <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[0].start_time_am_pm == 0">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="exampleInputEmail1">End Time</label>
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[0].end_time}}">
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="exampleInputEmail1">AM/PM</label>
+            <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[0].end_time_am_pm == 1">
+            <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[0].end_time_am_pm == 0">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row" *ngIf="viewShiftData?.days[1].start_time != 0">
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">Days</label> -->
+            <label class="form-control">Tuesday</label>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">Start Time</label> -->
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[1].start_time}}">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+            <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[1].start_time_am_pm == 1">
+            <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[1].start_time_am_pm == 0">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">End Time</label> -->
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[1].end_time}}">
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+            <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[1].end_time_am_pm == 1">
+            <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[1].end_time_am_pm == 0">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row" *ngIf="viewShiftData?.days[2].start_time != 0">
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">Days</label> -->
+            <label class="form-control">Wednesday</label>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">Start Time</label> -->
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[2].start_time}}">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+            <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[2].start_time_am_pm == 1">
+            <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[2].start_time_am_pm == 0">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">End Time</label> -->
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[2].end_time}}">
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+            <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[2].end_time_am_pm == 1">
+            <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[2].end_time_am_pm == 0">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row" *ngIf="viewShiftData?.days[3].start_time != 0">
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">Days</label> -->
+            <label class="form-control">Thursday</label>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">Start Time</label> -->
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[3].start_time}}">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+            <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[3].start_time_am_pm == 1">
+            <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[3].start_time_am_pm == 0">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">End Time</label> -->
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[3].end_time}}">
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+            <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[3].end_time_am_pm == 1">
+            <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[3].end_time_am_pm == 0">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row" *ngIf="viewShiftData?.days[4].start_time != 0">
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">Days</label> -->
+            <label class="form-control">Friday</label>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">Start Time</label> -->
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[4].start_time}}">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+            <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[4].start_time_am_pm == 1">
+            <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[4].start_time_am_pm == 0">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">End Time</label> -->
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[4].end_time}}">
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+            <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[4].end_time_am_pm == 1">
+            <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[4].end_time_am_pm == 0">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row" *ngIf="viewShiftData?.days[5].start_time != 0">
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">Days</label> -->
+            <label class="form-control">Saturday</label>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">Start Time</label> -->
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[5].start_time}}">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+            <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[5].start_time_am_pm == 1">
+            <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[5].start_time_am_pm == 0">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">End Time</label> -->
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[5].end_time}}">
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+            <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[5].end_time_am_pm == 1">
+            <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[5].end_time_am_pm == 0">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row" *ngIf="viewShiftData?.days[6].start_time != 0">
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">Days</label> -->
+            <label class="form-control">Sunday</label>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">Start Time</label> -->
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[6].start_time}}">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+            <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[6].start_time_am_pm == 1">
+            <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[6].start_time_am_pm == 0">
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">End Time</label> -->
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[6].end_time}}">
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="form-group">
+            <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+            <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[6].end_time_am_pm == 1">
+            <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[6].end_time_am_pm == 0">
+          </div>
+        </div>
+
+      </div>  
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" (click)="closeModal()"> Cancel</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<div class="modal fade" id="active-inactive-pop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h5> Are you sure wants to change user status ? </h5>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="changeActiveInctiveStatus(guard, status)">Yes</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #addLocation let-c="close" let-d="dismiss">
+    <!-- <div class="modal-dialog" ro
+
+    le="document">
+    <div class="modal-content"> -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add New Location</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="authForm" (ngSubmit)="AddLocation()">
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Location</label>
+            
+                    <input formControlName="address"  placeholder="Enter location" class="form-control mb-20" ngx-google-places-autocomplete [options]='options' #places="ngx-places" (onAddressChange)="handleAddressChange($event)"  (keydown)="onKeydown($event)"/>
+
+                    <span *ngIf="authForm.controls.address.hasError('required') && authForm.controls.address.touched">
+                     <p style="color:#f70101 !important;">Sorry, field Location is required!</p>
+                   </span>
+                   <agm-map style="width:100%;height:200px;" [latitude]="latitude" [longitude]="longitude" [zoom]="10" [disableDefaultUI]="false" [zoomControl]="true " [usePanning]="true">
+                    <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="true" (dragEnd)="markerDragEnd($event)" [iconUrl]="image"></agm-marker>
+                  </agm-map>
+              </div>
+            </div>
+        
+          </div>
+
+          <div class="row">
+            <div class="col">
+             <div class="form-group">
+              <label for="exampleInputEmail1">Geofence in meters</label>
+              <input type="name" class="form-control" placeholder="Enter geofence in meters" formControlName="geofence" [ngClass]="(authForm.controls.geofence.hasError('required') && authForm.controls.geofence.touched )? 'has-error' : ''">
+              <span *ngIf="authForm.controls.geofence.hasError('required') &&    authForm.controls.geofence.touched">
+                <p style="color:#f70101 !important;">Sorry, field Geofence is required!</p>
+              </span>
+
+                 
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+              <label for="exampleInputEmail1" >Client</label>
+            <select class="form-control" formControlName="client">
+                  <option value=""> Select One </option>
+                  <option value="{{clients?._id}}" *ngFor="let clients of clientsList">{{clients?.name}}</option>                    
+              </select>          
+              <span *ngIf="authForm.controls.client.hasError('required') &&    authForm.controls.client.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Client is required!</p>
+              </span>
+               
+            </div>
+        </div>
+    
+      </div>
+      <div class="row">
+          <div class="col">
+           <div class="form-group">
+            <label for="exampleInputEmail1">Instructions</label>             
+
+            <!-- <input type="name" class="form-control" placeholder="Enter instructions" formControlName="instruction" [ngClass]="(authForm.controls.instruction.hasError('required') && authForm.controls.instruction.touched )? 'has-error' : ''"> -->
+            <textarea rows="3" class="form-control"  placeholder="Enter instruction" formControlName="instruction" [ngClass]="(authForm.controls.instruction.hasError('required') && authForm.controls.instruction.touched )? 'has-error' : ''"></textarea>
+            <span *ngIf="authForm.controls.instruction.hasError('required') &&    authForm.controls.instruction.touched">
+              <p style="color:#f70101 !important;">Sorry, field Instructions is required!</p>
+            </span>
+          </div>
+        </div>
+      </div>
+ 
+   
+      
+     <button  class="btn btn-danger" type="button" style="float: right;" (click)="closeModal()">Cancel</button>
+<button  [disabled]="!authForm.valid" class="btn btn-primary mr-10" type="submit" style="float: right;">Save</button>
+    <!--  <button type="submit"  [disabled]="!authForm.valid" class="btn btn-primary mr-10">Save</button>
+     <button type="button" class="btn btn-danger" (click)="closeModal()">Cancel</button> -->
+   </form>
+ </div>
+ <div class="modal-footer">
+          <!-- <button type="button" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button> -->
+       <!--  </div>
+       </div> -->
+     </div>
+   </ng-template>
+

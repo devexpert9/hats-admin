@@ -1,0 +1,138 @@
+  <!-- partial:partials/_navbar.html -->
+    <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+      <div class="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
+        <a class="navbar-brand brand-logo" href="#">
+          <img src="./assets/images/logo.png" alt="logo" />
+        </a>
+        <a class="navbar-brand brand-logo-mini" href="index.html">
+          <img src="./assets/images/favicon.png" alt="logo" />
+        </a>
+      </div>
+      <div class="navbar-menu-wrapper d-flex align-items-center">
+        <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize" (click)="toggleSidebar()">
+           <i class="icon-menu"></i>
+        </button>
+       
+        <ul class="navbar-nav navbar-nav-right">
+          <li class="nav-item search-wrapper d-none d-md-block">
+      <!--       <form action="#">
+              <div class="form-group mb-0">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                     <i class="icon-magnifier"></i>
+                    </span>
+                  </div>
+                  <input type="text" class="form-control" placeholder="Search">
+                </div>
+              </div>
+            </form> -->
+          </li>
+          <li class="nav-item dropdown d-none d-xl-inline-block user-dropdown">
+            <a class="nav-link dropdown-toggle" id="UserDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
+              <div class="dropdown-toggle-wrapper">
+                <div class="inner">
+                  <img class="img-xs rounded-circle" *ngIf="profile?.image == ''" src="./assets/images/user.jpg" alt="Profile image">
+                   <img id="nav_image1" class="img-xs rounded-circle" *ngIf="profile?.image != ''" src="{{imageURL}}{{profile?.image}}" alt="Profile image">
+                </div>
+                <div class="inner">
+                  <div class="inner">
+                    <span id="nav_username1" class="profile-text font-weight-bold">{{profile?.firstname}} {{profile?.lastname}}</span>
+                    <small class="profile-text small" *ngIf="profile?.role == 'payroll'">Payroll Manager</small>
+                    <small class="profile-text small" *ngIf="profile?.role == 'shift'">Shift Manager</small>
+                    <small class="profile-text small" *ngIf="profile?.role == 'admin'">Admin</small>
+                    <small class="profile-text small" *ngIf="profile?.role == 'supervisior'">Supervisior</small>
+                  </div>
+                  <div class="inner">
+                    <div class="icon-wrapper">
+                      <i class="mdi mdi-chevron-down"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
+              
+              <a routerLink="/profile"  class="dropdown-item mt-2">
+                Profile Settings
+              </a>
+			        <a  (click)="logout()" class="dropdown-item mt-2">
+				        Logout
+              </a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+
+
+            <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown" *ngIf="profile?.role == 'admin'">
+              <i class="icon-bell"></i>
+              <span class="count">{{counter}}</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+
+              <a class="dropdown-item sentbyu" routerLink="/sentnotifications">
+                <p class="mb-0 font-weight-normal float-left">Notifications sent by you.
+                </p>
+                <span class="badge badge-pill badge-warning float-right" routerLink="/sentnotifications">View all</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              
+              <a class="dropdown-item sentbyu" routerLink="/notifications">
+                <p class="mb-0 font-weight-normal float-left">You have {{counter}} new notifications
+                </p>
+                <span class="badge badge-pill badge-warning float-right" routerLink="/notifications">View all</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a *ngFor="let item of unreadNoti | slice:0:5;" class="dropdown-item preview-item">
+                <div class="preview-thumbnail">
+                  <div class="preview-icon bg-success">
+                    <i class="icon-info mx-0"></i>
+                  </div>
+                </div>
+                <div class="preview-item-content">
+                  <h6 class="preview-subject font-weight-medium text-dark">{{item?.message}}</h6>
+                  <p class="font-weight-light small-text">
+                    {{item?.created_on  | amDateFormat: 'HH:mm'}}, {{item?.created_on  | amDateFormat: 'DD-MMM-YYYY'}}
+                  </p>
+                </div>
+              </a>
+          <!--     <div class="dropdown-divider"></div>
+              <a class="dropdown-item preview-item">
+                <div class="preview-thumbnail">
+                  <div class="preview-icon bg-warning">
+                    <i class="icon-settings mx-0"></i>
+                  </div>
+                </div>
+                <div class="preview-item-content">
+                  <h6 class="preview-subject font-weight-medium text-dark">Settings</h6>
+                  <p class="font-weight-light small-text">
+                    Private message
+                  </p>
+                </div>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item preview-item">
+                <div class="preview-thumbnail">
+                  <div class="preview-icon bg-info">
+                    <i class="icon-user mx-0"></i>
+                  </div>
+                </div>
+                <div class="preview-item-content">
+                  <h6 class="preview-subject font-weight-medium text-dark">New user registration</h6>
+                  <p class="font-weight-light small-text">
+                    2 days ago
+                  </p>
+                </div>
+              </a> -->
+            </div>
+          </li>
+         
+        </ul>
+        <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+          <span class="mdi mdi-menu"></span>
+        </button>
+      </div>
+    </nav>
+    <!-- partial -->
+<router-outlet></router-outlet>
+        

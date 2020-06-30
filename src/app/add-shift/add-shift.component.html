@@ -1,0 +1,706 @@
+<div class="container-scroller">
+   <app-header></app-header>
+   <!-- partial -->
+   <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_sidebar.html -->
+      <app-sidebar></app-sidebar>
+      <div class="main-panel">
+         <div class="content-wrapper">
+            <div class="row mb-4">
+               <div class="col-12 d-flex align-items-center justify-content-between">
+                  <h4 class="page-title">Add New Shift</h4>
+               </div>
+               <div class="row" *ngIf="(IsPublicHoliday == true || IsSatSunday == true) && shiftType == 0">
+                  <div *ngFor="let holiday of PublicHolidayArray;">
+                     {{holiday.date}} -- {{holiday.day}} 
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12 grid-margin stretch-card">
+                  <div class="card">
+                     <div class="card-body">
+                        <div class="row">
+                           <div class="col-12">
+                              <h5 class="sb-hd-dbl"> Shift Details </h5>
+                              <form [formGroup]="authForm" (ngSubmit)="addShift()">
+                              <div class="row">
+                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                       <label for="exampleInputEmail1">Title </label>
+                                       <input type="text" class="form-control" formControlName="title">
+                                       <span *ngIf="authForm.controls.title.hasError('required') && authForm.controls.title.touched">
+                                          <p style="color:#f70101 !important;">Sorry, field Title is required!</p>
+                                       </span>
+                                       <span *ngIf="authForm.controls.title.hasError('pattern') && authForm.controls.title.touched">
+                                          <p style="color:#f70101 !important;">Sorry, field Title contains atleast one charaters !</p>
+                                       </span>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                       <label for="exampleInputEmail1">Location </label>
+                                       <select class="form-control" formControlName="location">
+                                          <option value=""> Select</option>
+                                          <option value="{{loc._id}}" *ngFor="let loc of locations">{{loc.address.location}}</option>
+                                       </select>
+                                       <span *ngIf="authForm.controls.location.hasError('required') && authForm.controls.location.touched">
+                                          <p style="color:#f70101 !important;">Sorry, field Location is required!</p>
+                                       </span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="row">
+                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                       <label for="exampleInputEmail1">Priority </label>
+                                       <select class="form-control" formControlName="priority">
+                                          <option value=""> Select </option>
+                                          <option value="0">Low</option>
+                                          <option value="1">Medium</option>
+                                          <option value="2">High</option>
+                                       </select>
+                                       <span *ngIf="authForm.controls.priority.hasError('required') && authForm.controls.priority.touched">
+                                          <p style="color:#f70101 !important;">Sorry, field Priority is required!</p>
+                                       </span>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                       <label for="exampleInputEmail1">Shift Type</label>
+                                       <select class="form-control" formControlName="type" (change)="filterChanged($event.target.value)">
+                                          <option value=""> Select </option>
+                                          <option value="0">Ad-hoc</option>
+                                          <option value="1">Roaster</option>
+                                       </select>
+                                       <span *ngIf="authForm.controls.type.hasError('required') && authForm.controls.type.touched">
+                                          <p style="color:#f70101 !important;">Sorry, field Shift Type is required!</p>
+                                       </span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="row" *ngIf="shiftTypeValue == '1'">
+                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                       <label for="exampleInputEmail1">Start Date </label>
+                                       <!-- min="{{mindate}}" onkeydown="return false" max="{{maxdateStart}}" (change)="handlerStartAvail($event)" -->
+                                       <input type="date" class="form-control" placeholder="Enter start date" min="{{mindate}}" onkeydown="return false" (change)="handlerStartdays($event)"formControlName="start_date" id="the_number_input">
+                                       <span *ngIf="authForm.controls.start_date.hasError('required') && authForm.controls.start_date.touched">
+                                          <p style="color:#f70101 !important;">Sorry, field Start Date is required!</p>
+                                       </span>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                       <label for="exampleInputEmail1">End Date </label>
+                                       <!--  min="{{mindateavail}}" onkeydown="return false" max="{{maxdateStart}}" -->
+                                       <input  min="{{maxdateStartdays}}" onkeydown="return false" type="date" class="form-control" placeholder="Enter end date"  formControlName="end_date">
+                                       <span *ngIf="authForm.controls.end_date.hasError('required') && authForm.controls.end_date.touched">
+                                          <p style="color:#f70101 !important;">Sorry, field End Date is required!</p>
+                                       </span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="row" *ngIf="shiftTypeValue == '1'">
+                                 <div class="col-md-6">
+                                    <div class="form-group" >
+                                       <label for="exampleInputEmail1">Days</label>
+                                       <button style="width:100%;" type="button" class="btn btn-icons btn-rounded btn-warning btn-days" data-toggle="modal" (click)="ViewDays(editshift)">Select</button>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                       <label for="exampleInputEmail1">Select Worker</label>
+                                       <select class="form-control"  formControlName="assigned_user" (change)="selectUser($event)">
+                                          <option value="">Select</option>
+                                          <option  *ngFor="let guard of securityGuardsList" value="{{guard._id}}"> {{guard.firstname}} {{guard.lastname}}({{guard.username}}) </option>
+                                       </select>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="row" *ngIf="shiftTypeValue == '0'">
+                                 <div class="col">
+                                    <div class="form-group" *ngIf="shiftTypeValue == '0'">
+                                       <label for="exampleInputEmail1">Shift Date </label>
+                                       <input type="date" class="form-control" formControlName="shift_date" min="{{mindate}}" (change)="handlerStart($event)">
+                                       <span *ngIf="authForm.controls.shift_date.hasError('required') && authForm.controls.shift_date.touched">
+                                          <p style="color:#f70101 !important;">Sorry, field Shift Date is required!</p>
+                                       </span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="row" *ngIf="shiftTypeValue == '0'">
+                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                       <label for="exampleInputEmail1">Availability Start Date </label>
+                                       <!-- min="{{mindate}}" onkeydown="return false" max="{{maxdateStart}}" (change)="handlerStartAvail($event)" -->
+                                       <input min="{{mindate}}" onkeydown="return false" max="{{maxdateStart}}" (change)="handlerStartAvail($event)" type="date" class="form-control" formControlName="availability_start_date"  >
+                                       <span *ngIf="authForm.controls.availability_start_date.hasError('required') && authForm.controls.availability_start_date.touched">
+                                          <p style="color:#f70101 !important;">Sorry, field Availability Start Date is required!</p>
+                                       </span>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                       <label for="exampleInputEmail1">Availability End Date </label>
+                                       <!--  min="{{mindateavail}}" onkeydown="return false" max="{{maxdateStart}}" -->
+                                       <input (change)="handlerEndAvail($event)" min="{{mindateavail}}" onkeydown="return false" max="{{maxdateStart}}"  type="date" class="form-control" formControlName="availability_end_date">
+                                       <span *ngIf="authForm.controls.availability_end_date.hasError('required') && authForm.controls.availability_end_date.touched">
+                                          <p style="color:#f70101 !important;">Sorry, field Availability End Date is required!</p>
+                                       </span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="row" *ngIf="shiftTypeValue == '0'">
+                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                       <label for="exampleInputEmail1">Start Time </label>
+                                       <!-- <input type="time" class="form-control" formControlName="start_time" (change)="handlerStartTime($event)"> -->
+                                       <input class="form-control" [ngxTimepicker]="picker" formControlName="start_time" (change)="handlerStartTime($event)" [format]="24">
+                                       <ngx-material-timepicker #picker ></ngx-material-timepicker>
+                                       <span *ngIf="authForm.controls.start_time.hasError('required') && authForm.controls.start_time.touched">
+                                          <p style="color:#f70101 !important;">Sorry, field Start Time is required!</p>
+                                       </span>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                       <label for="exampleInputEmail1">End Time </label>
+                                       <!--    <input type="time" class="timepicker form-control" formControlName="end_time" min="{{mintime}}" max="23:00"> -->
+                                       <input class="form-control" [ngxTimepicker]="picker1" formControlName="end_time" (change)="handlerStartTime($event)" [format]="24">
+                                       <ngx-material-timepicker #picker1 ></ngx-material-timepicker>
+                                       <span *ngIf="authForm.controls.end_time.hasError('required') && authForm.controls.end_time.touched">
+                                          <p style="color:#f70101 !important;">Sorry, field End Time is required!</p>
+                                       </span>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="sv-cncl-all">
+                                 <button *ngIf=" shiftType == ''" [disabled]="true"  class="btn btn-primary">Add Shift</button>
+                                 <button *ngIf="shiftType == '0'" [disabled]="!authForm.valid" type="submit"  class="btn btn-primary">Add Shift</button>
+                                 <button *ngIf="shiftType == '1'" [disabled]="dynamicChange()" type="submit"  class="btn btn-primary">Add Shift</button>
+                                 <!-- <button type="button" class="btn btn-danger" (click)="closeModal()">Cancel</button> -->
+                              </div>
+                              </form>
+                              <!--      <h5 class="sb-hd-dbl"> Assign To </h5>
+                                 <form>
+                                   <div class="row">
+                                     <div class="col-md-6">
+                                       <div class="form-group">
+                                         <label for="exampleInputEmail1">Assign To</label>
+                                         <select class="form-control">
+                                           <option> Select </option>
+                                           <option>Broadcast</option>
+                                           <option>Select Security Guard</option>
+                                         </select>
+                                       </div>
+                                     </div>
+                                   </div>
+                                   <div class="row">
+                                     <div class="col-md-3">
+                                       <div class="form-group">
+                                         <label class="radio-ns">Available Guards
+                                           <input type="radio" checked="checked" name="radio">
+                                           <span class="checkmark"></span>
+                                         </label>
+                                       </div>
+                                     </div>
+                                     <div class="col-md-3">
+                                       <div class="form-group">
+                                         <label class="radio-ns">All Guards
+                                           <input type="radio" checked="checked" name="radio">
+                                           <span class="checkmark"></span>
+                                         </label>
+                                       </div>
+                                     </div>
+                                   </div>
+                                   <div class="row">
+                                     <div class="col-md-6">
+                                       <div class="form-group">
+                                         <label for="exampleInputEmail1">Select Guard</label>
+                                         <select class="form-control">
+                                           <option> Select </option>
+                                           <option>John Smith</option>
+                                           <option>Hanry James</option>
+                                           <option>Denny Thomson</option>
+                                           <option>Chrish Morris</option>
+                                         </select>
+                                       </div>
+                                     </div>
+                                   </div>
+                                 </form>
+                                 <div class="sv-cncl-all">
+                                   <button type="submit" [disabled]="!authForm.valid" class="btn btn-primary">Add Shift</button>
+                                   <button type="button" class="btn btn-danger" (click)="closeModal()">Cancel</button>
+                                 </div> -->
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- partial:partials/_footer.html -->
+         <footer class="footer">
+            <div class="container-fluid clearfix">
+               <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. All rights reserved.</span>
+               <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.
+               </span>
+            </div>
+         </footer>
+      </div>
+   </div>
+</div>
+<ng-template #editshift let-c="close" let-d="dismiss">
+   <div class="modal-header">
+      <h5 class="modal-title w-100" id="exampleModalLabel">
+         Select Days
+         <div class="holiday-day">
+            <span class="holiday-section"><span class="box1"></span><span class="holiday-title">Sunday</span></span>
+            <span class="holiday-section"><span class="box2"></span><span class="holiday-title">Saturday</span></span>
+            <span class="holiday-section"><span class="box3"></span><span class="holiday-title">Holiday</span></span>
+         </div>
+      </h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModalongoing()">
+      <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <div class=" holidays-sec" *ngIf="(IsPublicHoliday == true || IsSatSunday == true) && shiftType == 1">
+         <span class="badge badge-default {{holiday.day}}" *ngFor="let holiday of PublicHolidayArray;">
+            <!-- {{holiday.day}} - -->{{holiday.date}} 
+         </span>
+      </div>
+      <form  [formGroup]="authFormDays" (ngSubmit)="addOngoingShift()">
+      <!--       <div class="row">
+         <div class="col-md-6">
+           <div class="form-group">
+             <label for="exampleInputEmail1">Start Date</label>
+             <input type="date" class="form-control" placeholder="Airport Shift"  onkeydown="return false" (change)="handlerStartdays($event)"formControlName="start_date">
+             
+           </div>
+         </div>
+         <div class="col-md-6">
+           <div class="form-group">
+             <label for="exampleInputEmail1">End Date</label>
+             <input  min="{{maxdateStartdays}}" onkeydown="return false" type="date" class="form-control" placeholder="Airport Shift"  formControlName="end_date">
+         
+           </div>
+         </div>
+         </div> -->
+      <div class="row" *ngIf="mon == 1">
+         <div class="col-md-3">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Days</label>
+               <label class="form-control">Monday</label>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <label for="exampleInputEmail1">Start Time</label>
+               <!--   <select class="form-control"  formControlName="monStartTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <!-- <input type="time" class="form-control" formControlName="monStartTime" (change)="handlerStartTimeDays($event,'mon')"> -->
+               <input class="form-control" [ngxTimepicker]="picker2" formControlName="monStartTime" (change)="handlerStartTimeDays($event,'mon')" [format]="24">
+               <ngx-material-timepicker #picker2 ></ngx-material-timepicker>
+               <span *ngIf="authFormDays.controls.monStartTime.hasError('required') && authFormDays.controls.monStartTime.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Start Time is required!</p>
+               </span>
+            </div>
+         </div>
+         <!--    <div class="col-md-2">
+            <div class="form-group">
+              <label for="exampleInputEmail1">AM/PM</label>
+              <select class="form-control"  formControlName="monStartTimeAMPM">
+                <option value=""> Select </option>
+                <option value="0">AM</option>x
+                <option value="1">PM</option>
+              </select>
+            </div>
+            </div> -->
+         <div class="col-md-4">
+            <div class="form-group">
+               <label for="exampleInputEmail1">End Time</label>
+               <!--  <select class="form-control"  formControlName="monEndTime">   
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>         
+                  </select> -->
+               <!-- <input type="time" class="form-control" formControlName="monEndTime"> -->
+               <input class="form-control" [ngxTimepicker]="picker3" formControlName="monEndTime" [format]="24">
+               <ngx-material-timepicker #picker3 ></ngx-material-timepicker>
+               <span *ngIf="authFormDays.controls.monEndTime.hasError('required') && authFormDays.controls.monEndTime.touched">
+                  <p style="color:#f70101 !important;">Sorry, field End Time is required!</p>
+               </span>
+            </div>
+         </div>
+
+
+         <div class="col-md-1">
+            <div class="form-group">
+               <label for="exampleInputEmail1" style="color: white;">Start</label>
+               <span><i class="icon-close" (click)="empty('monStartTime', 'monEndTime')"></i></span>
+            </div>
+         </div>  
+         <!--     <div class="col-md-2">
+            <div class="form-group">
+              <label for="exampleInputEmail1">AM/PM</label>
+              <select class="form-control"  formControlName="monEndTimeAMPM">
+                <option value=""> Select </option>
+                <option value="0">AM</option>x
+                <option value="1">PM</option>
+              </select>
+            </div>
+            </div> -->
+      </div>
+      <div class="row" *ngIf="tue == 1">
+         <div class="col-md-3">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">Days</label> -->
+               <label class="form-control">Tuesday</label>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">Start Time</label> -->
+               <!--   <select class="form-control"  formControlName="tueStartTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <!-- <input type="time" class="form-control" formControlName="tueStartTime" (change)="handlerStartTimeDays($event,'tue')"> -->
+               <input class="form-control" [ngxTimepicker]="picker4" formControlName="tueStartTime" (change)="handlerStartTimeDays($event,'tue')" [format]="24">
+               <ngx-material-timepicker #picker4 ></ngx-material-timepicker>
+               <span *ngIf="authFormDays.controls.tueStartTime.hasError('required') && authFormDays.controls.tueStartTime.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Start Time is required!</p>
+               </span>
+            </div>
+         </div>
+         <!--    <div class="col-md-2">
+            <div class="form-group">
+              <select class="form-control"  formControlName="tueStartTimeAMPM">
+                <option value=""> Select </option>
+                <option value="0">AM</option>x
+                <option value="1">PM</option>
+              </select>
+            </div>
+            </div> -->
+         <div class="col-md-4">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">End Time</label> -->
+               <!--  <select class="form-control" formControlName="tueEndTime">   
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>         
+                  </select> -->
+               <!-- <input type="time" class="form-control" formControlName="tueEndTime" > -->
+               <input class="form-control" [ngxTimepicker]="picker5" formControlName="tueEndTime" [format]="24">
+               <ngx-material-timepicker #picker5 ></ngx-material-timepicker>
+               <span *ngIf="authFormDays.controls.tueEndTime.hasError('required') && authFormDays.controls.tueEndTime.touched">
+                  <p style="color:#f70101 !important;">Sorry, field End Time is required!</p>
+               </span>
+            </div>
+         </div>
+
+
+         <div class="col-md-1">
+            <div class="form-group">
+               <span><i class="icon-close" (click)="empty('tueStartTime', 'tueEndTime')"></i></span>
+            </div>
+         </div>  
+         <!--      <div class="col-md-2">
+            <div class="form-group">
+              <select class="form-control" formControlName="tueEndTimeAMPM">
+                <option value=""> Select </option>
+                <option value="0">AM</option>x
+                <option value="1">PM</option>
+              </select>
+            </div>
+            </div> -->
+      </div>
+      <div class="row" *ngIf="wed == 1">
+         <div class="col-md-3">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">Days</label> -->
+               <label class="form-control">Wednesday</label>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">Start Time</label> -->
+               <!--  <select class="form-control" formControlName="wedStartTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <!-- <input type="time" class="form-control" formControlName="wedStartTime" (change)="handlerStartTimeDays($event, 'wed')" > -->
+               <input class="form-control" [ngxTimepicker]="picker6"  formControlName="wedStartTime" (change)="handlerStartTimeDays($event, 'wed')"  [format]="24">
+               <ngx-material-timepicker #picker6 ></ngx-material-timepicker>
+               <span *ngIf="authFormDays.controls.wedStartTime.hasError('required') && authFormDays.controls.wedStartTime.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Start Time is required!</p>
+               </span>
+            </div>
+         </div>
+         <!--         <div class="col-md-2">
+            <div class="form-group">
+              <select class="form-control" formControlName="wedStartTimeAMPM">
+                <option value=""> Select </option>
+                <option value="0">AM</option>x
+                <option value="1">PM</option>
+              </select>
+            </div>
+            </div> -->
+         <div class="col-md-4">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">End Time</label> -->
+               <!--  <select class="form-control" formControlName="wedEndTime">   
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>         
+                  </select> -->
+               <!-- <input type="time" class="form-control" formControlName="wedEndTime" > -->
+               <input class="form-control" [ngxTimepicker]="picker7"  formControlName="wedEndTime" [format]="24">
+               <ngx-material-timepicker #picker7 ></ngx-material-timepicker>
+               <span *ngIf="authFormDays.controls.wedEndTime.hasError('required') && authFormDaysauthFormDays.controls.wedEndTime.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Start Time is required!</p>
+               </span>
+            </div>
+         </div>
+
+
+         <div class="col-md-1">
+            <div class="form-group">
+               <span><i class="icon-close" (click)="empty('wedStartTime', 'wedEndTime')"></i></span>
+            </div>
+        </div>  
+         <!--   <div class="col-md-2">
+            <div class="form-group">
+              <select class="form-control" formControlName="wedEndTimeAMPM">
+                <option value=""> Select </option>
+                <option value="0">AM</option>x
+                <option value="1">PM</option>
+              </select>
+            </div>
+            </div> -->
+      </div>
+      <div class="row" *ngIf="thurs == 1">
+         <div class="col-md-3">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">Days</label> -->
+               <label class="form-control">Thursday</label>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <input class="form-control" [ngxTimepicker]="picker8"  formControlName="thrusStartTime" (change)="handlerStartTimeDays($event, 'thurs')" [format]="24">
+               <ngx-material-timepicker #picker8 ></ngx-material-timepicker>
+               <span *ngIf="authFormDays.controls.thrusStartTime.hasError('required') && authFormDaysauthFormDaysauthFormDays.controls.thrusStartTime.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Start Time is required!</p>
+               </span>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <input class="form-control" [ngxTimepicker]="picker9"  formControlName="thrusEndTime"  [format]="24">
+               <ngx-material-timepicker #picker9 ></ngx-material-timepicker>
+               <span *ngIf="authFormDays.controls.thrusEndTime.hasError('required') && authFormDays.controls.thrusEndTime.touched">
+                  <p style="color:#f70101 !important;">Sorry, field End Time is required!</p>
+               </span>
+            </div>
+         </div>
+
+
+         <div class="col-md-1">
+            <div class="form-group">
+               <span><i class="icon-close" (click)="empty('thrusStartTime', 'thrusEndTime')"></i></span>
+            </div>
+        </div>  
+      </div>
+
+      <div class="row" *ngIf="fri == 1">
+         <div class="col-md-3">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">Days</label> -->
+               <label class="form-control">Friday</label>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">Start Time</label> -->
+               <!--    <select class="form-control" formControlName="friStartTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <!-- <input type="time" class="form-control" formControlName="friStartTime" (change)="handlerStartTimeDays($event, 'fri')"> -->
+               <input class="form-control" [ngxTimepicker]="picker10"  formControlName="friStartTime" (change)="handlerStartTimeDays($event, 'fri')"  [format]="24">
+               <ngx-material-timepicker #picker10 ></ngx-material-timepicker>
+               <span *ngIf="authFormDays.controls.friStartTime.hasError('required') && authFormDays.controls.friStartTime.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Start Time is required!</p>
+               </span>
+            </div>
+         </div>
+ 
+         <!--  <div class="col-md-2">
+            <div class="form-group">
+              <select class="form-control" formControlName="friStartTimeAMPM">
+                <option value=""> Select </option>
+                <option value="0">AM</option>x
+                <option value="1">PM</option>
+              </select>
+            </div>
+            </div> -->
+         <div class="col-md-4">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">End Time</label> -->
+               <!-- <select class="form-control" formControlName="friEndTime">   
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>         
+                  </select> -->
+               <!-- <input type="time" class="form-control" formControlName="friEndTime" > -->
+               <input class="form-control" [ngxTimepicker]="picker11"  formControlName="friEndTime"  [format]="24">
+               <ngx-material-timepicker #picker11 ></ngx-material-timepicker>
+               <span *ngIf="authFormDays.controls.friEndTime.hasError('required') && authFormDays.controls.friEndTime.touched">
+                  <p style="color:#f70101 !important;">Sorry, field End Time is required!</p>
+               </span>
+            </div>
+         </div>
+
+         <div class="col-md-1">
+            <div class="form-group">
+               <span><i class="icon-close" (click)="empty('friStartTime', 'friEndTime')"></i></span>
+            </div>
+        </div> 
+         <!--   <div class="col-md-2">
+            <div class="form-group">
+              <select class="form-control" formControlName="friEndTimeAMPM" >
+                <option value=""> Select </option>
+                <option value="0">AM</option>x
+                <option value="1">PM</option>
+              </select>
+            </div>
+            </div> -->
+      </div>
+
+
+      <div class="row" *ngIf="sat == 1">
+         <div class="col-md-3">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">Days</label> -->
+               <label class="form-control">Saturday</label>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">Start Time</label> -->
+               <!--  <select class="form-control" formControlName="satStartTime">
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <!-- <input type="time" class="form-control" formControlName="satStartTime" (change)="handlerStartTimeDays($event, 'sat')"> -->
+               <input class="form-control" [ngxTimepicker]="picker12"  formControlName="satStartTime" (change)="handlerStartTimeDays($event, 'sat')" [format]="24">
+               <ngx-material-timepicker #picker12 ></ngx-material-timepicker>
+               <span *ngIf="authFormDays.controls.satStartTime.hasError('required') && authFormDays.controls.satStartTime.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Start Time is required!</p>
+               </span>
+            </div>
+         </div>
+         <!--    <div class="col-md-2">
+            <div class="form-group">
+              <select class="form-control" formControlName="satStartTimeAMPM">
+                <option value=""> Select </option>
+                <option value="0">AM</option>x
+                <option value="1">PM</option>
+              </select>
+            </div>
+            </div> -->
+         <div class="col-md-4">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">End Time</label> -->
+               <!--  <select class="form-control" formControlName="satEndTime">   
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>         
+                  </select> -->
+               <!-- <input type="time" class="form-control" formControlName="satEndTime" > -->
+               <input class="form-control" [ngxTimepicker]="picker13"  formControlName="satEndTime"  [format]="24">
+               <ngx-material-timepicker #picker13 ></ngx-material-timepicker>
+               <span *ngIf="authFormDays.controls.satEndTime.hasError('required') && authFormDays.controls.satEndTime.touched">
+                  <p style="color:#f70101 !important;">Sorry, field End Time is required!</p>
+               </span>
+            </div>
+         </div>
+
+         <div class="col-md-1">
+            <div class="form-group">
+               <span><i class="icon-close" (click)="empty('satStartTime', 'satEndTime')"></i></span>
+            </div>
+        </div> 
+         <!--  <div class="col-md-2">
+            <div class="form-group">
+              <select class="form-control" formControlName="satEndTimeAMPM">
+                <option value=""> Select </option>
+                <option value="0">AM</option>x
+                <option value="1">PM</option>
+              </select>
+            </div> -->
+         <!-- </div> -->
+      </div>
+
+      <div class="row" *ngIf="sun == 1">
+         <div class="col-md-3">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">Days</label> -->
+               <label class="form-control">Sunday</label>
+            </div>
+         </div>
+         <div class="col-md-4">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">Start Time</label> -->
+               <!--    <select class="form-control" formControlName="sunStartTime" >
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>
+                  </select> -->
+               <!-- <input type="time" class="form-control" formControlName="sunStartTime" (change)="handlerStartTimeDays($event, 'sun')"> -->
+               <input class="form-control" [ngxTimepicker]="picker14"  formControlName="sunStartTime" (change)="handlerStartTimeDays($event, 'sun')"  [format]="24">
+               <ngx-material-timepicker #picker14 ></ngx-material-timepicker>
+               <span *ngIf="authFormDays.controls.sunStartTime.hasError('required') && authFormDays.controls.sunStartTime.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Start Time is required!</p>
+               </span>
+            </div>
+         </div>
+         <!-- <div class="col-md-2">
+            <div class="form-group">
+              <select class="form-control" formControlName="sunStartTimeAMPM">
+                <option value=""> Select </option>
+                <option value="0">AM</option>x
+                <option value="1">PM</option>
+              </select>
+            </div>
+            </div> -->
+         <div class="col-md-4">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">End Time</label> -->
+               <!--  <select class="form-control" formControlName="sunEndTime">   
+                  <option value="{{i.id}}" *ngFor="let i of Time">{{i.time}} </option>         
+                  </select> -->
+               <!-- <input type="time" class="form-control" formControlName="sunEndTime"> -->
+               <input class="form-control" [ngxTimepicker]="picker15"  formControlName="sunEndTime"  [format]="24">
+               <ngx-material-timepicker #picker15 ></ngx-material-timepicker>
+               <span *ngIf="authFormDays.controls.sunEndTime.hasError('required') && authFormDays.controls.sunEndTime.touched">
+                  <p style="color:#f70101 !important;">Sorry, field End Time is required!</p>
+               </span>
+            </div>
+         </div>
+
+         <div class="col-md-1">
+            <div class="form-group">
+               <span><i class="icon-close" (click)="empty('sunStartTime', 'sunEndTime')"></i></span>
+            </div>
+        </div> 
+         <!--  <div class="col-md-2">
+            <div class="form-group">
+              <select class="form-control"  formControlName="sunEndTimeAMPM">
+                <option value=""> Select </option>
+                <option value="0">AM</option>x
+                <option value="1">PM</option>
+              </select>
+            </div> -->
+         <!-- </div> -->
+      </div>
+
+      <div class="modal-footer">
+         <button type="submit" class="btn btn-primary">Save</button>
+         <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="closeModalongoing()">Cancel</button>
+      </div>
+      </form>
+   </div>
+   <!-- <div class="modal-footer">
+      <button type="button" class="btn btn-primary">Save</button>
+      <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+      </div> -->
+</ng-template>

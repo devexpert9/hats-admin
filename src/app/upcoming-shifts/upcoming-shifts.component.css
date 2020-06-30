@@ -1,0 +1,14 @@
+
+
+#delete-pop.modal .modal-dialog .modal-content .modal-footer {
+    padding: 15px 15px;
+}
+
+@media(max-width:767px) {
+.modal .modal-dialog .modal-content .modal-footer {
+    padding: 15px 0;
+}
+}
+.ww-table-big-text.btn, .ww-table-big-text.btn:hover{
+	color: #fff;
+}

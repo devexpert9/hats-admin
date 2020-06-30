@@ -1,0 +1,126 @@
+<div class="container-scroller">
+<app-header></app-header>
+      <!-- partial -->
+	<div class="container-fluid page-body-wrapper">
+     
+      <!-- partial:partials/_sidebar.html -->
+      <app-sidebar></app-sidebar>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row mb-4">
+            <div class="col-12 d-flex align-items-center justify-content-between">
+              <h4 class="page-title">Payroll Setting</h4>
+            </div>
+          </div>
+        
+         <div class="row">
+         <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                	
+                  
+                    <div class="row">
+            					
+                      <div class="col-md-6">
+                        <h4 class="card-sub-ttl"> Day (per hour)</h4>
+            						<div class="form-group">
+            							<input class="form-control" type="number" name="day" placeholder="Rate in $ for day per hour" [(ngModel)]="payroll.day">
+            						</div>
+            					</div>
+
+                      <div class="col-md-6" >
+                          
+                          <h4 class="card-sub-ttl"> Night (per hour)</h4>
+                          
+                          <div class="form-group">                          
+                             <input class="form-control" type="number" name="night" placeholder="Rate in $ for night per hour" [(ngModel)]="payroll.night">
+                          </div>
+                      </div>
+           
+                    </div>
+
+                    
+                    <div class="row">
+            					<div class="col-md-6">
+                        <h4 class="card-sub-ttl"> Day hours start from</h4>
+
+            						<div class="form-group">
+            							<!-- <input class="form-control" type="time" name="day" placeholder="hh:mm" [(ngModel)]="payroll.day_start_hours"> -->
+
+                           <input class="form-control" [ngxTimepicker]="picker" [(ngModel)]="payroll.day_start_hours"  [format]="24">
+                          <ngx-material-timepicker #picker ></ngx-material-timepicker>
+
+            						</div>
+            					</div>
+
+                      <div class="col-md-6">
+                        <h4 class="card-sub-ttl"> Day hours end to</h4>
+                        
+                        <div class="form-group">
+                          <!-- <input class="form-control" type="time" name="day" placeholder="hh:mm" [(ngModel)]="payroll.day_end_hours"> -->
+                           <input class="form-control" [ngxTimepicker]="picker1" [(ngModel)]="payroll.day_end_hours"  [format]="24">
+                          <ngx-material-timepicker #picker1 ></ngx-material-timepicker>
+                        <!--  <label>
+                              Time
+                              <input [owlDateTimeTrigger]="dt4" [owlDateTime]="dt4">
+                              <owl-date-time [pickerType]="'timer'" #dt4></owl-date-time>
+                          </label> -->
+
+                        </div>
+                      </div>
+           
+                    </div>
+
+                 
+			
+                  
+                    <div class="row">
+
+                    	<div class="col-md-6">
+                        <h4 class="card-sub-ttl m-t-20"> Saturday (per hour)</h4>
+          							<div class="form-group">
+          								  <input class="form-control" type="number" name="sat" placeholder="Rate in $ for saturday per hour" [(ngModel)]="payroll.sat">
+          							</div>
+          						</div>
+
+                      <div class="col-md-6" >
+                        <h4 class="card-sub-ttl m-t-20"> Sunday (per hour)</h4>
+                          <div class="form-group">
+                              <input class="form-control" type="number" name="sun" placeholder="Rate in $ for sunday per hour" [(ngModel)]="payroll.sun">
+                          </div>
+                        </div>
+                     </div>
+
+                   
+                    
+                    <div class="row">
+                      	<div class="col-md-6" >
+                          <h4 class="card-sub-ttl m-t-20"> Public Holiday (per hour)</h4>
+            							<div class="form-group">
+            								  <input class="form-control" type="number" name="public" placeholder="Rate in $ for public holiday per hour" [(ngModel)]="payroll.public">
+            							</div>
+  						          </div>
+                    </div>
+				  
+              </div>  
+              </div>
+            </div>
+
+
+           
+            </div>
+             <button  type="button" class="btn btn-primary right float-right"  (click)="save(payroll)">Save</button>
+		   </div>
+           
+           <!-- partial:partials/_footer.html -->
+        <footer class="footer">
+          <div class="container-fluid clearfix">
+            <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. All rights reserved.</span>
+            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.
+            
+            </span>
+          </div>
+        </footer>
+      </div>
+	  </div>
+	  </div>

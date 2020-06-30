@@ -1,0 +1,2666 @@
+
+<div class="container-scroller">
+<app-header></app-header>
+<!-- partial -->
+<div class="container-fluid page-body-wrapper">
+   <!-- partial:partials/_sidebar.html -->
+
+   <app-sidebar></app-sidebar>
+   <div class="main-panel">
+      <div *ngIf="edit == true" class="upload"><span>Uploading
+         <div class="loading">
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+      </div><br>
+     {{counter}}/{{totalCount}}</span></div>
+      <div class="content-wrapper">
+         <div class="row mb-4">
+            <div class="col-12 d-flex align-items-center justify-content-between">
+               <h4 class="page-title">Requests</h4>
+            </div>
+         </div>
+
+         <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+               <div class="card">
+                  <div class="card-body">
+                     <h4 class="card-title">Requests</h4>
+                     <div class="row">
+                        <div class="col-12 table-responsive">
+                           <div class="table-input" style='margin:15px; float: right;' >
+                              <span>Search By Rapid ID:</span><br>
+                              <input type='text' placeholder='Type...' (keyup)='updateFilter($event)'/>
+                           </div>
+                           <table class="table table-striped" [mfData]="rows" #mf="mfDataTable" [mfRowsOnPage]="5">
+                           <thead>
+                              <tr>
+                                 <th>Sr No. #</th>
+                                 <th>Rapid ID</th>
+                                 <th>Name</th>
+                                 <th>Mobile</th>
+                                 <th>Email</th>
+                                 <th>Address</th>
+                                 <th>Status</th>
+                                 <th>Actions</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <tr *ngFor="let row of mf.data;let i = index;">
+                                 <td>{{i+1}}</td>
+                                 <td> 
+                                    <span *ngIf="row.rapidId == ''"><button style="width: 100%;" title="Assign ID" type="button" class="btn btn-icons btn-rounded btn-danger" data-toggle="modal"  (click)="AssignId(row, assignid)">Assign</button></span>
+                                    <span *ngIf="row.rapidId != ''"  class="rapidTag">{{row.rapidId}}</span>
+                                 </td>
+                                 <td>{{row.firstname}}({{row.username}})</td>
+                                 <td>{{row.contact}}</td>
+                                 <td>{{row.email}}</td>
+                                 <td>{{row.address}}, {{row.city}}, {{row.country}}</td>
+                                 <td>
+                                    <a *ngIf="row.is_available == 'true'" class="ww-table-big-text badge badge-success">Available</a> 
+                                    <a *ngIf="row.is_available == 'false'" class="ww-table-big-text badge badge-danger">Not Available</a>
+                                 </td>
+                                 <td>
+                                    <button *ngIf="row.adminStatus == 0" type="button" class="btn btn-icons btn-rounded btn-info" data-toggle="modal" data-target="#active-inactive-pop" data-placement="bottom" title="Approve" data-original-title="View Details" (click)="changeUserStatus(row,2)"><i class="icon-check"></i></button>
+                                    <button *ngIf="row.adminStatus == 0" type="button" class="btn btn-icons btn-rounded btn-danger" data-toggle="modal" data-target="#active-inactive-pop" data-placement="bottom" title="Decline" data-original-title="View Details" (click)="changeUserStatus(row,1)"><i class="icon-ban"></i></button>
+                                    <button *ngIf="row.adminStatus == 1" type="button" class="btn btn-icons btn-rounded btn-info" data-toggle="modal" data-target="#active-inactive-pop" data-placement="bottom" title="Approve" data-original-title="View Details" (click)="changeUserStatus(row,2)"><i class="icon-check"></i></button>
+                                    <button *ngIf="row.adminStatus == 2" type="button" class="btn btn-icons btn-rounded btn-danger" data-toggle="modal" data-target="#active-inactive-pop" data-placement="bottom" title="Decline" data-original-title="View Details" (click)="changeUserStatus(row,1)"><i class="icon-ban"></i></button>
+                                    <button type="button" class="btn btn-icons btn-rounded btn-primary" data-toggle="modal" data-target="#view-shift" data-placement="bottom" title="View" data-original-title="View Details" (click)="viewGuard(row)"><i class="icon-eye"></i></button>
+                                    <button title="Edit"  type="button" class="btn btn-icons btn-rounded btn-warning" data-toggle="modal" (click)="EditGuard(row,editshift)"><i class="icon-pencil" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit"></i></button>
+                                    <button  title="Delete" type="button" class="btn btn-icons btn-rounded btn-danger" data-toggle="modal" data-target="#delete-pop" (click)="DeleteGuard(row)"><i class="icon-trash" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete"></i></button>
+
+                                    <button title="Print" type="button" class="btn btn-icons  btn-rounded btn-info" data-toggle="modal" (click)="Print(row)"><i class=" icon-printer" data-placement="bottom" data-original-title="View Shifts"></i></button>
+                                 </td>
+                              </tr>
+                              <tr *ngIf="mf.data?.length == 0">
+                                 <td colspan="11">
+                                    No record found.
+                                 </td>
+                              </tr>
+                           </tbody>
+                           <tfoot>
+                              <tr>
+                                 <td colspan="4">
+                                    <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+                                 </td>
+                              </tr>
+                           </tfoot>
+                           </table>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- partial:partials/_footer.html -->
+         <footer class="footer">
+            <div class="container-fluid clearfix">
+               <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. All rights reserved.</span>
+               <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.
+               </span>
+            </div>
+         </footer>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="view-shift" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Worker Details</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <div class="accordion basic-accordion" id="accordion1" role="tablist">
+               <form >
+                  <!-- <h6 class="apply-grd" style="text-align:center;color:#2faeff;margin: 6px 2px 2px 2px;" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">Personal Info-1</h6> -->
+                  <div class="card">
+                     <div class="card-header" role="tab" id="headingOne">
+                        <h6 class="mb-0">
+                           <a data-toggle="collapse" href="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
+                           <i class="card-icon mdi mdi-checkbox-marked-circle-outline"></i>Personal Info-1
+                           </a>
+                        </h6>
+                     </div>
+                     <div class="collapse show" id="collapseExample" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion1">
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Name</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.firstname}} " disabled>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Email</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.email}}" disabled>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Username</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.username}}" disabled>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Password</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.password}}" disabled>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Primary-Address (mailing)</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.primary_email}}" disabled>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Mobile Number</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.contact}}" disabled>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Country</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.country}}" disabled>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">State</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.state}}" disabled>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">City</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.city}}" disabled>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Post Code</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.postcode}}" disabled>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- // card -->
+                  <!-- card -->
+                  <div class="card">
+                     <div class="card-header" role="tab" id="headingTwo">
+                        <h6 class="mb-0">
+                           <a data-toggle="collapse" href="#collapseExample1" aria-expanded="true" aria-controls="collapseExample1">
+                           <i class="card-icon mdi mdi-checkbox-marked-circle-outline"></i>Personal Info-2
+                           </a>
+                        </h6>
+                     </div>
+                     <div class="collapse" id="collapseExample1" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion1">
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Home/Telephone Number</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.home}}" disabled>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Supplemental Address</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.address}}" disabled>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Supplemetal State</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.sstate}}" disabled>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Supplemental City</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.scity}}" disabled>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Suplemental Post Code</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.spostcode}}" disabled>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Gender</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.gender}}" disabled>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Date of Birth</label>
+                                 <input type="name" class="form-control" placeholder="{{formatedDate12(viewGuardData?.dob)}}" disabled>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Tax File</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.tax_file}}" disabled>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group view-pop-imgblock ">
+                                 <label for="exampleInputEmail1">Profile Image</label>
+                                 <img *ngIf="viewGuardData?.profile_image == ''" class="rounded-circle img-sm" src="./assets/images/user2.jpg" alt="profile image">
+                                 <img (click)="open(viewGuardData?.profile_image)" *ngIf="viewGuardData?.profile_image != '' && fileExtension(viewGuardData?.profile_image) != 'pdf'" class="rounded-circle img-sm" src="{{imageURL + viewGuardData?.profile_image}}" alt="profile image">
+
+                                 <span *ngIf="fileExtension(viewGuardData?.profile_image) =='pdf'">{{viewGuardData?.profile_image}}<i (click)="open(viewGuardData?.profile_image)" class="icon-eye"></i></span>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- // card -->
+                  <!-- card -->
+                  <div class="card">
+                     <div class="card-header" role="tab" id="headingThree">
+                        <h6 class="mb-0">
+                           <a data-toggle="collapse" href="#collapseExample2" aria-expanded="true" aria-controls="collapseExample2">
+                           <i class="card-icon mdi mdi-checkbox-marked-circle-outline"></i>Security Certifications & First-Aid Details
+                           </a>
+                        </h6>
+                     </div>
+                     <!-- <h6 class="apply-grd" style="text-align:center;color:#2faeff;margin: 6px 2px 2px 2px;" data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample2"></h6> -->
+                     <div class="collapse" id="collapseExample2" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion1">
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Security License Number</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.licenseNo}}" disabled>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Expiry Date</label>
+                                 <input type="name" class="form-control" placeholder="{{formatedDate1(viewGuardData?.licence_exp_date)}}" disabled>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group view-pop-imgblock">
+                                 <label for="exampleInputEmail1">Security License</label>
+                                 <img *ngIf="viewGuardData?.licence_image == null" class="rounded-circle img-sm" src="./assets/images/user2.jpg" alt="license image">
+
+                                 <img (click)="open(viewGuardData?.licence_image)" *ngIf="viewGuardData?.licence_image != null && fileExtension(viewGuardData?.licence_image) !='pdf'" class="rounded-circle img-sm" src="{{imageURL + viewGuardData?.licence_image}}" alt="license image">
+
+                                  <span *ngIf="viewGuardData?.licence_image != null && fileExtension(viewGuardData?.licence_image) == 'pdf'"> <input type="name" class="form-control" placeholder="{{viewGuardData?.licence_image}}" disabled> <span class="icon-set"><i (click)="open(viewGuardData?.licence_image)" class="icon-eye"></i></span></span>
+                                 
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group view-pop-imgblock">
+                                 <label for="exampleInputEmail1">Security Certificate</label>
+                                 <img *ngIf="viewGuardData?.certificate_image == ''" class="rounded-circle img-sm" src="./assets/images/user2.jpg" alt="certificate_image image">
+
+                                 <img (click)="open(viewGuardData?.certificate_image)" *ngIf="viewGuardData?.certificate_image != null && fileExtension(viewGuardData?.certificate_image) !='pdf'" class="rounded-circle img-sm" src="{{imageURL + viewGuardData?.certificate_image}}" alt="certificate image">
+
+                                  <span *ngIf="viewGuardData?.certificate_image != null && fileExtension(viewGuardData?.certificate_image) == 'pdf'"> <input  type="name" class="form-control" placeholder="{{viewGuardData?.certificate_image}}" disabled> <span class="icon-set"><i (click)="open(viewGuardData?.certificate_image)" class="icon-eye"></i></span></span>
+                               
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group view-pop-imgblock">
+                                 <label for="exampleInputEmail1">First-Aid Certificate</label>
+                                 <img *ngIf="viewGuardData?.first_aid_image == ''" class="rounded-circle img-sm" src="./assets/images/user2.jpg" alt="first-aid image">
+
+                                 <img (click)="open(viewGuardData?.first_aid_image)" *ngIf="viewGuardData?.first_aid_image != null && fileExtension(viewGuardData?.first_aid_image) !='pdf'" class="rounded-circle img-sm" src="{{imageURL + viewGuardData?.first_aid_image}}" alt="first-aid image">
+
+                                 <span *ngIf="viewGuardData?.first_aid_image != null && fileExtension(viewGuardData?.first_aid_image) == 'pdf'"><input type="name" class="form-control" placeholder="{{viewGuardData?.first_aid_image}}" disabled> <span class="icon-set"><i (click)="open(viewGuardData?.first_aid_image)" class="icon-eye"></i></span></span>
+                           
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">First-Aid Expiry Date</label>
+                                 <input type="name" class="form-control" placeholder="{{formatedDate1(viewGuardData?.first_aid_exp_date)}}" disabled>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Driving License Number</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.drivingLicenseNo}}" disabled>
+                              </div>
+                           </div>
+
+                           <div class="col-md-6">
+                              <div class="form-group view-pop-imgblock">
+                                 <label for="exampleInputEmail1">Driving License</label>
+                                 <img *ngIf="viewGuardData?.driving_image == ''" class="rounded-circle img-sm" src="./assets/images/user2.jpg" alt="driving image">
+
+                                 <img (click)="open(viewGuardData?.driving_image)" *ngIf="viewGuardData?.driving_image != null && fileExtension(viewGuardData?.driving_image) !='pdf'" class="rounded-circle img-sm" src="{{imageURL + viewGuardData?.driving_image}}" alt="driving image">
+
+                                 <span *ngIf="viewGuardData?.driving_image != null && fileExtension(viewGuardData?.driving_image) == 'pdf'"> <input type="name" class="form-control" placeholder="{{viewGuardData?.driving_image}}" disabled> <span class="icon-set"><i (click)="open(viewGuardData?.driving_image)" class="icon-eye"></i></span></span>
+
+                                 <span *ngIf="viewGuardData?.driving_image == null"> <input type="name" class="form-control" placeholder="No File Selected" disabled></span>
+
+                                 
+                              </div>
+                           </div>                          
+                        </div>
+
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Account Name</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.acname}}" disabled>
+                              </div>
+                           </div>
+                        </div>
+
+                     </div>
+                  </div>
+                  <!-- // card -->
+                  <!-- card -->
+                  <div class="card">
+                     <div class="card-header" role="tab" id="headingFour">
+                        <h6 class="mb-0">
+                           <a data-toggle="collapse" href="#collapseExample4" aria-expanded="true" aria-controls="collapseExample4">
+                           <i class="card-icon mdi mdi-checkbox-marked-circle-outline"></i>Passport & Vivo/visa Details
+                           </a>
+                        </h6>
+                     </div>
+                     <!-- <h6 class="apply-grd" style="text-align:center;color:#2faeff;margin: 6px 2px 2px 2px;" data-toggle="collapse" href="#collapseExample4" role="button" aria-expanded="false" aria-controls="collapseExample4">Passport & Vivo/visa Details</h6> -->
+                     <div class="collapse" id="collapseExample4" aria-labelledby="headingFour" data-parent="#accordion1">
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Passport Number</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.passportNo}}" disabled>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group view-pop-imgblock">
+                                 <label for="exampleInputEmail1">Passport Image</label>
+                                 <img *ngIf="viewGuardData?.passport_image == ''" class="rounded-circle img-sm" src="./assets/images/user2.jpg" alt="passport image">
+
+                                 <img (click)="open(viewGuardData?.passport_image)" *ngIf="viewGuardData?.passport_image != null && fileExtension(viewGuardData?.passport_image) !='pdf'" class="rounded-circle img-sm" src="{{imageURL + viewGuardData?.passport_image}}" alt="passport image">
+
+                                <span *ngIf="viewGuardData?.passport_image != null && fileExtension(viewGuardData?.passport_image) == 'pdf'"> <input type="name" class="form-control" placeholder="{{viewGuardData?.passport_image}}" disabled> <span class="icon-set"><i (click)="open(viewGuardData?.passport_image)" class="icon-eye"></i></span></span>
+
+                                
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group view-pop-imgblock">
+                                 <label for="exampleInputEmail1">Vivo/Visa</label>
+                                 <img *ngIf="viewGuardData?.visa_image == ''" class="rounded-circle img-sm" src="./assets/images/user2.jpg" alt="vivo/visa image">
+
+                                 <img (click)="open(viewGuardData?.visa_image)" *ngIf="viewGuardData?.visa_image != null && fileExtension(viewGuardData?.visa_image) != 'pdf'" class="rounded-circle img-sm" src="{{imageURL + viewGuardData?.visa_image}}" alt="vivo/visa image">
+
+
+                                  <span *ngIf="viewGuardData?.visa_image != null && fileExtension(viewGuardData?.visa_image) == 'pdf'"> <input type="name" class="form-control" placeholder="{{viewGuardData?.visa_image}}" disabled> <span class="icon-set"><i (click)="open(viewGuardData?.visa_image)" class="icon-eye"></i></span></span>
+                                 
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group view-pop-imgblock">
+                                 <label for="exampleInputEmail1">TFN</label>
+                                 <img *ngIf="viewGuardData?.tfn_file == ''" class="rounded-circle img-sm" src="./assets/images/user2.jpg" alt="tfn">
+
+                                 <img (click)="open(viewGuardData?.tfn_file)" *ngIf="viewGuardData?.tfn_file != '' && fileExtension(viewGuardData?.tfn_file) != 'pdf'" class="rounded-circle img-sm" src="{{imageURL + viewGuardData?.tfn_file}}" alt="tfn">
+
+                                 <span *ngIf="viewGuardData?.tfn_file != null && fileExtension(viewGuardData?.tfn_file) == 'pdf'"> <input type="name" class="form-control" placeholder="{{viewGuardData?.tfn_file}}" disabled> <span class="icon-set"><i (click)="open(viewGuardData?.tfn_file)" class="icon-eye"></i></span></span>
+                                
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">BSB Number</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.bsb}}" disabled>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Account Number</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.acnumber}}" disabled>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Account Name</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.acname}}" disabled>
+                              </div>
+                           </div>
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Signature</label>
+                                 <img style="height: 40px;width: 100%;" *ngIf="viewGuardData?.signature != ''" class="" src="{{imageSrc}}" >
+                                 <input *ngIf="viewGuardData?.signature == ''" type="name" class="form-control" placeholder="No Signature" disabled>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- ///card -->
+
+
+                  <!-- //card -->
+
+                <div class="card">
+                     <div class="card-header" role="tab" id="headingFive">
+                        <h6 class="mb-0">
+                           <a data-toggle="collapse" href="#collapseExample5" aria-expanded="true" aria-controls="collapseExample5">
+                           <i class="card-icon mdi mdi-checkbox-marked-circle-outline"></i>Other Questions
+                           </a>
+                        </h6>
+                     </div>
+                     <div class="collapse" id="collapseExample5" role="tabpanel" aria-labelledby="headingFive" data-parent="#accordion1">
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                <p class="smalltxt"> Have you ever been charged or convicted with any criminal offence?</p>
+
+                                 <div class="radio-yn">
+                                    <ul style="list-style-type: none;">
+                                        <li>
+                                            <input type="radio" id="yes3" [value]="true" name="aaa" disabled [(ngModel)]="criminal_offence"> 
+                                            <label>Yes</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="no3" [value]="false" name="aaa" disabled [(ngModel)]="criminal_offence">
+                                            <label>No</label>
+                                        </li>
+                                    </ul>
+                                 </div>
+
+                              </div>
+                           </div>
+
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <p class="smalltxt">Do you full understand all details in regards to Occupational?<br>Health and Safety
+                                 </p>
+
+                                 <div class="radio-yn">
+                                    <ul style="list-style-type: none;">
+                                        <li>
+                                            <input type="radio" id="yes3" [value]="true" name="aaa4" disabled [(ngModel)]="occupation">
+                                            <label>Yes</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="no3" [value]="false" name="aaa4" disabled [(ngModel)]="occupation">
+                                            <label>No</label>
+                                        </li>
+                                    </ul>
+                                 </div>
+                              </div>
+                           </div>
+                           
+                        </div>   
+
+
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <p class="smalltxt">If you have made a Work cover claim, would the injuries you received, stop you from completing duties required for the position you have applied for? </p>
+
+                                 <div class="radio-yn">
+                                    <ul style="list-style-type: none;">
+                                        <li>
+                                            <input type="radio" id="yes3" [value]="true" name="aaa2" disabled [(ngModel)]="injury">
+                                            <label>Yes</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="no3" [value]="false" name="aaa2" disabled [(ngModel)]="injury">
+                                            <label>No</label>
+                                        </li>
+                                    </ul>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <p class="smalltxt">Are you an Australian Resident for work purposes? </p>
+
+                                 <div class="radio-yn">
+                                    <ul style="list-style-type: none;">
+                                        <li>
+                                            <input type="radio" id="yes3" [value]="true" name="aaa3" disabled [(ngModel)]="resident">
+                                            <label>Yes</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="no3" [value]="false" name="aaa3" disabled [(ngModel)]="resident">
+                                            <label>No</label>
+                                        </li>
+                                    </ul>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                  <p class="smalltxt"> Do you hold a current First Aid certificate?</p>
+
+                                 <div class="radio-yn">
+                                    <ul style="list-style-type: none;">
+                                        <li>
+                                            <input type="radio" id="yes3" [value]="true" name="aaa6" disabled [(ngModel)]="first_aid">
+                                            <label>Yes</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="no3" [value]="false" name="aaa6" disabled [(ngModel)]="first_aid">
+                                            <label>No</label>
+                                        </li>
+                                    </ul>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <p class="smalltxt"> Do you have any Visa Conditions which Stops you working in Security?</p>
+
+                                 <div class="radio-yn">
+                                    <ul style="list-style-type: none;">
+                                        <li>
+                                            <input type="radio" id="yes3" [value]="true" name="aaa5" disabled [(ngModel)]="visa_condi">
+                                            <label>Yes</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="no3"  [value]="false" name="aaa5" disabled [(ngModel)]="visa_condi">
+                                            <label>No</label>
+                                        </li>
+                                    </ul>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>                    
+
+                         <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <p class="smalltxt">Have you ever made a Work cover claim? YES/NO (If YES, please provide details:)</p>
+
+                                 <div class="radio-yn">
+                                    <ul style="list-style-type: none;">
+                                        <li>
+                                            <input type="radio" id="yes3"  [value]="true" name="aaa1" disabled [(ngModel)]="work_claim">
+                                            <label>Yes</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="no3" [value]="false" name="aaa1" disabled [(ngModel)]="work_claim">
+                                            <label>No</label>
+                                        </li>
+                                    </ul>
+                                 </div>
+
+                              </div>
+                           </div>
+
+                            <div class="col-md-6" *ngIf="viewGuardData?.work_claim == true">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Work Claim Details</label>
+                                 <input type="name" class="form-control" placeholder="{{viewGuardData?.work_claim_details}}" disabled>
+                              </div>
+                           </div>
+                        </div>
+
+                     </div>
+                  </div>
+                  <!-- ///card -->
+               </form>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-danger" data-dismiss="modal" >Cancel</button>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- <div class="modal fade" id="editshift" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
+<ng-template #editshift let-c="close" let-d="dismiss">
+   <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Edit Worker Details </h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <div class="accordion basic-accordion" id="accordion2" role="tablist">
+      <form [formGroup]="authForm" (ngSubmit)="UpdateGuardInfo1()">
+      <!-- card -->
+      <div class="card">
+         <div class="card-header" role="tab" id="headingOne">
+            <h6 class="mb-0">
+               <a data-toggle="collapse" href="#collapseExample1" aria-expanded="true" aria-controls="collapseExample1">
+               <i class="card-icon mdi mdi-checkbox-marked-circle-outline"></i>Personal Info-1
+               </a>
+            </h6>
+         </div>
+         <!-- <h6 class="apply-grd" style="text-align:center;color:#2faeff;margin: 6px 2px 2px 2px;" data-toggle="collapse" href="#collapseExample1" role="button" aria-expanded="false" aria-controls="collapseExample">Personal Info-1</h6> -->
+         <div class="collapse show" id="collapseExample1" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion2">
+            <div class="row">
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Name</label>
+                     <input type="name" class="form-control" placeholder="Enter name" formControlName="firstname" [ngClass]="(authForm.controls.firstname.hasError('required') && authForm.controls.firstname.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.firstname.hasError('required') &&    authForm.controls.firstname.touched">
+                        <p style="color:#f70101 !important;">The field name is required.</p>
+                     </span>
+                  </div>
+               </div>
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Email</label>
+                     <input type="name" class="form-control" placeholder="Enter Email" formControlName="email" [ngClass]="(authForm.controls.email.hasError('required') && authForm.controls.email.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.email.hasError('required') &&    authForm.controls.email.touched">
+                        <p style="color:#f70101 !important;">The field email is required.</p>
+                     </span>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">User Name</label>
+                     <input type="name" class="form-control" placeholder="Enter username" formControlName="username" [ngClass]="(authForm.controls.username.hasError('required') && authForm.controls.username.touched )? 'has-error' : ''" disabled>
+                     <span *ngIf="authForm.controls.username.hasError('required') &&    authForm.controls.username.touched">
+                        <p style="color:#f70101 !important;">The field is required.</p>
+                     </span>
+                  </div>
+               </div>
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Password</label>
+                     <input type="name" class="form-control" placeholder="Enter password" formControlName="password" [ngClass]="(authForm.controls.password.hasError('required') && authForm.controls.password.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.password.hasError('required') &&    authForm.controls.password.touched">
+                        <p style="color:#f70101 !important;">The field password is required.</p>
+                     </span>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Primary-Address (mailing)</label>
+                     <input type="name" class="form-control" placeholder="Enter primary address" formControlName="primary_email">
+                  </div>
+               </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Mobile Number</label>
+                     <input type="name" class="form-control" placeholder="Enter mobile number" formControlName="mobile" [ngClass]="(authForm.controls.mobile.hasError('required') && authForm.controls.mobile.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.mobile.hasError('required') &&    authForm.controls.mobile.touched">
+                        <p style="color:#f70101 !important;">The field mobile number is required.</p>
+                     </span>
+                  </div>
+               </div>            
+            </div>
+            <div class="row">
+
+                  <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Country</label>
+                     <input type="name" class="form-control" placeholder="Enter country" formControlName="country" [ngClass]="(authForm.controls.country.hasError('required') && authForm.controls.country.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.country.hasError('required') &&    authForm.controls.country.touched">
+                        <p style="color:#f70101 !important;">The field country is required.</p>
+                     </span>
+                     <span *ngIf="authForm.controls.country.hasError('pattern') &&    authForm.controls.country.touched">
+                        <p style="color:#f70101 !important;">Please enter valid country!</p>
+                     </span>
+                  </div>
+               </div>
+
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">State</label>
+                     <input type="name" class="form-control" placeholder="Enter state" formControlName="state" [ngClass]="(authForm.controls.state.hasError('required') && authForm.controls.state.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.state.hasError('required') &&    authForm.controls.state.touched">
+                        <p style="color:#f70101 !important;">The field state is required.</p>
+                     </span>
+                     <span *ngIf="authForm.controls.state.hasError('pattern') &&    authForm.controls.state.touched">
+                        <p style="color:#f70101 !important;">Please enter valid state!</p>
+                     </span>
+                  </div>
+               </div>
+               
+            </div>
+            <div class="row">
+
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">City</label>
+                     <input type="name" class="form-control" placeholder="Enter city" formControlName="city" [ngClass]="(authForm.controls.city.hasError('required') && authForm.controls.city.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.city.hasError('required') &&    authForm.controls.city.touched">
+                        <p style="color:#f70101 !important;">The field city is required.</p>
+                     </span>
+                     <span *ngIf="authForm.controls.city.hasError('pattern') &&    authForm.controls.city.touched">
+                        <p style="color:#f70101 !important;">Please enter valid city!</p>
+                     </span>
+                  </div>
+               </div>
+
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Post Code</label>
+                     <input type="name" class="form-control" placeholder="Enter postcode" formControlName="postcode" [ngClass]="(authForm.controls.postcode.hasError('required') && authForm.controls.postcode.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.postcode.hasError('required') &&    authForm.controls.postcode.touched">
+                        <p style="color:#f70101 !important;">The field postcode is required.</p>
+                     </span>
+                     <span *ngIf="authForm.controls.postcode.hasError('pattern') &&    authForm.controls.postcode.touched">
+                        <p style="color:#f70101 !important;">Please enter valid postcode!</p>
+                     </span>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- // card -->
+      <!-- card -->
+      <div class="card">
+         <div class="card-header" role="tab" id="headingTwo">
+            <h6 class="mb-0">
+               <a data-toggle="collapse" href="#collapseExample2" aria-expanded="true" aria-controls="collapseExample2">
+               <i class="card-icon mdi mdi-checkbox-marked-circle-outline"></i>Personal Info-2
+               </a>
+            </h6>
+         </div>
+         <!-- <h6 class="apply-grd" style="text-align:center;color:#2faeff;margin: 6px 2px 2px 2px;" data-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample"> Personal Info-2</h6> -->
+         <div class="collapse" id="collapseExample2" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion2">
+            <div class="row">
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Home/Telephone No.</label>
+                     <input type="name" class="form-control" placeholder="Enter home/telephone number" formControlName="home" [ngClass]="(authForm.controls.home.hasError('required') && authForm.controls.home.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.home.hasError('required') &&    authForm.controls.home.touched">
+                        <p style="color:#f70101 !important;">The field home/telephone number is required.</p>
+                     </span>
+                     <span *ngIf="authForm.controls.home.hasError('pattern') &&    authForm.controls.home.touched">
+                        <p style="color:#f70101 !important;">Please enter valid home/telephone number between 4 to 15 digits!</p>
+                     </span>
+                  </div>
+               </div>
+
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Supplemental Address</label>
+                     <input type="name" class="form-control" placeholder="Enter supplemental address" formControlName="address" [ngClass]="(authForm.controls.address.hasError('required') && authForm.controls.address.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.address.hasError('required') &&    authForm.controls.address.touched">
+                        <p style="color:#f70101 !important;">The field supplemental address is required.</p>
+                     </span>
+                  </div>
+               </div>
+              
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Supplemental State</label>
+                     <input type="name" class="form-control" placeholder="Enter supplemental state" formControlName="sstate">
+                  </div>
+               </div>
+
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Supplemental City</label>
+                     <input type="name" class="form-control" placeholder="Enter supplemental city" formControlName="scity">
+                  </div>
+               </div>
+              
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Supplemetal Post Code</label>
+                     <input type="name" class="form-control" placeholder="Enter supplemental post code" formControlName="spostcode">
+                  </div>
+               </div>
+
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Gender</label>
+                     <select class="form-control" formControlName="gender">
+                        <!-- <option value=""> Select One </option> -->
+                        <option value="Male" selected>Male </option>
+                        <option value="Female">Female </option>
+                     </select>
+                  </div>
+               </div>
+
+              
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Date of Birth</label>
+                     <input type="date" class="form-control" placeholder="Enter date of birth" formControlName="dob" [ngClass]="(authForm.controls.dob.hasError('required') && authForm.controls.dob.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.dob.hasError('required') &&    authForm.controls.dob.touched">
+                        <p style="color:#f70101 !important;">The field DOB is required.</p>
+                     </span>
+                  </div>
+               </div> 
+
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Tax File</label>
+                     <input type="name" class="form-control" placeholder="Enter tax file" formControlName="tax_file" [ngClass]="(authForm.controls.tax_file.hasError('required') && authForm.controls.tax_file.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.tax_file.hasError('required') &&    authForm.controls.tax_file.touched">
+                        <p style="color:#f70101 !important;">The field tax file is required.</p>
+                     </span>
+                  </div>
+               </div>
+
+            </div>
+           
+           <div class="row">
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Profile Image</label>
+                     <div class="img-box padding-top-5">
+                        <img *ngIf="previewProfile == false && guardDetails?.profile_image == ''" class="rounded-circle img-sm" src="assets/images/user2.jpg" alt="profile image">
+                        <img *ngIf="previewProfile == false && guardDetails?.profile_image != ''" class="rounded-circle img-sm" src="{{imageURL}}{{guardDetails?.profile_image}}" alt="profile image">
+                        <img *ngIf="previewProfile == true" class="rounded-circle img-sm" src="{{imagePreviewProfile}}" alt="profile image">
+                        <input style="display: none" type="file" (change)="onProfileImageChanged($event)" #fileInput1 name="file" ngf-pattern="'image/*" accept="image/*,application/pdf" ngf-max-size="200MB" id="input-file-now" class="dropify" style="display:none;" filepreview="filepreview1" fileinput="file" ngf-select>
+                        <label class="edit-profile-btn" for="avatar">
+                        <i class="fa fa-pencil" aria-hidden="true" (click)="fileInput1.click()"></i>
+                        </label>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+         </div>
+      </div>
+      <!-- // card -->
+      <!-- card -->
+      <div class="card">
+         <div class="card-header" role="tab" id="headingThree">
+            <h6 class="mb-0">
+               <a data-toggle="collapse" href="#collapseExample3" aria-expanded="true" aria-controls="collapseExample3">
+               <i class="card-icon mdi mdi-checkbox-marked-circle-outline"></i>Security Certifications & First-Aid Details
+               </a>
+            </h6>
+         </div>
+
+         <div class="collapse" id="collapseExample3" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion2">
+            <div class="row">
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1"> Security License Number</label>
+                     <input type="name" class="form-control" placeholder="Enter license number" formControlName="licenseNo" [ngClass]="(authForm.controls.licenseNo.hasError('required') && authForm.controls.licenseNo.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.licenseNo.hasError('required') &&    authForm.controls.licenseNo.touched">
+                        <p style="color:#f70101 !important;">The field license number is required.</p>
+                     </span>
+                     <span *ngIf="authForm.controls.licenseNo.hasError('pattern') &&    authForm.controls.licenseNo.touched">
+                        <p style="color:#f70101 !important;">Please enter valid license number between 6 to 12 alpanumeric!</p>
+                     </span>
+                  </div>
+               </div>
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Expiry Date</label>
+                     <input type="date" class="form-control" placeholder="Enter license expiry date" formControlName="licence_exp_date" [ngClass]="(authForm.controls.licence_exp_date.hasError('required') && authForm.controls.licence_exp_date.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.licence_exp_date.hasError('required') &&    authForm.controls.licence_exp_date.touched">
+                        <p style="color:#f70101 !important;">The field license exipry date is required.</p>
+                     </span>
+                  </div>
+               </div>
+            </div>
+
+
+             <div class="row">
+                  <!-- Security License File -->
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label for="exampleInputEmail1">Security License</label>
+                        <div class="img-box padding-top-5 {{(images?.licenceImage?.split('.').pop() != 'pdf' && images?.licenceImage != null) || guardDetails?.licence_image?.split('.').pop() != 'pdf' ? 'inline-block' : ''}}">
+
+                           <input *ngIf="fromGallery?.license == false && guardDetails?.licence_image == null" type="name" class="form-control" placeholder="No File Selected">
+
+
+                           <img *ngIf="fromGallery?.license == false && guardDetails?.licence_image != null && fileExtension(guardDetails?.licence_image) != 'pdf'" class="rounded-circle img-sm" src="{{imageURL}}{{guardDetails?.licence_image}}" alt="first aid file">
+
+                           <input *ngIf="fromGallery?.license == false && guardDetails?.licence_image != null
+                           && fileExtension(guardDetails?.licence_image) == 'pdf'" type="name" class="form-control" placeholder="{{guardDetails?.licence_image}}">
+
+                           <img *ngIf="fromGallery?.license == true && filesExtension?.licence != 'pdf'" class="rounded-circle img-sm" src="{{images?.licenceImage}}" alt="license file">
+
+                             <input *ngIf="fromGallery?.license == true &&  filesExtension?.licence == 'pdf'" type="name" class="form-control" placeholder="{{images?.licenceImage}}">
+
+                           <input style="display: none" type="file" (change)="onProfileImageChanged($event, 'license')" #fileInput1 name="file" ngf-pattern="'image/*,application/pdf'" accept="image/*,application/pdf" ngf-max-size="200MB" id="input-file-now" class="dropify" style="display:none;" filepreview="filepreview1" fileinput="file" ngf-select>
+
+                          <label class="edit-profile-btn" for="avatar">
+                           <i class="fa fa-pencil" aria-hidden="true" (click)="fileInput1.click()"></i>
+                           </label>
+                        </div>
+                     </div>
+                  </div>
+
+                  <!-- Security Certificate File -->
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label for="exampleInputEmail1">Security Certificate</label>
+                        <div class="img-box padding-top-5 {{(images?.certificateImage?.split('.').pop() != 'pdf' && images?.certificateImage != null) || guardDetails?.certificate_image?.split('.').pop() != 'pdf' ? 'inline-block' : ''}}">
+
+
+                           <input *ngIf="fromGallery?.certificate == false && guardDetails?.certificate_image == null" type="name" class="form-control" placeholder="No File Selected">
+
+
+                        <img *ngIf="fromGallery?.certificate == false && guardDetails?.certificate_image != null && fileExtension(guardDetails?.certificate_image) != 'pdf'" class="rounded-circle img-sm" src="{{imageURL}}{{guardDetails?.certificate_image}}" alt="first aid file">
+
+                        <input *ngIf="fromGallery?.certificate == false && guardDetails?.certificate_image != null
+                        && fileExtension(guardDetails?.certificate_image) == 'pdf'" type="name" class="form-control" placeholder="{{guardDetails?.certificate_image}}">
+
+                        <img *ngIf="fromGallery?.certificate == true && filesExtension?.certificate != 'pdf'" class="rounded-circle img-sm" src="{{images?.certificateImage}}" alt="certificate file">
+
+                          <input *ngIf="fromGallery?.certificate == true && filesExtension?.certificate == 'pdf'" type="name" class="form-control" placeholder="{{images?.certificateImage}}">
+
+                        <input style="display: none" type="file" (change)="onProfileImageChanged($event, 'certificate')" #fileInput2 name="file" ngf-pattern="'image/*,application/pdf'" accept="image/*,application/pdf" ngf-max-size="200MB" id="input-file-now" class="dropify" style="display:none;" filepreview="filepreview1" fileinput="file" ngf-select>                          
+
+                           <label class="edit-profile-btn" for="avatar">
+                           <i class="fa fa-pencil" aria-hidden="true" (click)="fileInput2.click()"></i>
+                           </label>
+                        </div>
+                     </div>
+                  </div>
+
+            </div>
+
+
+            <div class="row">
+               <!-- First-Aid Certificate File -->
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">First-Aid Certificate</label>
+                     <div class="img-box padding-top-5 {{(images?.firstAidImage?.split('.').pop() != 'pdf' && images?.firstAidImage != null) || guardDetails?.first_aid_image?.split('.').pop() != 'pdf' ? 'inline-block' : ''}}">
+                        <!-- <img *ngIf="fromGallery?.firstAid == false && guardDetails?.first_aid_image == null" class="rounded-circle img-sm" src="assets/images/user2.jpg" alt="profile image"> -->
+
+                        <input *ngIf="fromGallery?.firstAid == false && guardDetails?.first_aid_image == null" type="name" class="form-control" placeholder="No File Selected">
+
+
+                        <img *ngIf="fromGallery?.firstAid == false && guardDetails?.first_aid_image != null && fileExtension(guardDetails?.first_aid_image) != 'pdf'" class="rounded-circle img-sm" src="{{imageURL}}{{guardDetails?.first_aid_image}}" alt="first aid file">
+
+                        <input *ngIf="fromGallery?.firstAid == false && guardDetails?.first_aid_image != null
+                        && fileExtension(guardDetails?.first_aid_image) == 'pdf'" type="name" class="form-control" placeholder="{{guardDetails?.first_aid_image}}">
+
+                        <img *ngIf="fromGallery?.firstAid == true && filesExtension?.firstAid != 'pdf'" class="rounded-circle img-sm" src="{{images?.firstAidImage}}" alt="first aid file">
+
+                          <input *ngIf="fromGallery?.firstAid == true && filesExtension?.firstAid == 'pdf'" type="name" class="form-control" placeholder="{{images?.firstAidImage}}">
+
+                        <input style="display: none" type="file" (change)="onProfileImageChanged($event, 'firstAid')" #fileInput3 name="file" ngf-pattern="'image/*,application/pdf'" accept="image/*,application/pdf" ngf-max-size="200MB" id="input-file-now" class="dropify" style="display:none;" filepreview="filepreview1" fileinput="file" ngf-select>
+
+                        <label class="edit-profile-btn" for="avatar">
+                        <i class="fa fa-pencil" aria-hidden="true" (click)="fileInput3.click()"></i>
+                        </label>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">First-Aid Expiry Date</label>
+                     <input type="date" class="form-control" placeholder="Enter license expiry date" formControlName="first_aid_exp_date" [ngClass]="(authForm.controls.first_aid_exp_date.hasError('required') && authForm.controls.first_aid_exp_date.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.first_aid_exp_date.hasError('required') &&    authForm.controls.first_aid_exp_date.touched">
+                        <p style="color:#f70101 !important;">The field first-aid exipry date is required.</p>
+                     </span>
+                  </div>
+               </div>
+
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1"> Driving License Number</label>
+                     <input type="name" class="form-control" placeholder="Enter driving number" formControlName="drivingLicenseNo" [ngClass]="(authForm.controls.drivingLicenseNo.hasError('required') && authForm.controls.drivingLicenseNo.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.drivingLicenseNo.hasError('required') &&    authForm.controls.drivingLicenseNo.touched">
+                        <p style="color:#f70101 !important;">The field driving number is required.</p>
+                     </span>
+                     <span *ngIf="authForm.controls.drivingLicenseNo.hasError('pattern') &&    authForm.controls.drivingLicenseNo.touched">
+                        <p style="color:#f70101 !important;">Please enter valid driving number between 6 to 12 alpanumeric!</p>
+                     </span>
+                  </div>
+               </div>
+               <!-- Driving License File -->
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Driving License</label>
+                     <div class="img-box padding-top-5 {{(images?.drivingImage?.split('.').pop() != 'pdf' && images?.drivingImage != null) || guardDetails?.driving_image?.split('.').pop() != 'pdf' ? 'inline-block' : ''}}">
+
+
+                        <input *ngIf="fromGallery?.driving == false && guardDetails?.driving_image == null" type="name" class="form-control" placeholder="No File Selected">
+
+
+                           <img *ngIf="fromGallery?.driving == false && guardDetails?.driving_image != null && fileExtension(guardDetails?.driving_image) != 'pdf'" class="rounded-circle img-sm" src="{{imageURL}}{{guardDetails?.driving_image}}" alt="first aid file">
+
+                           <input *ngIf="fromGallery?.driving == false && guardDetails?.driving_image != null
+                           && fileExtension(guardDetails?.driving_image) == 'pdf'" type="name" class="form-control" placeholder="{{guardDetails?.driving_image}}">
+
+                           <img *ngIf="fromGallery?.driving == true && filesExtension?.driving != 'pdf'" class="rounded-circle img-sm" src="{{images?.drivingImage}}" alt="driving file">
+
+                             <input *ngIf="fromGallery?.driving == true && filesExtension?.driving == 'pdf'" type="name" class="form-control" placeholder="{{images?.drivingImage}}">
+
+                           <input style="display: none" type="file" (change)="onProfileImageChanged($event, 'driving')" #fileInput4 name="file" ngf-pattern="'image/*,application/pdf'" accept="image/*,application/pdf" ngf-max-size="200MB" id="input-file-now" class="dropify" style="display:none;" filepreview="filepreview1" fileinput="file" ngf-select>
+
+                        
+
+                        <label class="edit-profile-btn" for="avatar">
+                        <i class="fa fa-pencil" aria-hidden="true" (click)="fileInput4.click()"></i>
+                        </label>
+                     </div>
+                  </div>
+               </div>           
+
+            </div>           
+         </div>
+      </div>
+      <!-- //card -->
+      <!-- card -->
+      <div class="card">
+         <div class="card-header" role="tab" id="headingFour">
+            <h6 class="mb-0">
+               <a data-toggle="collapse" href="#collapseExample4" aria-expanded="true" aria-controls="collapseExample4">
+               <i class="card-icon mdi mdi-checkbox-marked-circle-outline"></i>Passport & Vivo/visa Details
+               </a>
+            </h6>
+         </div>
+         <div class="collapse" id="collapseExample4" role="tabpanel" aria-labelledby="headingFour" data-parent="#accordion2">
+        
+           <div class="row">
+
+             <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Passport Number</label>
+                     <input type="name" class="form-control" placeholder="Enter account name" formControlName="passportNo" [ngClass]="(authForm.controls.passportNo.hasError('required') && authForm.controls.passportNo.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.passportNo.hasError('required') &&    authForm.controls.passportNo.touched">
+                        <p style="color:#f70101 !important;">The field passport number is required.</p>
+                     </span>
+                     <span *ngIf="authForm.controls.passportNo.hasError('pattern') &&    authForm.controls.passportNo.touched">
+                        <p style="color:#f70101 !important;">Please enter valid passport number!</p>
+                     </span>
+                  </div>
+               </div>
+
+               <!-- Passport Image File -->
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Passport Image</label>
+                     <div class="img-box padding-top-5 {{(images?.passportImage?.split('.').pop() != 'pdf' && images?.passportImage != null) || guardDetails?.passport_image?.split('.').pop() != 'pdf' ? 'inline-block' : ''}}">
+
+
+                        <input *ngIf="fromGallery?.passport == false && guardDetails?.passport_image == null" type="name" class="form-control" placeholder="No File Selected">
+
+
+                           <img *ngIf="fromGallery?.passport == false && guardDetails?.passport_image != null && fileExtension(guardDetails?.passport_image) != 'pdf'" class="rounded-circle img-sm" src="{{imageURL}}{{guardDetails?.passport_image}}" alt="first aid file">
+
+                           <input *ngIf="fromGallery?.passport == false && guardDetails?.passport_image != null
+                           && fileExtension(guardDetails?.passport_image) == 'pdf'" type="name" class="form-control" placeholder="{{guardDetails?.passport_image}}">
+
+                           <img *ngIf="fromGallery?.passport == true && filesExtension?.passport != 'pdf'" class="rounded-circle img-sm" src="{{images?.passportImage}}" alt="passport file">
+
+                             <input *ngIf="fromGallery?.passport == true && filesExtension?.passport == 'pdf'" type="name" class="form-control" placeholder="{{images?.passportImage}}">
+
+                           <input style="display: none" type="file" (change)="onProfileImageChanged($event, 'passport')" #fileInput5 name="file" ngf-pattern="'image/*,application/pdf'" accept="image/*,application/pdf" ngf-max-size="200MB" id="input-file-now" class="dropify" style="display:none;" filepreview="filepreview1" fileinput="file" ngf-select>
+
+
+                        
+
+                        <label class="edit-profile-btn" for="avatar">
+                        <i class="fa fa-pencil" aria-hidden="true" (click)="fileInput5.click()"></i>
+                        </label>
+                     </div>
+                  </div>
+               </div>              
+
+            </div>
+
+            <div class="row">
+
+               <!-- Vivo/Visa file -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Vivo/Visa</label>
+                     <div class="img-box padding-top-5 {{(images?.visaImage?.split('.').pop() != 'pdf' && images?.visaImage != null) || guardDetails?.visa_image?.split('.').pop() != 'pdf' ? 'inline-block' : ''}}">
+
+                        <input *ngIf="fromGallery?.visa == false && guardDetails?.visa_image == null" type="name" class="form-control" placeholder="No File Selected">
+
+
+                        <img *ngIf="fromGallery?.visa == false && guardDetails?.visa_image != null && fileExtension(guardDetails?.visa_image) != 'pdf'" class="rounded-circle img-sm" src="{{imageURL}}{{guardDetails?.visa_image}}" alt="first aid file">
+
+                        <input *ngIf="fromGallery?.visa == false && guardDetails?.visa_image != null
+                        && fileExtension(guardDetails?.visa_image) == 'pdf'" type="name" class="form-control" placeholder="{{guardDetails?.visa_image}}">
+
+                        <img *ngIf="fromGallery?.visa == true && filesExtension?.visa != 'pdf'" class="rounded-circle img-sm" src="{{images?.visaImage}}" alt="visa file">
+
+                          <input *ngIf="fromGallery?.visa == true && filesExtension?.visa == 'pdf'" type="name" class="form-control" placeholder="{{images?.visaImage}}">
+
+                        <input style="display: none" type="file" (change)="onProfileImageChanged($event, 'visa')" #fileInput6 name="file" ngf-pattern="'image/*,application/pdf'" accept="image/*,application/pdf" ngf-max-size="200MB" id="input-file-now" class="dropify" style="display:none;" filepreview="filepreview1" fileinput="file" ngf-select>
+
+
+
+                        
+
+                        <label class="edit-profile-btn" for="avatar">
+                        <i class="fa fa-pencil" aria-hidden="true" (click)="fileInput6.click()"></i>
+                        </label>
+                     </div>
+                  </div>
+               </div>              
+
+               <!-- TFN file -->
+                <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">TFN</label>
+                     <div class="img-box padding-top-5 {{(images?.tfn?.split('.').pop() != 'pdf' && images?.tfn != null) || guardDetails?.tfn_file?.split('.').pop() != 'pdf' ? 'inline-block' : ''}}">
+
+                         <input *ngIf="fromGallery?.tfn == false && guardDetails?.tfn_file == null" type="name" class="form-control" placeholder="No File Selected">
+
+
+                        <img *ngIf="fromGallery?.tfn == false && guardDetails?.tfn_file != null && fileExtension(guardDetails?.tfn_file) != 'pdf'" class="rounded-circle img-sm" src="{{imageURL}}{{guardDetails?.tfn_file}}" alt="first aid file">
+
+                        <input *ngIf="fromGallery?.tfn == false && guardDetails?.tfn_file != null
+                        && fileExtension(guardDetails?.tfn_file) == 'pdf'" type="name" class="form-control" placeholder="{{guardDetails?.tfn_file}}">
+
+                        <img *ngIf="fromGallery?.tfn == true && filesExtension?.tfn != 'pdf'" class="rounded-circle img-sm" src="{{images?.tfn}}" alt="tfn file">
+
+                          <input *ngIf="fromGallery?.tfn == true && filesExtension?.tfn == 'pdf'" type="name" class="form-control" placeholder="{{images?.tfn}}">
+
+                        <input style="display: none" type="file"  #fileInput7 name="file" ngf-pattern="'image/*,application/pdf'" accept="image/*,application/pdf" ngf-max-size="200MB" id="input-file-now" class="dropify" style="display:none;" filepreview="filepreview1" fileinput="file" ngf-select (change)="onProfileImageChanged($event, 'tfn')">
+
+
+
+
+                       
+                        <label class="edit-profile-btn" for="avatar">
+                        <i class="fa fa-pencil" aria-hidden="true" (click)="fileInput7.click()"></i>
+                        </label>
+                     </div>
+                  </div>
+               </div>              
+
+            </div>
+
+            <div class="row">
+
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">BSB Number</label>
+                     <input type="name" class="form-control" placeholder="Enter BSB number" formControlName="bsb" [ngClass]="(authForm.controls.bsb.hasError('required') && authForm.controls.bsb.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.bsb.hasError('required') &&    authForm.controls.bsb.touched">
+                        <p style="color:#f70101 !important;">The field BSB number is required.</p>
+                     </span>
+                     <span *ngIf="authForm.controls.bsb.hasError('pattern') &&    authForm.controls.bsb.touched">
+                        <p style="color:#f70101 !important;">Please enter valid BSB number between 4 to 15 alpanumeric!</p>
+                     </span>
+                  </div>
+               </div>
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Account Number</label>
+                     <input type="name" class="form-control" placeholder="Enter account number" formControlName="acnumber" [ngClass]="(authForm.controls.acnumber.hasError('required') && authForm.controls.acnumber.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.acnumber.hasError('required') &&    authForm.controls.acnumber.touched">
+                        <p style="color:#f70101 !important;">The field account number is required.</p>
+                     </span>
+                     <span *ngIf="authForm.controls.acnumber.hasError('pattern') &&    authForm.controls.acnumber.touched">
+                        <p style="color:#f70101 !important;">Please enter valid account number between 10 to 20 digits!</p>
+                     </span>
+                  </div>
+               </div>
+            </div>
+
+            <div class="row">
+
+               <div class="col-md-6">
+                  <div class="form-group">
+                     <label for="exampleInputEmail1">Account Name</label>
+                     <input type="name" class="form-control" placeholder="Enter account name" formControlName="acname" [ngClass]="(authForm.controls.acname.hasError('required') && authForm.controls.acname.touched )? 'has-error' : ''">
+                     <span *ngIf="authForm.controls.acname.hasError('required') &&    authForm.controls.acname.touched">
+                        <p style="color:#f70101 !important;">The field account name is required.</p>
+                     </span>
+                     <span *ngIf="authForm.controls.acname.hasError('pattern') &&    authForm.controls.acname.touched">
+                        <p style="color:#f70101 !important;">Please enter valid account name!</p>
+                     </span>
+                  </div>
+               </div>
+
+            </div>
+
+         </div>
+      </div>
+      <!-- // card -->
+      <!-- card -->
+    <!-- card -->
+       <div class="card">
+                     <div class="card-header" role="tab" id="headingFive">
+                        <h6 class="mb-0">
+                           <a data-toggle="collapse" href="#collapseExample5" aria-expanded="true" aria-controls="collapseExample5">
+                           <i class="card-icon mdi mdi-checkbox-marked-circle-outline"></i>Other Questions
+                           </a>
+                        </h6>
+                     </div>
+                     <div class="collapse" id="collapseExample5" role="tabpanel" aria-labelledby="headingFive" data-parent="#accordion1">
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                <p class="smalltxt"> Have you ever been charged or convicted with any criminal offence?</p>
+
+                                 <div class="radio-yn">
+                                    <ul style="list-style-type: none;">
+                                        <li>
+                                            <input type="radio" id="yes3" [value]="true" name="criminal_offence"  formControlName="criminal_offence"> 
+                                            <label>Yes</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="no3" [value]="false" name="criminal_offence"  formControlName="criminal_offence">
+                                            <label>No</label>
+                                        </li>
+                                    </ul>
+                                 </div>
+
+                              </div>
+                           </div>
+
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <p class="smalltxt">Do you full understand all details in regards to Occupational?<br>Health and Safety
+                                 </p>
+
+                                 <div class="radio-yn">
+                                    <ul style="list-style-type: none;">
+                                        <li>
+                                            <input type="radio" id="yes3" [value]="true" name="occupation"  formControlName="occupation">
+                                            <label>Yes</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="no3" [value]="false" name="occupation"  formControlName="occupation">
+                                            <label>No</label>
+                                        </li>
+                                    </ul>
+                                 </div>
+                              </div>
+                           </div>
+                           
+                        </div>   
+
+
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <p class="smalltxt">If you have made a Work cover claim, would the injuries you received, stop you from completing duties required for the position you have applied for? </p>
+
+                                 <div class="radio-yn">
+                                    <ul style="list-style-type: none;">
+                                        <li>
+                                            <input type="radio" id="yes3" [value]="true" name="injury"  formControlName="injury">
+                                            <label>Yes</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="no3" [value]="false" name="injury"  formControlName="injury">
+                                            <label>No</label>
+                                        </li>
+                                    </ul>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <p class="smalltxt">Are you an Australian Resident for work purposes? </p>
+
+                                 <div class="radio-yn">
+                                    <ul style="list-style-type: none;">
+                                        <li>
+                                            <input type="radio" id="yes3" [value]="true" name="resident"  formControlName="resident">
+                                            <label>Yes</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="no3" [value]="false" name="resident"  formControlName="resident">
+                                            <label>No</label>
+                                        </li>
+                                    </ul>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                  <p class="smalltxt"> Do you hold a current First Aid certificate?</p>
+
+                                 <div class="radio-yn">
+                                    <ul style="list-style-type: none;">
+                                        <li>
+                                            <input type="radio" id="yes3" [value]="true" name="first_aid"  formControlName="first_aid">
+                                            <label>Yes</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="no3" [value]="false" name="first_aid"  formControlName="first_aid">
+                                            <label>No</label>
+                                        </li>
+                                    </ul>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <p class="smalltxt"> Do you have any Visa Conditions which Stops you working in Security?</p>
+
+                                 <div class="radio-yn">
+                                    <ul style="list-style-type: none;">
+                                        <li>
+                                            <input type="radio" id="yes3" [value]="true" name="visa_condi"  formControlName="visa_condi">
+                                            <label>Yes</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="no3"  [value]="false" name="visa_condi"  formControlName ="visa_condi">
+                                            <label>No</label>
+                                        </li>
+                                    </ul>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>                    
+
+                         <div class="row">
+                           <div class="col-md-6">
+                              <div class="form-group">
+                                 <p class="smalltxt">Have you ever made a Work cover claim? YES/NO (If YES, please provide details:)</p>
+
+                                 <div class="radio-yn">
+                                    <ul style="list-style-type: none;">
+                                        <li>
+                                            <input type="radio" id="yes3"  [value]="true" name="work_claim"  formControlName="work_claim">
+                                            <label>Yes</label>
+                                        </li>
+                                        <li>
+                                            <input type="radio" id="no3" [value]="false" name="work_claim"  formControlName="work_claim">
+                                            <label>No</label>
+                                        </li>
+                                    </ul>
+                                 </div>
+
+                              </div>
+                           </div>
+
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                 <label for="exampleInputEmail1">Work Claim Details</label>
+                                 <input type="name" class="form-control" placeholder="Enter work claim details" formControlName="work_claim_details">
+                              </div>
+                           </div>
+                        </div>
+
+                     </div>
+      </div>
+      <!-- // card -->
+      <!-- // card -->
+      <button class="btn btn-danger" type="button" style="float: right;" (click)="closeModal()">Cancel</button>
+      <button [disabled]="formValid()" class="btn btn-primary mr-10" type="submit" style="float: right;">Save</button>
+      </form>
+   </div>
+   </div>
+   <div class="modal-footer">
+   </div>
+</ng-template>
+<!-- </div> -->
+<div class="modal fade" id="assign" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Assign Shift</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <form>
+               <div class="row">
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label for="exampleInputEmail1">Select Type</label>
+                        <select class="form-control">
+                           <option> Select One </option>
+                           <option>Broadcast</option>
+                           <option>Select Security Guard</option>
+                        </select>
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <div class="form-group">
+                        <label for="exampleInputEmail1">Select Security Guard</label>
+                        <select class="form-control">
+                           <option> Select One </option>
+                           <option>John Smith </option>
+                           <option>Hanry James</option>
+                           <option>Denny Thomas </option>
+                           <option>Chrish Morries</option>
+                           <option>Hanry James </option>
+                        </select>
+                     </div>
+                  </div>
+               </div>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-primary">Assign Shift</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal fade" id="delete-pop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+         <div class="modal-body">
+            <h5> Are you sure, you want to delete it ?</h5>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="deleteGuard(guard)">Yes</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+         </div>
+      </div>
+   </div>
+</div>
+<!--   <div class="modal fade" id="assign-id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-sm" role="document">
+     <div class="modal-content"> -->
+<ng-template #assignid let-c="close" let-d="dismiss">
+   <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Assign Rapid ID</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="clear()">
+      <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <input  type="text" class="form-control" placeholder="Enter Rapid ID" [(ngModel)]="rapidId" (ngModelChange)="onchange(rapidId)">
+      <span *ngIf="rapidId == '' && error == true">
+         <p style="color:#f70101 !important;">Sorry, Rapid ID is required!</p>
+      </span>
+      <span *ngIf="rapidId == null && errorReg == true">
+         <p style="color:#f70101 !important;">Sorry, valid Rapid ID is required!</p>
+      </span>
+   </div>
+   <div class="modal-footer">
+      <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="assignId(rapidId, guard)">Yes</button>
+      <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="clear()">No</button>
+   </div>
+</ng-template>
+<!--    </div>
+   </div>
+   </div> -->
+<!-- <div class="modal fade" id="shifts" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg" role="document">
+     <div class="modal-content"> -->
+<ng-template #shifts let-c="close" let-d="dismiss">
+   <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">All Shifts</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <div class="row">
+         <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+               <div class="">
+                  <!-- <button type="button" class="btn btn-success btn-fw pull-right">Assign</button> -->
+                  <ul class="nav nav-tabs tab-basic" role="tablist">
+                     <li class="nav-item">
+                        <a class="nav-link active" id="home-tab1" data-toggle="tab" href="#whoweare1" role="tab" aria-controls="whoweare" aria-selected="true">Current</a>
+                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link" id="profile-tab1" data-toggle="tab" href="#ourgoal1" role="tab" aria-controls="ourgoal" aria-selected="false" (click)="getUpcomingShifts()">Upcoming</a>
+                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link" id="contact-tab1" data-toggle="tab" href="#history1" role="tab" aria-controls="history" aria-selected="false" (click)="getPastShifts()" >Past</a>
+                     </li>
+                  </ul>
+                  <div class="tab-content tab-content-basic">
+                     <div class="tab-content tab-content-basic">
+                        <div class="tab-pane fade show active" id="whoweare1" role="tabpanel" aria-labelledby="home-tab1">
+                           <div class="tab-pane fade show active" id="whoweare1" role="tabpanel" aria-labelledby="home-tab1">
+                              <div *ngIf="currentShift == null" class="row">
+                                 No Current Shift Available.
+                              </div>
+                              <div *ngIf="currentShift != null" class="row">
+                                 <div class="profile-page new-on-tb">
+                                    <div class="col-12">
+                                       <div class="card left-profl">
+                                          <div class="card-body p-0">
+                                             <div class="row">
+                                                <div class="col-md-4">
+                                                   <div class="profile-header text-white d-none d-md-block">
+                                                      <div class="d-flex justify-content-around">
+                                                         <div class="profile-info d-flex justify-content-center align-items-md-center ">
+                                                            <img src="{{profile?.profile_image}}">
+                                                         </div>
+                                                      </div>
+                                                   </div>
+                                                </div>
+                                                <div  class="col-md-8">
+                                                   <div class="profile-body pt-0">
+                                                      <div class="row ">
+                                                         <div class="col-md-6">
+                                                            <div class="tab-content tab-body " id="profile-log-switch ">
+                                                               <div class="tab-pane fade show active " id="user-profile-info ">
+                                                                  <table class="table table-borderless shift-current-tab w-100">
+                                                                     <tr>
+                                                                        <td><strong>Title :</strong> {{currentShift?.title}}</td>
+                                                                     </tr>
+                                                                     <tr>
+                                                                        <td><strong>Type : </strong> <label class="badge badge-info" *ngIf="currentShift?.type == 1">Roaster</label>
+                                                                           <label class="badge badge-info" *ngIf="currentShift?.type == 0">Adhoc</label>
+                                                                        </td>
+                                                                     </tr>
+                                                                     <tr>
+                                                                        <td><strong>Location :</strong> {{currentShift?.location.address}}</td>
+                                                                     </tr>
+                                                                     <!--   <tr>
+                                                                        <td><strong>Zip Code :</strong> 12345</td>
+                                                                        </tr> -->
+                                                                  </table>
+                                                               </div>
+                                                            </div>
+                                                         </div>
+                                                         <div class="col-md-6">
+                                                            <div class="tab-content tab-body " id="profile-log-switch ">
+                                                               <div class="tab-pane fade show active " id="user-profile-info ">
+                                                                  <table class="table table-borderless w-100">
+                                                                     <!--       <tr *ngIf="currentShift?.type == '1'">
+                                                                        <td><strong>From Date :</strong> {{currentShift?.start_date}}</td>
+                                                                        </tr>
+                                                                        <tr *ngIf="currentShift?.type == '1'">
+                                                                        <td><strong>To Date :</strong> {{currentShift?.end_date}}</td>
+                                                                        </tr>
+                                                                        <tr *ngIf="currentShift?.type == '0'">
+                                                                        <td><strong>Shift Date: </strong>  {{currentShift?.shift_date}}</td>
+                                                                        </tr>
+                                                                        
+                                                                        <tr *ngIf="currentShift?.type == '0'">
+                                                                        <td><strong>Time :</strong> {{currentShift?.start_time}} - {{currentShift?.end_time}}</td>
+                                                                        </tr> -->
+                                                                     <tr *ngIf="currentShift?.type == '1'">
+                                                                        <td><strong>Date :</strong> {{getExactDate(currentShift?.start_date)}}/{{getExactDate(currentShift?.end_date)}} </td>
+                                                                     </tr>
+                                                                     <tr *ngIf="currentShift?.type == '0'">
+                                                                        <td><strong>Date :</strong> {{getExactDate(currentShift?.shift_date)}} </td>
+                                                                     </tr>
+                                                                     <tr *ngIf="currentShift?.type == '1'">
+                                                                        <td><strong>Time :</strong> {{getAmPmTime(currentShift?.days)}}</td>
+                                                                     </tr>
+                                                                     <tr *ngIf="currentShift?.type == '0'">
+                                                                        <td><strong>Time :</strong> {{getTime(currentShift?.start_time,currentShift?.end_time)}}</td>
+                                                                     </tr>
+                                                                  </table>
+                                                               </div>
+                                                            </div>
+                                                         </div>
+                                                      </div>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="tab-pane fade" id="ourgoal1" role="tabpanel" aria-labelledby="profile-tab1">
+                           <div class="row">
+                              <div class="col-12 table-responsive">
+                                 <ngx-datatable id="blogs" class="table table-striped"
+                                 class="bootstrap"
+                                 [columnMode]="'force'"
+                                 [headerHeight]="50"
+                                 [footerHeight]="50"
+                                 [rowHeight]="'auto'"
+                                 [limit]="5"
+                                 [sortType]="'multi'"
+                                 [rows]="rows1">  
+                                 <!-- Security Guard Name -->
+                                 <ngx-datatable-column scope="col" name="Sr. No." [minWidth]="100">
+                                    <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                                       <a class="titleRow">{{rowIndex + 1}}</a>
+                                       <BR>
+                                    </ng-template>
+                                 </ngx-datatable-column>
+                                 <!-- Security Guard Name -->
+                                 <ngx-datatable-column scope="col" name="Title" [minWidth]="100">
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                       <a class="titleRow">{{row.title}}</a><BR>
+                                    </ng-template>
+                                 </ngx-datatable-column>
+                                 <!-- POSTS INFO -->
+                                 <ngx-datatable-column scope="col" name="Type" [minWidth]="100">
+                                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                       <a class="ww-table-big-text" *ngIf="row.type == 0">Adhoc</a>
+                                       <a class="ww-table-big-text" *ngIf="row.type == 1">Roaster</a><BR>
+                                    </ng-template>
+                                 </ngx-datatable-column>
+                                 <ngx-datatable-column scope="col" name="Location" [minWidth]="100">
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                       <a class="ww-table-big-text">{{row.location.address}}</a><BR>
+                                    </ng-template>
+                                 </ngx-datatable-column>
+                                 <!-- COMMENTS -->
+                                 <ngx-datatable-column scope="col" name="Date" [minWidth]="100">
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                       <a class="ww-table-big-text" *ngIf="row.type == '0'">{{row.shift_date}}</a>
+                                       <a class="ww-table-big-text" *ngIf="row.type == '1'">{{getAmPmDay(row, row.days)}}</a><BR>
+                                    </ng-template>
+                                 </ngx-datatable-column>
+                                 <ngx-datatable-column scope="col" name="Time" [minWidth]="100">
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                       <a class="ww-table-big-text" *ngIf="row.type == '0'">{{getTimeAMPM(row.start_time)}} - {{getTimeAMPM(row.end_time)}}</a>
+                                       <a class="ww-table-big-text" *ngIf="row.type == '1'">{{getAmPmTime(row.days)}}</a><BR>
+                                    </ng-template>
+                                 </ngx-datatable-column>
+                                 <!-- APPROVED COMMENTS -->
+                                 <ngx-datatable-column scope="col" name="Action" [minWidth]="100">
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                       <button *ngIf="row.type == '0'" type="button" class="btn btn-icons btn-rounded btn-primary" data-toggle="modal"  data-placement="bottom" title="View" data-original-title="View Details" (click)="viewShift(row, viewshiftdetailadhoc, 'adhoc')"><i class="icon-eye"></i></button>
+                                       <button *ngIf="row.type == '1'" type="button" class="btn btn-icons btn-rounded btn-primary" data-toggle="modal"  data-placement="bottom" title="View" data-original-title="View Details" (click)="viewShift(row, viewshiftdetailongoing, 'upcoimg')"><i class="icon-eye"></i></button>
+                                       <BR>
+                                    </ng-template>
+                                 </ngx-datatable-column>
+                                 </ngx-datatable>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="tab-pane fade" id="history1" role="tabpanel" aria-labelledby="contact-tab1">
+                           <div class="row">
+                              <div class="col-12 table-responsive">
+                                 <ngx-datatable id="blogs" class="table table-striped"
+                                 class="bootstrap"
+                                 [columnMode]="'force'"
+                                 [headerHeight]="50"
+                                 [footerHeight]="50"
+                                 [rowHeight]="'auto'"
+                                 [limit]="5"
+                                 [sortType]="'multi'"
+                                 [rows]="rows2"> 
+                                 <!-- Security Guard Name -->
+                                 <ngx-datatable-column scope="col" name="Sr. No." [minWidth]="100">
+                                    <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                                       <a class="titleRow">{{rowIndex + 1}}</a>
+                                       <BR>
+                                    </ng-template>
+                                 </ngx-datatable-column>
+                                 <!-- Security Guard Name -->
+                                 <ngx-datatable-column scope="col" name="Title" [minWidth]="100">
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                       <a class="titleRow">{{row.title}}</a><BR>
+                                    </ng-template>
+                                 </ngx-datatable-column>
+                                 <!-- POSTS INFO -->
+                                 <ngx-datatable-column scope="col" name="Type" [minWidth]="100">
+                                    <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                       <a class="ww-table-big-text" *ngIf="row.type == '0'">Adhoc</a>
+                                       <a class="ww-table-big-text" *ngIf="row.type == '1'">Roaster</a><BR>
+                                    </ng-template>
+                                 </ngx-datatable-column>
+                                 <ngx-datatable-column scope="col" name="Location" [minWidth]="100">
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                       <a class="ww-table-big-text">{{row.location.address}}</a><BR>
+                                    </ng-template>
+                                 </ngx-datatable-column>
+                                 <!-- COMMENTS -->
+                                 <ngx-datatable-column scope="col" name="Date" [minWidth]="100">
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                       <a class="ww-table-big-text" *ngIf="row.type == '0'">{{row.shift_date}}</a>
+                                       <a class="ww-table-big-text" *ngIf="row.type == '1'">{{getAmPmDay(row, row.days)}}</a><BR>
+                                    </ng-template>
+                                 </ngx-datatable-column>
+                                 <ngx-datatable-column scope="col" name="Time" [minWidth]="100">
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                       <a class="ww-table-big-text" *ngIf="row.type == '0'">{{getTimeAMPM(row.start_time)}} - {{getTimeAMPM(row.end_time)}}</a>
+                                       <a class="ww-table-big-text" *ngIf="row.type == '1'">{{getAmPmTime(row.days)}}</a><BR>
+                                    </ng-template>
+                                 </ngx-datatable-column>
+                                 <!-- APPROVED COMMENTS -->
+                                 <ngx-datatable-column scope="col" name="Action" [minWidth]="100">
+                                    <ng-template let-row="row" ngx-datatable-cell-template>
+                                       <button *ngIf="row.type == '0'" type="button" class="btn btn-icons btn-rounded btn-primary" data-toggle="modal"  data-placement="bottom" title="View" data-original-title="View Details" (click)="viewShift(row, viewshiftdetailadhoc, 'upcoming')"><i class="icon-eye"></i></button>
+                                       <button *ngIf="row.type == '1'" type="button" class="btn btn-icons btn-rounded btn-primary" data-toggle="modal"  data-placement="bottom" title="View" data-original-title="View Details" (click)="viewShift(row, viewshiftdetailongoing, 'upcoimg')"><i class="icon-eye"></i></button>
+                                       <BR>
+                                    </ng-template>
+                                 </ngx-datatable-column>
+                                 </ngx-datatable>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- </div>
+      </div>
+      </div> -->
+</ng-template>
+<div class="modal fade" id="remarks" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-sm modl-shad" role="document">
+      <div class="modal-content">
+         <div class="modal-body">
+            <h4> Remarks </h4>
+            <p> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </p>
+         </div>
+         <div class="modal-footer pull-left">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>
+<ng-template #viewshiftdetailadhoc let-c="close" let-d="dismiss">
+   <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Shift Detail</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <form>
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Title</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.title}} {{viewShiftData?.lastname}}">
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Type</label>
+                  <input disabled type="name" class="form-control" placeholder="Adhoc">
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Start Time</label>
+                  <input disabled type="name" class="form-control" placeholder="{{getTimeAMPM(viewShiftData?.start_time)}}">
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">End Time</label>
+                  <input disabled type="name" class="form-control" placeholder="{{getTimeAMPM(viewShiftData?.end_time)}}">
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Location</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.location.address}}">
+                  <agm-map style="width:100%;height:200px;" [latitude]="latitude" [longitude]="longitude" [zoom]="10" [disableDefaultUI]="false" [zoomControl]="true " [usePanning]="true">
+                  <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="false" (dragEnd)="markerDragEnd($event)"></agm-marker>
+                  </agm-map>
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button  *ngIf="viewShiftData?.is_approved == 'false' && shiftType == 'upcoming'" class="btn btn-primary" (click)="changeStatusShift(viewShiftData,i, 'true')">Approve Shift</button>
+            <button  *ngIf="viewShiftData?.is_approved == 'true' && shiftType == 'upcoming'" class="btn btn-primary" (click)="changeStatusShift(viewShiftData,i, 'false')">Disapprove Shift</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" (click)="closeModal()"> Cancel</button>
+         </div>
+      </form>
+   </div>
+</ng-template>
+<ng-template #viewshiftdetailongoing let-c="close" let-d="dismiss">
+   <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Shift Detail</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+      </button>
+   </div>
+   <div class="modal-body">
+      <form>
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Title</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.title}} {{viewShiftData?.lastname}}">
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Type</label>
+                  <input disabled type="name" class="form-control" placeholder="Roaster">
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Start Date</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.start_date}}">
+               </div>
+            </div>
+            <div class="col-md-6">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">End Date</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.end_date}}">
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Location</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.location.address}}">
+                  <agm-map style="width:100%;height:200px;" [latitude]="latitude" [longitude]="longitude" [zoom]="10" [disableDefaultUI]="false" [zoomControl]="true " [usePanning]="true">
+                  <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="false" (dragEnd)="markerDragEnd($event)"></agm-marker>
+                  </agm-map>
+               </div>
+            </div>
+         </div>
+         <div class="row" *ngIf="viewShiftData?.days[0].start_time != 0">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Days</label>
+                  <label class="form-control">Monday</label>
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">Start Time</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[0].start_time}}">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">AM/PM</label>
+                  <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[0].start_time_am_pm == 1">
+                  <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[0].start_time_am_pm == 0">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">End Time</label>
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[0].end_time}}">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <label for="exampleInputEmail1">AM/PM</label>
+                  <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[0].end_time_am_pm == 1">
+                  <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[0].end_time_am_pm == 0">
+               </div>
+            </div>
+         </div>
+         <div class="row" *ngIf="viewShiftData?.days[1].start_time != 0">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Days</label> -->
+                  <label class="form-control">Tuesday</label>
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Start Time</label> -->
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[1].start_time}}">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+                  <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[1].start_time_am_pm == 1">
+                  <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[1].start_time_am_pm == 0">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">End Time</label> -->
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[1].end_time}}">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+                  <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[1].end_time_am_pm == 1">
+                  <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[1].end_time_am_pm == 0">
+               </div>
+            </div>
+         </div>
+         <div class="row" *ngIf="viewShiftData?.days[2].start_time != 0">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Days</label> -->
+                  <label class="form-control">Wednesday</label>
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Start Time</label> -->
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[2].start_time}}">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+                  <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[2].start_time_am_pm == 1">
+                  <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[2].start_time_am_pm == 0">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">End Time</label> -->
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[2].end_time}}">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+                  <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[2].end_time_am_pm == 1">
+                  <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[2].end_time_am_pm == 0">
+               </div>
+            </div>
+         </div>
+         <div class="row" *ngIf="viewShiftData?.days[3].start_time != 0">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Days</label> -->
+                  <label class="form-control">Thursday</label>
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Start Time</label> -->
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[3].start_time}}">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+                  <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[3].start_time_am_pm == 1">
+                  <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[3].start_time_am_pm == 0">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">End Time</label> -->
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[3].end_time}}">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+                  <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[3].end_time_am_pm == 1">
+                  <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[3].end_time_am_pm == 0">
+               </div>
+            </div>
+         </div>
+         <div class="row" *ngIf="viewShiftData?.days[4].start_time != 0">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Days</label> -->
+                  <label class="form-control">Friday</label>
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Start Time</label> -->
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[4].start_time}}">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+                  <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[4].start_time_am_pm == 1">
+                  <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[4].start_time_am_pm == 0">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">End Time</label> -->
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[4].end_time}}">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+                  <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[4].end_time_am_pm == 1">
+                  <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[4].end_time_am_pm == 0">
+               </div>
+            </div>
+         </div>
+         <div class="row" *ngIf="viewShiftData?.days[5].start_time != 0">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Days</label> -->
+                  <label class="form-control">Saturday</label>
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Start Time</label> -->
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[5].start_time}}">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+                  <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[5].start_time_am_pm == 1">
+                  <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[5].start_time_am_pm == 0">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">End Time</label> -->
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[5].end_time}}">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+                  <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[5].end_time_am_pm == 1">
+                  <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[5].end_time_am_pm == 0">
+               </div>
+            </div>
+         </div>
+         <div class="row" *ngIf="viewShiftData?.days[6].start_time != 0">
+            <div class="col-md-4">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Days</label> -->
+                  <label class="form-control">Sunday</label>
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">Start Time</label> -->
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[6].start_time}}">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+                  <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[6].start_time_am_pm == 1">
+                  <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[6].start_time_am_pm == 0">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">End Time</label> -->
+                  <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.days[6].end_time}}">
+               </div>
+            </div>
+            <div class="col-md-2">
+               <div class="form-group">
+                  <!-- <label for="exampleInputEmail1">AM/PM</label> -->
+                  <input disabled type="name" class="form-control" placeholder="PM" *ngIf="viewShiftData?.days[6].end_time_am_pm == 1">
+                  <input disabled type="name" class="form-control" placeholder="AM" *ngIf="viewShiftData?.days[6].end_time_am_pm == 0">
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" (click)="closeModal()"> Cancel</button>
+         </div>
+      </form>
+   </div>
+</ng-template>
+<div class="modal fade" id="active-inactive-pop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+         <div class="modal-body">
+            <h5> Are you sure, you want to change worker status ? </h5>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="changeActiveInctiveStatus(guard, status)">Yes</button>
+               <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+
+ <style type="text/css">
+      /*css start for pdf and print about application form*/
+.clear {clear: both;}
+
+.instaFade p {
+    
+}
+
+.sectionContent .m-b-10 {
+    margin-bottom: 6px !important;
+    margin-top: 6px !important;
+    font-size: 1em;
+}
+.instaFade span {
+    width: 180px;
+    display: -webkit-inline-box;
+}
+.w-40{
+    width: 40%;
+    float: left;
+}
+
+.w-49{
+    width: 49%;
+    float: left;
+}
+
+
+.instaFade span.yes {
+    width: 45px;
+    margin-left: 12px;
+}
+
+.instaFade span.no {
+    width: 45px;
+    margin-left: 12px;
+}
+
+.bold{
+    font-weight: 600;
+    margin-left: 9px;
+    width: 100px;
+}
+
+.instaFade label {
+    border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;
+}
+
+.right {
+
+    float: right;
+    margin-right: 164px;
+}
+
+.img-section{
+    margin-bottom: 35px !important;
+}
+
+.signature-text {
+    float: left;
+    padding: 0px 0px;
+    text-align: center;
+    /* left: 0; */
+    width: 113px;
+}
+
+
+#cv {
+    width: 90%;
+    max-width: 800px;
+    background: #fff;
+    margin: 30px auto;
+}
+.hidden-div {
+    
+}
+
+
+
+#name h1 {
+    font-size: 2.5em;
+    font-weight: 700;
+    font-family: 'Rokkitt', Helvetica, Arial, sans-serif;
+    margin-bottom: -6px;
+}
+
+#name h2 {
+    font-size: 2em;
+    margin-left: 2px;
+    font-family: 'Rokkitt', Helvetica, Arial, sans-serif;
+}
+
+
+
+#headshot {
+    width: 12.5%;
+    float: left;
+    margin-right: 30px;
+}
+
+#headshot img {
+    width: 100%;
+    height: auto;
+    -webkit-border-radius: 50px;
+    border-radius: 50px;
+}
+
+#name {
+    float: left;
+}
+
+#contactDetails {
+    float: right;
+}
+
+#contactDetails ul {
+    list-style-type: none;
+    font-size: 0.9em;
+    margin-top: 2px;
+}
+
+#contactDetails ul li {
+    margin-bottom: 3px;
+    color: #444;
+}
+
+#contactDetails ul li a, a[href^=tel] {
+    color: #444; 
+    text-decoration: none;
+    -webkit-transition: all .3s ease-in;
+    -moz-transition: all .3s ease-in;
+    -o-transition: all .3s ease-in;
+    -ms-transition: all .3s ease-in;
+    transition: all .3s ease-in;
+}
+
+#contactDetails ul li a:hover { 
+    color: #cf8a05;
+}
+
+
+.instaFade section {
+    border-top: 1px solid #dedede;
+    padding: 20px 0 0;
+}
+
+
+
+/*.sectionTitle {
+    float: left;
+    width: 25%;
+}*/
+
+
+.sectionTitle h1 {
+    font-family: 'Rokkitt', Helvetica, Arial, sans-serif;
+    font-style: italic;
+    font-size: 1.5em;
+    color: #cf8a05;
+}
+
+.sectionContent h2 {
+    font-family: 'Rokkitt', Helvetica, Arial, sans-serif;
+    font-size: 1.5em;
+    margin-bottom: -2px;
+}
+
+.subDetails {
+    font-size: 0.8em;
+    font-style: italic;
+    margin-bottom: 3px;
+}
+
+.keySkills {
+    list-style-type: none;
+    -moz-column-count:3;
+    -webkit-column-count:3;
+    column-count:3;
+    margin-bottom: 20px;
+    font-size: 1em;
+    color: #444;
+}
+
+.keySkills ul li {
+    margin-bottom: 3px;
+}
+
+@media all and (min-width: 602px) and (max-width: 800px) {
+    #headshot {
+        display: none;
+    }
+    
+    .keySkills {
+    -moz-column-count:2;
+    -webkit-column-count:2;
+    column-count:2;
+    }
+}
+
+@media all and (max-width: 601px) {
+    #cv {
+        width: 95%;
+        margin: 10px auto;
+        min-width: 280px;
+    }
+    
+    #headshot {
+        display: none;
+    }
+    
+    #name, #contactDetails {
+        float: none;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .sectionTitle, .sectionContent {
+        float: none;
+        width: 100%;
+    }
+    
+    .sectionTitle {
+        margin-left: -2px;
+        font-size: 1.25em;
+    }
+    
+    .keySkills {
+        -moz-column-count:2;
+        -webkit-column-count:2;
+        column-count:2;
+    }
+}
+
+@media all and (max-width: 480px) {
+    .mainDetails {
+        padding: 15px 15px;
+    }
+    
+    section {
+        padding: 15px 0 0;
+    }
+    
+    #mainArea {
+        padding: 0 25px;
+    }
+
+    
+    .keySkills {
+    -moz-column-count:1;
+    -webkit-column-count:1;
+    column-count:1;
+    }
+    
+    #name h1 {
+        line-height: .8em;
+        margin-bottom: 4px;
+    }
+}
+
+@media print {
+    #cv {
+        width: 100%;
+    }
+}
+
+
+
+
+
+/*css end here about application form print and pdf*/
+   </style>
+
+<div id="print" style="display: none;"> 
+
+   <div id="cv" class="instaFade">
+      <div style="width: 100%;display: -webkit-inline-box; height: 38px;">
+         
+      </div>
+      <div class="mainDetails" style="background-image: url('./assets/images/dotted.jpg');background-position: center;background-size: contain; width: 90% !important;margin-left: 5%;">
+         <div>
+            <span class="head-section" style=" border-left: 1px solid;
+    width: 44.1% !important;
+    float: left;
+    padding: 7px 18px;
+    border-bottom: 1px solid;
+    border-top: 1px solid;">
+                &nbsp;&nbsp;
+            </span>
+            <span class="head-section" style=" border-left: 1px solid;
+    width: 44.1% !important;
+    float: left;
+    padding: 7px 18px;
+    border-bottom: 1px solid;
+    border-top: 1px solid;">
+               FORM NR: {{printData?.rapidId}}
+            </span>
+          </div>
+         
+         <div style="border-left: 1px solid;
+    border-right: 1px solid;
+    text-align: center;
+    border-bottom: 1px solid;
+    line-height: 34px;"> EMPLOYMENT APPLICATION</div>
+      </div>
+      
+      <div id="mainArea" class="quickFade delayFive" style="padding: 0 40px;">
+         <section>
+            <article>
+               
+               <div class="sectionContent" style="float: left;width: 97.5%;margin-bottom: 22px;">
+                  <h3 class="m-b-10" style="margin-bottom: -10px !important;margin-top: 6px !important;font-size: 1em;font-weight: 100;">PERSONAL DETAILS </h3>
+                  <!-- <p class="subDetails">April 2011 - Present</p> -->
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     <span style="width: 180px;
+    display: -webkit-inline-box;">Name:-</span> 
+                     <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.firstname}}</label>
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     <span style="width: 180px;
+    display: -webkit-inline-box;">Full Address:-</span> 
+                     <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.address}},{{printData?.city}}, {{printData?.state}}, {{printData?.country}}, {{printData?.postcode}}</label>
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     <span style="width: 180px;
+    display: -webkit-inline-box;">Tel (Mobile/Home):</span> 
+                     <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.bsb}} </label>
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     <span style="width: 180px;
+    display: -webkit-inline-box;">Email:</span> 
+                     <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.email}} </label>
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     <span style="width: 180px;
+    display: -webkit-inline-box;">Date of birth:</span>
+                     <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.dob}}</label>
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     <span style="width: 180px;
+    display: -webkit-inline-box;">Gender:</span> {{printData?.gender}}
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     <span style="width: 180px;
+    display: -webkit-inline-box;">Tax file number:</span> 
+                     <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.tax_file}} </label>
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;">
+                     Have you ever been charged or convicted with any criminal offence?
+                     <span class="yes bold" style="width: 45px;
+    margin-left: 12px; font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> No </span>
+                  </p> 
+                  <h3 style="margin-bottom: -10px !important;margin-top: 6px !important;font-size: 1em;font-weight: 100;">Bank account details:- </h3>
+                  <div>
+                     <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;width:231px; float: left;">
+
+                     <span style="width: 107px;display: -webkit-inline-box;">BSB number:</span>
+                      <label style="width: 110px;border-bottom: 1px solid !important;
+    display: inline-block;">{{printData?.bsb}} </label></p>
+
+                     <p  style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;width: 49%;float: left;">
+                        <span style="width: 100px;display: -webkit-inline-box;">Account no:</span>
+                         <label style="width: 133px;border-bottom: 1px solid !important;
+    display: inline-block;">{{printData?.acnumber}} </label>
+                     </p>
+                  </div>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;width: 100%;">
+                     Have you ever made a Work cover claim? YES/NO (If YES, please provide details:)
+                     <label *ngIf="printData?.work_claim == false" style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;"> NO </label>
+                     <label *ngIf="printData?.work_claim == true" style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;"> {{printData?.work_claim_details}} </label>
+                  </p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;width: 100%;">
+                     If you have made a Work cover claim, would the injuries you received, stop you from completing duties required for the position you have applied for? 
+                     <span class="bold" *ngIf="printData?.injury == true" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> Yes </span>  
+                     <span class="bold" *ngIf="printData?.injury == false" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> No </span>  
+                  </p>
+
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;"><span style="width: 180px;
+    display: -webkit-inline-box;">Position applying for:-</span> <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">Security Guard</label></p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;"><span style="width: 180px;
+    display: -webkit-inline-box;">Security license number:-</span> <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.licenseNo}}</label></p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;"><span style="width: 180px;
+    display: -webkit-inline-box;">Security license expiry dated:</span> <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.licence_exp_date}}</label></p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;"><span style="width: 180px;
+    display: -webkit-inline-box;">Driver's license number:</span> <label style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;">{{printData?.drivingLicenseNo}} </label></p>
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;"><span style="width: 180px;
+    display: -webkit-inline-box;">SUPER DETAILS:</span><label *ngIf="printData?.open_super_acc == false" style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;"> To be applied</label>
+                  <label *ngIf="printData?.open_super_acc == true" style="border-bottom: 1px solid !important;
+    width: 376px;
+    display: inline-block;"> Not applied</label>
+                  </p>
+                  
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;">
+                     Are you an Australian Resident for work purposes?
+                     <span class="bold" *ngIf="printData?.resident == true" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> Yes </span> 
+                     <span class="bold" *ngIf="printData?.resident == false" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> No </span>
+                  </p> 
+
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;">
+                     Do you hold a current First Aid certificate?
+                     <span class="bold" *ngIf="printData?.first_aid == true" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> Yes </span> 
+                     <span class="bold" *ngIf="printData?.first_aid == false" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> No </span> 
+                  </p> 
+
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;">
+                     Do you have any Visa Conditions which Stops you working in Security?
+                     <span class="bold" *ngIf="printData?.visa_condi == true" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> Yes </span> 
+                     <span class="bold" *ngIf="printData?.visa_condi == false" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;"> No </span> 
+                  </p> 
+
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;">
+                     Do you full understand all details in regards to Occupational?<br>
+                     Health and Safety
+                     <span class="bold right" *ngIf="printData?.occupation == true" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;float: right;"> Yes </span> 
+                     <span class="bold right" *ngIf="printData?.occupation == false" style="font-weight: 600;
+    margin-left: 9px;
+    width: 100px;float: right;"> No </span> 
+                  </p> 
+                  <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444;float: left;">
+                     In signing thid form, I understand that if I have failed to disclose any relevant information, any future claims against the company, or the Victorian Work cover Authority may be void.
+                  </p>
+
+                  <div class="quickFade delayFour">
+                     <ul style="float: left;">
+                        <div class="signatureArea" style=" border-bottom: 1px solid #000;
+    padding: 5px 10px;
+    min-width: 100px;
+    max-width: 100px;
+    height: 50px;
+    line-height: 69px;">
+                           {{printData?.firstname}}
+                        </div>
+                        <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444; float: left;padding: 0px 0px;text-align: center;width: 113px;">PRINT NAME</p>
+                        
+                     </ul>
+                     
+                     <ul style="float: right;text-decoration:none">
+                        <div class="signatureArea1" style="border-bottom: 1px solid #000;
+    padding: 5px 10px;
+    min-width: 100px;
+    max-width: 100px;
+    height: 50px;">
+                           <img *ngIf="printData?.signature != ''" src="{{printData?.signature}}" style="width: 100%;
+    height: auto;">
+                        </div>
+                        <p style="font-size: 1em;line-height: 1.4em;margin-bottom: -7px;color: #444; float: left;padding: 0px 0px;text-align: center;width: 113px;">SIGNED</p>
+                        
+                     </ul>
+                  </div>
+
+               </div>
+            </article>
+            <button style="display: none;" id="save" (click)="save()">Save</button><br>
+            <button style="display: none;" id="cancel">Cancel</button>
+            <div class="clear"></div>
+         </section>
+      </div>
+
+   </div>
+</div>

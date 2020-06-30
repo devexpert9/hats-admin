@@ -1,0 +1,150 @@
+<div class="container-scroller">
+<app-header></app-header>
+      <!-- partial -->
+	<div class="container-fluid page-body-wrapper">
+     
+      <!-- partial:partials/_sidebar.html -->
+      <app-sidebar></app-sidebar>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row mb-4">
+            <div class="col-12 d-flex align-items-center justify-content-between">
+              <h4 class="page-title">Remarks</h4>
+            </div>
+          </div>
+        
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+             <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-12 table-responsive">
+                  <div class="table-input" style='margin:15px; float: right;' >
+                    <span>Search By Title:</span><br>
+                    <input type='text' placeholder='Type...' (keyup)='updateFilter($event)'/>
+                  </div>
+
+                   <table class="table table-striped" [mfData]="rows" #mf="mfDataTable" [mfRowsOnPage]="5">
+                       <thead>
+                           <tr>
+                             <th>Sr No.#</th>
+                             <th>
+                                <mfDefaultSorter by="title">Title</mfDefaultSorter>
+                             </th>
+                             <th>
+                                <mfDefaultSorter by="type"> Type </mfDefaultSorter>
+                             </th>
+                             <th><mfDefaultSorter by="rapidId"> Rapid ID </mfDefaultSorter></th>
+                              <th> <mfDefaultSorter by="firstname"> Worker </mfDefaultSorter></th>
+                              
+                              <th> Time </th>
+                              <th>Date</th>
+                              <th>
+                               <mfDefaultSorter by="status">Address</mfDefaultSorter>
+                               </th>
+                               
+                              <th>Actions</th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                         <tr *ngFor="let row of mf.data;let i = index;">
+                             <td>{{i+1}}</td>
+                             <td>
+                                {{row.title}}
+                             </td>
+                             <td>
+                                <a class="ww-table-big-text btn-sm btn btn-primary" *ngIf="row.type == '0'"><span class="">Adhoc</span></a>
+                                <a class="ww-table-big-text btn-sm btn btn-danger" *ngIf="row.type == '1'"><span class="">Roaster</span></a>
+                             </td>
+
+                            <td>
+                                <a class="titleRow" *ngIf="row.userInfo">
+                                    <span *ngIf="row.userInfo.rapidId == ''">Not Assigned</span>
+                                    <span *ngIf="row.userInfo.rapidId != ''"  class="rapidTag">{{row.userInfo.rapidId}}</span></a><BR>
+                                <a class="titleRow" *ngIf="!row.userInfo">-</a>
+                            </td>
+                            <td>
+                                {{row.userInfo.firstname}}({{row.userInfo.username}})
+                            </td>
+                            <td>
+                                <a *ngIf="row.type == '0'" class="ww-table-big-text">{{getTimeAMPM(row.start_time)}} - {{getTimeAMPM(row.end_time)}}</a>
+                                                    
+                                <a *ngIf="row.type == '1'" class="ww-table-big-text">{{getAmPmTime(row.days)}}</a>
+                            </td>
+                            <td>
+                                <a *ngIf="row.type == '1'" class="ww-table-big-text">{{getExactDate(row.start_date)}} / {{getExactDate(row.end_date)}}</a>
+                                                    
+                                <a *ngIf="row.type == '0'" class="ww-table-big-text">{{getExactDate(row.shift_date)}}</a>
+                            </td>
+                            <td>
+                              {{row.location.address.location}}
+                            </td>
+                            
+                            <td>
+                              <button type="button" class="btn btn-icons btn-rounded btn-success" data-toggle="modal" data-target="#remarks" (click)="showRemarks(row)"><i class="icon-note"  data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Check Remarks"></i> </button>
+                           </td>
+                          </tr>
+                          <tr *ngIf="mf.data?.length == 0"><td colspan="11">
+                             No record found.</td>
+                          </tr>
+                       </tbody>
+                       <tfoot>
+                          <tr>
+                             <td colspan="4">
+                                <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+                             </td>
+                          </tr>
+                       </tfoot>
+                    </table>
+                   
+                </div>
+              </div>
+            </div>
+            </div>
+			</div>
+            
+          </div>
+		  
+           <!-- partial:partials/_footer.html -->
+        <footer class="footer">
+          <div class="container-fluid clearfix">
+            <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. All rights reserved.</span>
+            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.
+            
+            </span>
+          </div>
+        </footer>
+      </div>
+	  </div>
+	  </div>
+	  
+<div class="modal fade" id="remarks" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm " role="document">
+    <div class="modal-content">
+      
+      <div class="modal-body">
+		<h4> Remarks </h4>
+     <p *ngIf="Remarks?.type == '0'"> {{Remarks?.shiftStatus[0].remarks}}  </p>
+
+      <table *ngIf="Remarks?.type == '1'">
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Remarks</th>
+        </tr>
+        <ng-container *ngFor="let item of Remarks?.shiftStatus">
+        <tr *ngIf="item.remarks != null">
+          <td style="width: 34%;">{{item.shift_end_date}}</td>
+          <td style="width: 34%;">{{item.shift_end_time}}</td>
+          <td style="width: 34%;">{{item.remarks}}</td>
+        </tr> 
+        </ng-container> 
+      </table>
+      </div>
+      <div class="modal-footer pull-left">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>	
+	

@@ -1,0 +1,17 @@
+span b {
+	background: #f9c535;
+    padding: 1px 7px;
+    font-weight: 500;
+    margin-left: 12px;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 14px;
+}
+
+span.text {
+	width: 100%;
+    float: left;
+    color: #777;
+    margin-bottom: 8px;
+    font-size: 14px;
+}

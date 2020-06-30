@@ -1,0 +1,72 @@
+<div class="container-scroller">
+    <app-header></app-header>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+
+        <!-- partial:partials/_sidebar.html -->
+        <app-sidebar></app-sidebar>
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="row mb-4">
+                    <div class="col-12 d-flex align-items-center justify-content-between">
+                        <h4 class="page-title">Payroll</h4>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Payroll</h4>
+                                <div class="row">
+                                    <div class="col-12 table-responsive">
+                                        <div class="row">
+                                      
+                                            <div class="col-4">
+                                                <label for="exampleInputEmail1">From</label>
+                                                <input  type="date" class="form-control" placeholder="Select start date" [(ngModel)]="startDate" onkeydown="return false" (change)="handlerStart($event)">
+                                            </div>
+                                            <div class="col-4">
+                                                <label for="exampleInputEmail1">To</label>
+                                                <input  type="date" class="form-control" placeholder="Select end date" [(ngModel)]="endDate" min="{{mindate}}" max="{{maxdate}}" onkeydown="return false">
+                                            </div>
+                                           	<div class="col-4">
+                                                <label style="opacity:0;display: block;">View</label>
+                                                <button class="btn btn-primary height40" (click)="getReport(startDate, endDate)">View Report</button>
+                                            </div>
+                                        </div>
+                                    <br><br>   
+                                    <!-- <button (click)="getReport(startDate, endDate)">View Report</button> -->
+                                    <div id="showData">
+                                        
+                                    </div>
+
+                           
+
+                                    <div class="row" *ngIf="ShiftsList.length == 0">
+                                        No Record Found.
+                                    </div>
+
+
+                                     <!-- <button class="btn btn-primary mt-3" (click)="DownloadReport( startDate, endDate)" *ngIf="ShiftsList.length > 0">Download Report</button> -->
+                                    <!-- <button (click)="DownloadReport([], startDate, endDate, type)" *ngIf="ShiftsList.length > 0">Download Report</button> -->
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- partial:partials/_footer.html -->
+                <footer class="footer">
+                    <div class="container-fluid clearfix">
+                        <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. All rights reserved.</span>
+                        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.</span>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+

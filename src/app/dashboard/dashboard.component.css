@@ -1,0 +1,129 @@
+.modal .modal-dialog .modal-content .modal-body {
+    padding: 20px 26px 0;
+}
+
+@media(max-width:1199px) {
+.card .d-flex.justify-content-between i {
+    font-size: 24px;
+}
+.card .d-flex.justify-content-between h5 {
+    font-size: 14px;
+}
+}
+
+.license-image{
+	width: 100%;
+    border-radius: 0 !important;
+}
+
+.padding-top-5{
+	/*padding-top: 5%;*/
+}
+.card-body > h4.card-title{
+    display: block;
+}
+
+
+.collapse{
+	padding:20px;
+}
+.accordion.basic-accordion .card .card-header a[aria-expanded="true"]:before{
+    content: "\f107";
+    font-family: 'fontAwesome';
+    font-size: 11px;
+    color: #999;
+    margin-top: 3px;
+}
+.accordion.basic-accordion .card .card-header a[aria-expanded="false"]:before, .accordion.basic-accordion .card .card-header a:before {
+    content: "\f107";
+    font-family: 'fontAwesome';
+    font-size: 11px;
+    margin-top: 3px;
+    color: #999;
+}
+.accordion .card .card-header a .card-icon{
+	margin-right: 0;
+}
+.img-sm {
+    font-size: 11px;
+    white-space: nowrap;
+}
+.upload{
+        display: none;
+    z-index: 9999;
+    display: block;
+    background: #8080806b;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.upload span{
+    left: 47%;
+    top: 49%;
+    color: #000;
+    position: absolute;
+    /* width: 100%; */
+    text-align: center;
+    background: #fff;
+    padding: 14px 14px;
+}
+
+
+.loading {
+ /* position: absolute;
+  top: 50%;
+  left: 50%;*/
+  float: right;
+}
+.loading-bar {
+    display: inline-block;
+    width: 4px;
+    height: 18px;
+    border-radius: 4px;
+    animation: loading 1s ease-in-out infinite;
+}
+.loading-bar:nth-child(1) {
+    background-color: #3498db;
+    animation-delay: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+}
+.loading-bar:nth-child(2) {
+    background-color: #c0392b;
+    animation-delay: 0.09s;
+    margin-left: 3px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+}
+.loading-bar:nth-child(3) {
+    background-color: #f1c40f;
+    animation-delay: .18s;
+    margin-left: 3px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+}
+.loading-bar:nth-child(4) {
+  background-color: #27ae60;
+  animation-delay: .27s;
+  margin-left: 3px;
+      width: 5px;
+    height: 5px;
+    border-radius: 50%;
+}
+
+@keyframes loading {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1, 2.2);
+  }
+  40% {
+    transform: scale(1);
+  }
+}

@@ -1,0 +1,263 @@
+<div class="container-scroller">
+<app-header></app-header>
+      <!-- partial -->
+	<div class="container-fluid page-body-wrapper">
+     
+      <!-- partial:partials/_sidebar.html -->
+      <app-sidebar></app-sidebar>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="row mb-4">
+            <div class="col-12 d-flex align-items-center justify-content-between">
+              <h4 class="page-title">Reminder Setting</h4>
+            </div>
+          </div>
+        
+         <div class="row">
+         <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-sub-ttl"> Reminder time before starting shift</h4>
+                   <form class="forms-sample">
+                    <div class="row">
+						<div class="col-md-2" *ngFor="let entry of array">
+							<div class="form-group">
+							  <div   class="check-new-d">
+								<label class="check-des"> {{entry.title}}
+								  <input type="radio" name="reminder" [value]="entry.id" (change)="onSelectionChange(entry,'reminder')" [checked]="entry.minutes ==  reminderValues?.reminder">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+                 <!--       <div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 30 mints
+								  <input type="radio" name="reminder" (change)="changeValue('30','min','reminder')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 45 mints
+								  <input type="radio" name="reminder" (change)="changeValue('45','min','reminder')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 1 hours
+								  <input type="radio" name="reminder" (change)="changeValue('1:00','hr','reminder')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 1:15 hours
+								  <input type="radio" name="reminder" (change)="changeValue('1:15','hr','reminder')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 1:30 hours
+								  <input type="radio" name="reminder" (change)="changeValue('1:30','hr','reminder')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div> -->
+                        </div>
+                      
+                  </form>
+				  <h4 class="card-sub-ttl m-t-20"> Ongoing shift reminders</h4>
+                   <form class="forms-sample">
+                    <div class="row">
+
+                    		<div class="col-md-2" *ngFor="let entry of array">
+							<div class="form-group">
+							  <div   class="check-new-d">
+								<label class="check-des"> {{entry.title}}
+								  <input type="radio" name="reminder" [value]="entry.id" (change)="onSelectionChange(entry,'ongoing')" [checked]="entry.minutes ==  reminderValues?.ongoing">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+					<!-- 	<div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 15 mints
+								  <input type="radio" name="ongoing" (change)="changeValue('15','min', 'ongoing')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+                       <div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 30 mints
+								  <input type="radio" name="ongoing" (change)="changeValue('30','min', 'ongoing')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 45 mints
+								  <input type="radio" name="ongoing" (change)="changeValue('45','min', 'ongoing')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 1 hours
+								  <input type="radio" name="ongoing" (change)="changeValue('1:00','hr', 'ongoing')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 1:15 hours
+								  <input type="radio" name="ongoing" (change)="changeValue('1:15','hr', 'ongoing')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 1:30 hours
+								  <input type="radio"  name="ongoing" (change)="changeValue('1:30','hr', 'ongoing')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div> -->
+                        </div>
+                      
+                  </form>
+				  <h4 class="card-sub-ttl m-t-20"> Admin reminder</h4>
+                   <form class="forms-sample">
+                    <div class="row">
+
+                    		<div class="col-md-2" *ngFor="let entry of array">
+							<div class="form-group">
+							  <div   class="check-new-d">
+								<label class="check-des"> {{entry.title}}
+								  <input type="radio" name="reminder" [value]="entry.id" (change)="onSelectionChange(entry,'admin')" [checked]="entry.minutes ==  reminderValues?.admin">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+
+				<!-- 		<div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 15 mints
+								  <input type="radio" name="admin" (change)="changeValue('15','min', 'admin')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+                       <div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 30 mints
+								  <input type="radio" name="admin" (change)="changeValue('30','min', 'admin')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 45 mints
+								  <input type="radio"  name="admin" (change)="changeValue('45','min', 'admin')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 1 hours
+								  <input type="radio" name="admin" (change)="changeValue('1:00','hr', 'admin')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 1:15 hours
+								  <input type="radio" name="admin" (change)="changeValue('1:15','hr', 'admin')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+							  <div class="check-new-d">
+								<label class="check-des"> 1:30 hours
+								  <input type="radio" name="admin" (change)="changeValue('1:30','hr', 'admin')">
+								  <span class="checkmark"></span>
+								</label>
+							  </div>
+							</div>
+						</div> -->
+                        </div>
+                      
+                  </form>
+				  
+                </div>
+              </div>
+            </div>
+
+
+           
+            </div>
+             <button  type="button" class="btn btn-primary right"  *ngIf="allFieldsValueCheck()" (click)="SaveReminders()">Save</button>
+		   </div>
+           
+           <!-- partial:partials/_footer.html -->
+        <footer class="footer">
+          <div class="container-fluid clearfix">
+            <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. All rights reserved.</span>
+            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.
+            
+            </span>
+          </div>
+        </footer>
+      </div>
+	  </div>
+	  </div>

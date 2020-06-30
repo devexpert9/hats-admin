@@ -1,0 +1,703 @@
+<div class="container-scroller">
+  <app-header></app-header>
+  <!-- partial -->
+  <div class="container-fluid page-body-wrapper">
+    <!-- partial:partials/_sidebar.html -->
+    <app-sidebar></app-sidebar>
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="row mb-4">
+          <div class="col-12 d-flex align-items-center justify-content-between">
+            <h4 class="page-title">Clients</h4> 
+            <button class="btn btn-primary" (click)="addNewSecurityGuard(addGuard)"> Add Client</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Clients</h4>
+                <div class="row">
+                  <div class="col-12 table-responsive"> 
+                    <div class="table-input" style='margin:15px; float: right;' >
+                      <span>Search By Name:</span><br>
+                       <input type='text' placeholder='Type...' (keyup)='updateFilter($event)'/>
+                    </div>
+                    
+                     <table class="table table-striped" [mfData]="rows" #mf="mfDataTable" [mfRowsOnPage]="5">
+                       <thead>
+                           <tr>
+                             <th>Sr No.#</th>
+                             <th>
+                                <mfDefaultSorter by="firstname">Name</mfDefaultSorter>
+                             </th>
+                              <th>
+                                <mfDefaultSorter by="contact">Contact</mfDefaultSorter>
+                              </th>
+                              <th>
+                                <mfDefaultSorter by="email">Email</mfDefaultSorter>
+                             </th>
+                              <th>Address</th>
+                              <th>
+                               <mfDefaultSorter by="status">Status</mfDefaultSorter>
+                               </th>
+                              <th>Actions</th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                         <tr *ngFor="let row of mf.data;let i = index;">
+                             <td>{{i+1}}</td>
+                             <td>
+                                {{row.name}}
+                             </td>
+                            <td>{{row.contact}}</td>
+                            <td>{{row.email}}</td>
+                            <td>{{row.address}}, {{row.city}}, {{row.country}}</td>
+                            <td>
+                              <a class="ww-table-big-text badge badge-success" *ngIf="row.status == true" (click)="changeStatus(row, false)"  data-toggle="modal" data-target="#change-status" data-placement="bottom" title="Active" data-original-title="View Details">Active</a>
+                              <a class="ww-table-big-text badge badge-danger" *ngIf="row.status == false" (click)="changeStatus(row, true)" data-toggle="modal" data-target="#change-status" data-placement="bottom" title="Inactive" data-original-title="View Details">Inactive</a>
+                            </td>
+                             <td>
+                             <button type="button" class="btn btn-icons btn-rounded btn-primary" data-toggle="modal" data-target="#view-shift" data-placement="bottom" title="View" data-original-title="View Details" (click)="viewGuard(row)"><i class="icon-eye"></i></button>
+                             <button title="Edit" type="button" class="btn btn-icons btn-rounded btn-warning" data-toggle="modal" (click)="EditGuard(row,i,editshift)"><i class="icon-pencil" data-toggle="tooltip" data-placement="bottom"  data-original-title="Edit"></i></button>
+                             <button title="Delete" type="button" class="btn btn-icons btn-rounded btn-danger" data-toggle="modal" data-target="#delete-pop" (click)="DeleteGuard(row)"><i class="icon-trash" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete"></i></button>
+                           </td>
+                          </tr>
+                          <tr *ngIf="mf.data?.length == 0"><td colspan="11">
+                             No record found.</td>
+                          </tr>
+                       </tbody>
+                       <tfoot>
+                          <tr>
+                             <td colspan="4">
+                                <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+                             </td>
+                          </tr>
+                       </tfoot>
+                    </table>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+   <!-- partial:partials/_footer.html -->
+   <footer class="footer">
+    <div class="container-fluid clearfix">
+      <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018. All rights reserved.</span>
+      <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Designed By Indi IT Solutions.
+
+      </span>
+    </div>
+  </footer>
+</div>
+</div>
+</div>
+<div class="modal fade" id="view-shift" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Client Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Name</label>
+                <input type="name" class="form-control" placeholder="{{viewGuardData?.name}} " disabled>
+              </div>
+            </div>
+       
+          </div>        
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Email</label>
+                <input type="name" class="form-control" placeholder="{{viewGuardData?.email}}" disabled>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Gender</label>
+                <input type="name" class="form-control" placeholder="{{viewGuardData?.gender}}" disabled>
+              </div>
+            </div>         
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Mobile</label>
+                <input type="name" class="form-control" placeholder="{{viewGuardData?.contact}}" disabled>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Address</label>
+                <input type="name" class="form-control" placeholder="{{viewGuardData?.address}}" disabled>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">City</label>
+                <input type="name" class="form-control" placeholder="{{viewGuardData?.city}}" disabled>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Country</label>
+                <input type="name" class="form-control" placeholder="{{viewGuardData?.country}}" disabled>
+              </div>
+            </div>
+          </div>
+         
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group view-pop-imgblock">
+                <label for="exampleInputEmail1">Profile Image</label>
+                <img *ngIf="viewGuardData?.profile_image == '' ||viewGuardData?.profile_image == null" class="rounded-circle img-lg" src="./assets/images/user.jpg" alt="profile image">
+                <img *ngIf="viewGuardData?.profile_image != ''" class="rounded-circle img-lg" src="{{imageURL + viewGuardData?.profile_image}}" alt="profile image">
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+
+
+                 <label style=" margin-top: 10px;margin-right: 10px;" for="exampleInputEmail1">Status</label>
+            <label class="switch">
+            <input type="checkbox" class="form-control" placeholder="Enter name"  *ngIf="viewGuardData?.status == false" [checked]="false" disabled>
+            <input type="checkbox"  class="form-control" placeholder="Enter name"  [checked]="true"  *ngIf="viewGuardData?.status == true" disabled>
+            <span class="slider round"></span>
+            </label>
+
+
+
+            <!--     <label for="exampleInputEmail1">Status</label>
+                <input type="name" class="form-control" *ngIf="viewGuardData?.status == false" placeholder="Inactive" disabled>
+                <input type="name" class="form-control" *ngIf="viewGuardData?.status == true" placeholder="Active" disabled> -->
+              </div>
+            </div>
+            
+
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+       
+
+        <button type="button" class="btn btn-danger" data-dismiss="modal" >Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div class="modal fade" id="editshift" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> -->
+  <ng-template #editshift let-c="close" let-d="dismiss">
+    <!-- <div class="modal-dialog" ro
+
+    le="document">
+    <div class="modal-content"> -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Client Details </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="authForm" (ngSubmit)="UpdateGuardInfo()">
+
+              <div class="form-group imagecenter">
+                <!-- <label for="exampleInputEmail1">Image</label> -->
+                <div class="img-box padding-top-5">
+                  <div class="relative inline-block">
+                  <img *ngIf="previewProfile == false && guardDetails?.profile_image == ''" class="rounded-circle img-lg" src="assets/images/user2.jpg" alt="profile image">
+                  <img *ngIf="previewProfile == false && guardDetails?.profile_image != ''" class="rounded-circle img-lg" src="{{imageURL}}{{guardDetails?.profile_image}}" alt="profile image">
+                  <img *ngIf="previewProfile == true" class="rounded-circle img-lg" src="{{imagePreviewProfile}}" alt="profile image">
+                  <input style="display: none" type="file" (change)="onProfileImageChanged($event)" #fileInput1  name="file"
+                  ngf-pattern="'image/*'"  accept="image/*" ngf-max-size="200MB" id="input-file-now" class="dropify" style="display:none;" filepreview="filepreview1" fileinput="file"  ngf-select>
+                  <label class="edit-profile-btn" for="avatar">
+
+                    <i class="fa fa-pencil" aria-hidden="true" (click)="fileInput1.click()"></i>
+                  </label>
+                </div>
+                </div>
+              </div>
+
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Name</label>
+                <input type="name" class="form-control" placeholder="Enter name" formControlName="name" [ngClass]="(authForm.controls.name.hasError('required') && authForm.controls.name.touched )? 'has-error' : ''">
+                <span *ngIf="authForm.controls.name.hasError('required') &&    authForm.controls.name.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Name is required!</p>
+                </span>
+              </div>
+            </div>
+            <div class="col">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Status</label>
+            <label class="switch block">
+            <input type="checkbox" checked class="form-control" placeholder="Enter name" formControlName="status" [ngClass]="(authForm.controls.status.hasError('required') && authForm.controls.status.touched )? 'has-error' : ''">
+            <span class="slider round"></span>
+            </label>
+          
+            <span *ngIf="authForm.controls.status.hasError('required') &&    authForm.controls.status.touched">
+              <p style="color:#f70101 !important;">Sorry, field Status is required!</p>
+            </span>
+          </div>
+        </div> 
+   
+          </div> 
+
+          <div class="row">
+            <div class="col-md-6">
+             <div class="form-group">
+              <label for="exampleInputEmail1">Email</label>
+              <input type="name" class="form-control" placeholder="Enter email" formControlName="email" [ngClass]="(authForm.controls.email.hasError('required') && authForm.controls.email.touched )? 'has-error' : ''">
+              <span *ngIf="authForm.controls.email.hasError('required') &&    authForm.controls.email.touched">
+                <p style="color:#f70101 !important;">Sorry, field Email is required!</p>
+              </span>
+              <span *ngIf="authForm.controls.email.hasError('pattern') &&    authForm.controls.email.touched">
+              <p style="color:#f70101 !important;">Sorry, valid email is required!</p>
+            </span>
+            </div>
+          </div>
+          <div class="col-md-6">
+           <div class="form-group">
+            <label for="exampleInputEmail1">Gender</label>             
+
+            <select class="form-control" formControlName="gender" >
+              <option value=""> Select One </option>
+              <option value="Male" selected>Male </option>
+              <option value="Female" selected>Female </option>
+              <!-- <option value="1">Ongoing</option> -->
+            </select>
+            <span *ngIf="authForm.controls.gender.hasError('required') &&    authForm.controls.gender.touched">
+              <p style="color:#f70101 !important;">Sorry, field Gender is required!</p>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Mobile</label>
+            <input type="name" class="form-control" placeholder="Enter mobile number" formControlName="contact" [ngClass]="(authForm.controls.contact.hasError('required') && authForm.controls.contact.touched )? 'has-error' : ''">
+            <span *ngIf="authForm.controls.contact.hasError('required') &&    authForm.controls.contact.touched">
+              <p style="color:#f70101 !important;">Sorry, field First Name is required!</p>
+            </span>
+
+            <span *ngIf="authForm.controls.contact.hasError('pattern') &&    authForm.controls.contact.touched">
+              <p style="color:#f70101 !important;">Sorry, valid mobile number between 4 to 15 digits!</p>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Address</label>
+            <input type="name" class="form-control" placeholder="Enter address" formControlName="address" [ngClass]="(authForm.controls.address.hasError('required') && authForm.controls.address.touched )? 'has-error' : ''">
+            <span *ngIf="authForm.controls.address.hasError('required') &&    authForm.controls.address.touched">
+              <p style="color:#f70101 !important;">Sorry, field Address is required!</p>
+            </span>
+
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">City</label>
+            <input type="name" class="form-control" placeholder="Enter city" formControlName="city" [ngClass]="(authForm.controls.city.hasError('required') && authForm.controls.city.touched )? 'has-error' : ''">
+            <span *ngIf="authForm.controls.city.hasError('required') &&    authForm.controls.city.touched">
+              <p style="color:#f70101 !important;">Sorry, field City is required!</p>
+            </span>
+
+            <span *ngIf="authForm.controls.city.hasError('pattern') &&    authForm.controls.city.touched">
+                  <p style="color:#f70101 !important;">Sorry, City contains only alphabets!</p>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Country</label>
+            <input type="name" class="form-control" placeholder="Enter country" formControlName="country" [ngClass]="(authForm.controls.country.hasError('required') && authForm.controls.country.touched )? 'has-error' : ''">
+            <span *ngIf="authForm.controls.country.hasError('required') &&    authForm.controls.country.touched">
+              <p style="color:#f70101 !important;">Sorry, field Country is required!</p>
+            </span>
+            <span *ngIf="authForm.controls.country.hasError('pattern') &&    authForm.controls.country.touched">
+                  <p style="color:#f70101 !important;">Sorry, Country contains only alphabets!</p>
+            </span>
+          </div>
+        </div>
+      </div>
+     <button  class="btn btn-danger" type="button" style="float: right;" (click)="closeModal()">Cancel</button>
+<button  [disabled]="!authForm.valid" class="btn btn-primary mr-10" type="submit" style="float: right;">Save</button>
+    <!--  <button type="submit"  [disabled]="!authForm.valid" class="btn btn-primary mr-10">Save</button>
+     <button type="button" class="btn btn-danger" (click)="closeModal()">Cancel</button> -->
+   </form>
+ </div>
+ <div class="modal-footer">
+          <!-- <button type="button" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button> -->
+       <!--  </div>
+       </div> -->
+     </div>
+   </ng-template>
+   <!-- </div> -->
+   <div class="modal fade" id="assign" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Assign Shift</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Select Type</label>
+                  <select class="form-control">
+                    <option> Select One </option>
+                    <option>Broadcast</option>
+                    <option>Select Security Guard</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Select Security Guard</label>
+                  <select class="form-control">
+                    <option> Select One </option>
+                    <option>John Smith </option>
+                    <option>Hanry James</option>
+                    <option>Denny Thomas </option>
+                    <option>Chrish Morries</option>
+                    <option>Hanry James </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">Assign Shift</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="delete-pop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h5> Are you sure, you want to delete it ? </h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="deleteGuard(guard)">Yes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="change-status" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h5> Are you sure, you want to change status? </h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="Changestatus(location, status)">Yes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<div class="modal fade" id="remarks" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm modl-shad" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h4> Remarks </h4>
+        <p> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </p>
+      </div>
+      <div class="modal-footer pull-left">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<ng-template #viewshiftdetail let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Shift Detail</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Title</label>
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.title}}">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Type</label>
+            <input disabled type="name" class="form-control" placeholder="Adhoc">
+          </div>
+        </div>
+      </div>
+      <div class="row">        
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Start Time</label>
+            <input disabled type="name" class="form-control" placeholder="{{getTimeAMPM(viewShiftData?.start_time)}}">
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">End Time</label>
+            <input disabled type="name" class="form-control" placeholder="{{getTimeAMPM(viewShiftData?.end_time)}}">
+          </div>
+        </div> 
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Date</label>
+            <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.shift_date}}">                         
+          </div>
+        </div>
+
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Priority</label>
+            <input disabled type="name" class="form-control" placeholder="{{getPriorityValue(viewShiftData?.priority)}}">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+       <div class="col">
+        <div class="form-group">
+          <label for="exampleInputEmail1">Location</label>
+          <input disabled type="name" class="form-control" placeholder="{{viewShiftData?.location.address}}">                         
+
+          <agm-map style="width:100%;height:200px;" [latitude]="latitude" [longitude]="longitude" [zoom]="10" [disableDefaultUI]="false" [zoomControl]="true " [usePanning]="true">
+            <agm-marker [latitude]="latitude" [longitude]="longitude" [markerDraggable]="false"></agm-marker>
+          </agm-map>
+        </div>
+      </div>
+
+
+    </div>
+
+    <div class="modal-footer">
+      <button  *ngIf="viewShiftData?.is_approved == 'false' && shiftType == 'upcoming'" class="btn btn-primary" (click)="changeStatusShift(viewShiftData,i, 'true')">Approve Shift</button>
+      <button  *ngIf="viewShiftData?.is_approved == 'true' && shiftType == 'upcoming'" class="btn btn-primary" (click)="changeStatusShift(viewShiftData,i, 'false')">Disapprove Shift</button>
+      <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="tooltip" (click)="closeModal()"> Cancel</button>
+    </div>
+
+  </form>
+</div>
+
+</ng-template>
+
+
+
+<div class="modal fade" id="active-inactive-pop" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h5> Are you sure wants to change user status ? </h5>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="changeActiveInctiveStatus(guard, status)">Yes</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #addGuard let-c="close" let-d="dismiss">
+    <!-- <div class="modal-dialog" ro
+
+    le="document">
+    <div class="modal-content"> -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add New Client</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="authForm" (ngSubmit)="AddGuard()">
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="exampleInputEmail1">Name</label>
+                <input type="name" class="form-control" placeholder="Enter name" formControlName="name" [ngClass]="(authForm.controls.name.hasError('required') && authForm.controls.name.touched )? 'has-error' : ''">
+                <span *ngIf="authForm.controls.name.hasError('required') &&    authForm.controls.name.touched">
+                  <p style="color:#f70101 !important;">Sorry, field Name is required!</p>
+                </span>
+              </div>
+            </div>       
+          </div>  
+
+          <div class="row">
+            <div class="col-md-6">
+             <div class="form-group">
+              <label for="exampleInputEmail1">Email</label>
+              <input type="name" class="form-control" placeholder="Enter email" formControlName="email" [ngClass]="(authForm.controls.email.hasError('required') && authForm.controls.email.touched )? 'has-error' : ''">
+              <span *ngIf="authForm.controls.email.hasError('required') &&    authForm.controls.email.touched">
+                <p style="color:#f70101 !important;">Sorry, field Email is required!</p>
+              </span>
+
+                  <span *ngIf="authForm.controls.email.hasError('pattern') &&    authForm.controls.email.touched">
+              <p style="color:#f70101 !important;">Sorry, valid email is required!</p>
+            </span>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+           <div class="form-group">
+            <label for="exampleInputEmail1">Gender</label>             
+
+            <select class="form-control" formControlName="gender" >
+              <option value=""> Select One </option>
+              <option value="Male" selected>Male </option>
+              <option value="Female" selected>Female </option>
+              <!-- <option value="1">Ongoing</option> -->
+            </select>
+            <span *ngIf="authForm.controls.gender.hasError('required') &&    authForm.controls.gender.touched">
+              <p style="color:#f70101 !important;">Sorry, field Gender is required!</p>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Mobile</label>
+            <input type="name" class="form-control" placeholder="Enter mobile number" formControlName="contact" [ngClass]="(authForm.controls.contact.hasError('required') && authForm.controls.contact.touched )? 'has-error' : ''">
+            <span *ngIf="authForm.controls.contact.hasError('required') &&    authForm.controls.contact.touched">
+              <p style="color:#f70101 !important;">Sorry, field contact is required!</p>
+            </span>
+             <span *ngIf="authForm.controls.contact.hasError('pattern') &&    authForm.controls.contact.touched">
+              <p style="color:#f70101 !important;">Sorry, valid mobile number between 4 to 15 digits!</p>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Address</label>
+            <input type="name" class="form-control" placeholder="Enter address" formControlName="address" [ngClass]="(authForm.controls.address.hasError('required') && authForm.controls.address.touched )? 'has-error' : ''">
+            <span *ngIf="authForm.controls.address.hasError('required') &&    authForm.controls.address.touched">
+              <p style="color:#f70101 !important;">Sorry, field Address is required!</p>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">City</label>
+            <input type="name" class="form-control" placeholder="Enter city" formControlName="city" [ngClass]="(authForm.controls.city.hasError('required') && authForm.controls.city.touched )? 'has-error' : ''">
+            <span *ngIf="authForm.controls.city.hasError('required') &&    authForm.controls.city.touched">
+              <p style="color:#f70101 !important;">Sorry, field City is required!</p>
+            </span>
+            <span *ngIf="authForm.controls.city.hasError('pattern') &&    authForm.controls.city.touched">
+                  <p style="color:#f70101 !important;">Sorry, City contains only alphabets!</p>
+            </span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Country</label>
+            <input type="name" class="form-control" placeholder="Enter country" formControlName="country" [ngClass]="(authForm.controls.country.hasError('required') && authForm.controls.country.touched )? 'has-error' : ''">
+            <span *ngIf="authForm.controls.country.hasError('required') &&    authForm.controls.country.touched">
+              <p style="color:#f70101 !important;">Sorry, field Country is required!</p>
+            </span>
+              <span *ngIf="authForm.controls.country.hasError('pattern') &&    authForm.controls.country.touched">
+                  <p style="color:#f70101 !important;">Sorry, Country contains only alphabets!</p>
+            </span>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleInputEmail1">Image</label>
+            <div class="img-box padding-top-5">
+              <img *ngIf="previewProfile == false && guardDetails?.profile_image == ''" class="rounded-circle img-lg" src="assets/images/user2.jpg" alt="profile image">
+              <img *ngIf="previewProfile == false && guardDetails?.profile_image != ''" class="rounded-circle img-lg" src="{{imageURL}}{{guardDetails?.profile_image}}" alt="profile image">
+              <img *ngIf="previewProfile == true" class="rounded-circle img-lg" src="{{imagePreviewProfile}}" alt="profile image">
+              <input style="display: none" type="file" (change)="onProfileImageChanged($event)" #fileInput1  name="file"
+              ngf-pattern="'image/*'"  accept="image/*" ngf-max-size="200MB" id="input-file-now" class="dropify" style="display:none;" filepreview="filepreview1" fileinput="file"  ngf-select>
+              <label class="edit-profile-btn" for="avatar">
+
+                <i class="fa fa-pencil" aria-hidden="true" (click)="fileInput1.click()"></i>
+              </label>
+            </div>
+
+          </div>
+        </div>
+      
+     </div>
+     <button  class="btn btn-danger" type="button" style="float: right;" (click)="closeModal()">Cancel</button>
+<button  [disabled]="!authForm.valid" class="btn btn-primary mr-10" type="submit" style="float: right;">Save</button>
+    <!--  <button type="submit"  [disabled]="!authForm.valid" class="btn btn-primary mr-10">Save</button>
+     <button type="button" class="btn btn-danger" (click)="closeModal()">Cancel</button> -->
+   </form>
+ </div>
+ <div class="modal-footer">
+          <!-- <button type="button" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button> -->
+       <!--  </div>
+       </div> -->
+     </div>
+   </ng-template>
+
+   <div class="modal fade" id="assign-id" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Assign Rapid ID</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <input  type="number" class="form-control" placeholder="Enter Rapid ID" [(ngModel)]="rapidId">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="assignId(rapidId, guard)">Yes</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>

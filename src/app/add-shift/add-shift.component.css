@@ -1,0 +1,77 @@
+.stretch-card h5.sb-hd-dbl {
+    margin-bottom: 30px;
+}
+.mb-20 {
+	margin-bottom: 20px;
+}
+.btn-icons.btn-days {
+    position: relative;
+    float: right;
+    height: 34px;
+    width: auto;
+    border-radius: 3px;
+}
+.modal .modal-dialog .modal-content .modal-footer {
+    padding: 15px 0;
+}
+.w-100
+{
+	width:100;
+}
+.holidays-sec span.badge
+{
+    background-color: #67beff;
+    margin: 0px 2px 2px;
+    padding: 4px 6px;
+    color: #fff;
+}
+.holidays-sec{
+        margin-bottom: 10px;
+}
+span.holiday-section {
+display: inline-block;    margin-left: 4px;
+    margin-top: 0;
+    line-height: normal;
+
+}
+span.holiday-section .box1 {
+    width: 12px;
+    height: 12px;
+    float: left;
+    background: #35e68c;
+        margin-top: 1px;
+    margin-right: 3px;
+}
+span.holiday-section .box2 {
+    width: 12px;
+    height: 12px;
+    float: left;
+    background: #67beff;      margin-top: 1px;
+    margin-right: 3px;
+}
+span.holiday-section .box3 {
+    width: 12px;
+    height: 12px;
+    float: left;
+    background: #ff679f;       margin-top: 1px;
+    margin-right: 3px;
+}
+
+.Sun {
+    background: #35e68c !important;
+}
+.Sat {
+    background: #67beff !important;    
+}
+.Public {
+    background: #ff679f !important;      
+}
+span.holiday-section  span.holiday-title {
+      font-size: 12px;
+    float: left;
+}
+.holiday-day {
+    margin-top: 3px;
+    float: right;
+    text-align: right;
+}

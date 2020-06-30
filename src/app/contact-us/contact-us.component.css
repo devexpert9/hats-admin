@@ -1,0 +1,17 @@
+.location-main {
+    padding: 15px;
+    background: #f9fbfd;
+    margin-bottom: 20px;
+}
+
+.btn-update {
+	top: 14px;
+    position: absolute;
+    left: 86%;
+}
+
+.btn-delete{
+    top: 14px;
+    position: absolute;
+    left: 92%;
+}
