@@ -32,7 +32,7 @@
     "datatables.net": "^1.10.19",
     "datatables.net-bs4": "^1.10.19",
     "i": "^0.3.6",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.0",
     "jspdf-autotable": "^2.3.5",
     "ng2-pdf-viewer": "^5.2.3",
     "ng4-loading-spinner": "^1.2.3",
