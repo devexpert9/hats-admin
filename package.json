@@ -38,7 +38,7 @@
     "ng4-loading-spinner": "^1.2.3",
     "rxjs": "~6.3.3",
     "rxjs-compat": "^6.3.3",
-    "simple-crypto-js": "^2.0.2",
+    "simple-crypto-js": "^2.3.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
